@@ -19,6 +19,15 @@ Markdown files. Write those blocks into the user's real config locations (`~/.co
 framework, or abstraction layer to this repo. If the user wants different behavior, edit the
 values described in `docs/05-customization.md` directly in their config.
 
+**Scope:**
+- **macOS only.** On another OS, tell the user this setup isn't officially supported there and
+  ask whether to continue. Don't refuse if they confirm. Adapt what you can and say what doesn't
+  carry over.
+- **JIS HHKB only.** US ANSI support is not built in: the ろ, ¥, 英数 and かな keys don't exist on
+  ANSI boards. If the user has ANSI, warn them and ask before continuing.
+- This repo is AI-generated and not serviced. Follow the docs at the ref the user gave you
+  (normally a release tag), not `main`.
+
 ---
 
 ## 1. The physical setup
