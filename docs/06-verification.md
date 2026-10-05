@@ -31,6 +31,7 @@ tell you the result. Ask them, and don't assume.
 | Bottom row keys are wrong after flipping a DIP switch | DIP change overwrote the keymap | Set DIP switches first (1 & 5 ON), then apply the keymap again with the HHKB Keymap Tool |
 | HHKB key types `` ` `` / `^` / nothing in EventViewer | Karabiner not modifying the HHKB, or device IDs differ | Karabiner → Devices → enable HHKB-Hybrid; check IDs in `karabiner.json` |
 | EventViewer shows `f18` but the source doesn't change | Hammerspoon not running or config not loaded | Start Hammerspoon, Reload Config, check the console for errors; Launch at login on |
+| Menu bar says Korean but the field still types English/Kana (rare, ~1%) | Known macOS bug: a background `TISSelectInputSource` didn't reach the focused field. The retry guard can't detect it | Press the HHKB key again, or click out of the field and back. See "Known issue" in `04-hammerspoon.md`. Don't add a focus-bounce or unconditional retry |
 | Korean overlay appears twice | Retry is missing its check | Restore the `if hs.keycodes.currentSourceID() ~= KOREAN` guard (`04-hammerspoon.md`) |
 | HHKB key does nothing while "already" in Korean | Someone added an early return | Remove `if … == KOREAN then return end` (`04-hammerspoon.md`) |
 | 英数 lands in Japanese 英字 mode instead of ABC | Romaji/英字 input mode enabled in the Japanese IME | Turn it off (`02-macos.md`); if needed add the optional rule in `03-karabiner.md` |

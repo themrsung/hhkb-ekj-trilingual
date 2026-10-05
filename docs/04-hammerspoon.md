@@ -80,3 +80,53 @@ hs -c 'hs.inspect(hs.keycodes.layouts(true))'  # enabled keyboard layouts (IDs)
 
 Press the HHKB key from ABC, from Japanese, and from Korean itself. Each time the result must be
 2-Set Korean, with no double overlay when coming from another language.
+
+## Known issue: the switch occasionally doesn't reach the focused text field (unfixed)
+
+**Symptom.** About 1 press in 100, the HHKB key "works" (the menu bar and
+`hs.keycodes.currentSourceID()` both say 2-Set Korean), but the text field you're typing in keeps
+the previous source (English, or Kana) until focus changes. かな and 英数 never do this.
+
+**Cause.** This is a macOS bug, not a bug in this config. `hs.keycodes.currentSourceID(id)` calls
+`TISSelectInputSource` from Hammerspoon, a background process. For CJK input methods that call
+sometimes changes the system-wide source without reattaching the focused app's text input client.
+かな and 英数 are real key events that the focused app handles itself, through the system's own
+switching path, so they can't get out of sync. The same bug is reported in
+[Karabiner-Elements #1602](https://github.com/pqrs-org/Karabiner-Elements/issues/1602) and on the
+[Apple Developer Forums (#748791)](https://developer.apple.com/forums/thread/748791).
+
+**What was measured** (macOS 27.0.1, Hammerspoon 1.1.1, TextEdit, synthetic typing read back from
+the document, about 550 switches):
+
+- Lost switches were about 1%. A lost switch stayed in the old source for more than 1.5 s, so it
+  isn't just a slow switch. Losses happened more often when typing started within about 50 ms
+  of the switch. With a 400 ms gap there were 0 losses in 60 trials.
+- It happens in native Cocoa text fields (TextEdit), not only in web pages.
+- Restarting the app or the Korean input method didn't reproduce it, and "Automatically switch to
+  a document's input source" is off.
+- **The 150 ms retry guard can't see this failure.** In every lost switch it read 2-Set Korean and
+  skipped the retry. The guard is still correct and still required: it handles selects that don't
+  take at all, and it prevents the double overlay. It just doesn't cover this case.
+
+**Workarounds tried and rejected:**
+
+- **Focus bounce** (activate another app for about 30 ms, then come back, as macism and Input
+  Source Pro's "Switching Focus" mode do): in 60 of 60 trials it dropped the first keystroke
+  after the switch. That's worse than the bug.
+- **Unconditional second select at 150 ms:** no measurable effect at this failure rate, and it
+  brings back the double-overlay bug.
+- **A Chrome extension:** extensions can't see or set macOS input sources, and the desync happens
+  below the page, so a page can't detect it.
+
+**Other tools** (surveyed October 2026, not tested here). Anything that calls
+`TISSelectInputSource` has the same bug: im-select, issw, kawa, xkbswitch-macosx, and Karabiner's
+`select_input_source`. Karabiner's docs warn about it for CJKV. The approaches that address it
+post a key event that the system handles itself:
+[CmdIME](https://github.com/ShunmeiCho/cmd-ime) ("kanaThenSelect": post かな, wait, then select)
+and the "post the input-source shortcut" approach that Karabiner's docs recommend. Input Source
+Pro's "Shortcut Simulation" mode uses the same idea but warns it is unreliable on macOS 26+.
+Revisit this when one of these, or a macOS update, gives a reliable Korean switch. Test any
+candidate the same way: a few hundred switches with typing right after each, then read back what
+landed. A ~1% rate can't be judged from a handful of presses.
+
+Until then, if Korean didn't take, press the HHKB key again, or click out of the field and back.

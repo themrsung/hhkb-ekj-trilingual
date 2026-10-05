@@ -71,6 +71,10 @@ Why each piece exists:
   current source is *not* already 2-Set. Keep that check. Also, don't add an early return
   when Korean is already "current". The reported source can be stale, and the early return left
   the key dead. The HHKB key must always select. Details are in `docs/04-hammerspoon.md`.
+- **Known unfixed issue:** about 1 HHKB-key press in 100, macOS reports Korean but the focused
+  text field keeps the old source (a macOS bug with background `TISSelectInputSource`; かな/英数
+  aren't affected). Retrying won't catch it, and the obvious workarounds were measured and rejected.
+  Don't "fix" it without measuring. See the "Known issue" section in `docs/04-hammerspoon.md`.
 - **Cmd+` is unusable here.** On JIS there's no dedicated `` ` `` key, and the HHKB key is taken
   for Korean. So "Move focus to next window" moves to **Option+Tab**. This is the repo default;
   users may pick another shortcut.

@@ -47,18 +47,18 @@ Codex, etc.). It asks you a few questions, then does the rest on its own. It sto
 that need your hands: DIP switches, the HHKB Keymap Tool, macOS permission prompts, and key-press
 checks.
 
-The prompt is **pinned to the release tag `v1.0.0`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.1.0`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.0.0.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.1.0.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.0.0/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.0.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.1.0/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.1.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.0.0/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.1.0/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
