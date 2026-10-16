@@ -33,6 +33,10 @@ unplugged** while you flip them.
 
 That is **Mac mode** on the HYBRID Type-S JIS.
 
+**HHKB Studio JIS:** only **SW4 ON** (reverse scroll direction). All other switches OFF. The
+rest of this setup isn't verified on the Studio yet. Check its vendor/product IDs before reusing
+the Karabiner rules.
+
 > **DIP switches must be set BEFORE the HHKB keymaps.** Changing DIP switches overwrites the
 > keymap written with the HHKB Keymap Tool. If you change them later, apply the keymap again.
 

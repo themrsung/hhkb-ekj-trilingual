@@ -35,6 +35,8 @@ values described in `docs/05-customization.md` directly in their config.
 - **Keyboard:** PFU **HHKB Professional HYBRID Type-S, JIS layout** (日本語配列). USB vendor ID
   `1278` (0x04FE, PFU Limited), product ID `34` (0x0022). Karabiner shows it as `HHKB-Hybrid`.
 - **Mode:** Mac mode. On the HYBRID Type-S JIS this means **DIP switches 1 and 5 ON, all others OFF**.
+  (On the **HHKB Studio JIS**, only **SW4 ON** (reverse scroll direction); all others OFF. See
+  `docs/01-hardware.md`.)
 - **Key left of A:** **Control** (HHKB default; there is no Caps Lock key. Caps Lock is Fn+Tab).
 - **Bottom row, left to right** (as remapped with the HHKB Keymap Tool):
 
