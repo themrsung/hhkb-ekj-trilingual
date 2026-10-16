@@ -52,8 +52,7 @@ Built with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) and
 > | F20 | Japanese: Microsoft Japanese IME, kana typing | JIS |
 >
 > The author types English by default and Korean only when needed, so the US symbols in Korean
-> cost little. Results may vary with typing habits. Tested on one PC, over USB only (Bluetooth not
-> yet). See [`docs/windows/`](docs/windows/01-hardware.md).
+> cost little. Results may vary with typing habits. Tested on one PC, over USB and Bluetooth. See [`docs/windows/`](docs/windows/01-hardware.md).
 
 ## Scope
 
@@ -79,18 +78,18 @@ PC) you want to set up (Claude Code, Codex, etc.). It asks you a few questions, 
 on its own. It stops only for steps that need your hands: DIP switches, the keymap tool,
 permission prompts, settings that change the system, and key-press checks.
 
-The prompt is **pinned to the release tag `v1.5.0`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.5.1`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.5.0.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.5.1.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.5.0/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.5.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.5.1/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.5.1 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.5.0/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.5.1/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 

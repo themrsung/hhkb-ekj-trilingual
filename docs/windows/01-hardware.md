@@ -55,8 +55,8 @@ Fn-layer keys used (stock Fn1 layer): **Fn1+P → Pause** (→ Media Play/Pause 
 
 ## Tested on
 
-The owner's PC, as of 2026-10-17. The HHKB has only been tested over **USB** so far; Bluetooth is
-not done yet and may behave differently.
+The owner's PC, as of 2026-10-17. The HHKB was tested over **USB** and over **Bluetooth**
+([below](#bluetooth)).
 
 | Item | Value |
 | --- | --- |
@@ -85,6 +85,36 @@ Thunderbolt xHCI 8086:9A13
 
 Windows lists four keyboards on this PC: the HHKB, the built-in one, the cooling pad's HID keyboard
 interface, and a converted HID keyboard. All of them get the same hardware layout (`02-windows.md`, step 3).
+
+## Bluetooth
+
+**Windows needs nothing extra for Bluetooth.** AutoHotkey acts on the key, not on the device, so
+the same script and logon task work over both connections. That differs from macOS, where Karabiner
+needs a second device entry for the Bluetooth Studio (`../07-hhkb-studio.md`).
+
+Windows sees the Studio as a **Bluetooth LE** HID device named `HHKB-Studio<n>`, where n is the
+pairing slot (the owner's is on slot 3). It has the same vendor and product IDs as over USB,
+`04FE:0015`. Where USB has separate interfaces (`MI_00`–`MI_04`), Bluetooth has one HID device
+with five collections: keyboard, mouse (pointing stick), system control, consumer control, and
+vendor-defined.
+
+Tested by the owner on 2026-10-17 over Bluetooth, Profile 4:
+
+| Test | Result |
+| --- | --- |
+| Key codes (KeyHistory): F20, F17, Right Alt, ← ↓ → | ✅ Same VK / SC as USB: F20 `83`/`06B`, F17 `80`/`068`, RAlt `A5`/`138`, arrows `25`/`14B`, `28`/`150`, `27`/`14D` |
+| F18 → Korean (`안녕하세요`) | ✅ |
+| F19 → English, JIS symbols (`the"`, Shift+2 → `"`) | ✅ |
+| F20 → Japanese, kana typing (`3` → あ) | ✅ |
+| F17 → 한자 in Korean (韓國); kanji conversion in Japanese (日本) | ✅ |
+| Fn1+P → Play/Pause | ✅ |
+| Fast switching between all three languages while typing | ✅ |
+| English symbols: ろ → `\` / `_`, ¥ → `\` / `\|`, ``"'@`[{]};+:*`` | ✅ match the JIS keycaps |
+| Korean symbols: ``@&[{]}\|;:'"`` | ✅ US ANSI, as the compromise expects (`03-autohotkey.md`) |
+| Pointing stick, buttons, gesture-pad scrolling, Fn2 pad toggles | ✅ |
+| Plugging and unplugging USB while connected over Bluetooth | ✅ typing in all three languages keeps working |
+| Profile3 over Bluetooth with Korean active | ✅ US ANSI symbols, as expected |
+| Keyboard sleep/wake, PC sleep/resume, typing at the sign-in screen | ⏳ to be checked in daily use |
 
 ## Profile 4 keymap (screenshots)
 

@@ -161,7 +161,7 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 
 ## 6. Windows 11 (experimental): HHKB Studio JIS only
 
-Tested on one PC, over USB only (Bluetooth not yet), as of v1.5.0. The details are in `docs/windows/`.
+Tested on one PC, over USB and Bluetooth (no Bluetooth-specific setup needed). The details are in `docs/windows/`.
 
 **The compromise** (the owner's default; adjust for the end user as they prefer):
 
