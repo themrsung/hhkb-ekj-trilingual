@@ -25,16 +25,48 @@ As with the HYBRID Type-S, **set the DIP switches before writing the keymap** (`
 
 Karabiner's only Studio-specific config is the device entries for vendor `1278` / product `21`
 (`03-karabiner.md`): one `is_keyboard` entry for USB, and one combined entry for Bluetooth (below).
+Hammerspoon and the macOS settings don't care how the Studio is connected.
 Over USB, leave the Studio's pointing-device and consumer entries alone. The gesture pads and
 pointing stick keep working through Karabiner without any rules.
+
+## Bluetooth pairing
+
+From PFU's [HHKB Studio manual](https://happyhackingkb.com/manual/studio/ug-us/en/ug/topic/connect_bluetooth.html).
+**The key order matters:**
+
+1. Power switch on (slides right, turns green). Unplug the USB cable.
+2. **Fn+Q** → pairing standby: the LEDs sweep side to side.
+3. **Fn+Ctrl+n** (n = slot 1–4) → the n-th LED blinks quickly in blue. This starts pairing on
+   slot n and overwrites whatever was paired there before.
+4. On the Mac: System Settings → Bluetooth → Nearby Devices → **HHKB-Studio\<n\>** → Connect.
+   Type the number macOS shows on the Studio, then press Enter.
+5. **Fn+X** leaves pairing standby or pairing mode. **Fn+Ctrl+n** on its own (no Fn+Q before
+   it) just switches to the device already paired on slot n.
+
+The device name carries the slot number: slot 2 shows up as `HHKB-Studio2` (checked).
+If you press **Fn+Ctrl+n first and then Fn+Q**, the Studio ends up pairing on a different slot
+than the one you meant. On the owner's board it advertised `HHKB-Studio1` instead of
+`HHKB-Studio2`, and connecting from the Mac failed: macOS sent the connection request, the Studio
+never answered, and Settings gave up after about 30 s. Doing the steps in the order above fixed it.
+
+> **Stay on keymap Profile1.** The manual says to press **Fn+C, then 2** (keymap **Profile2**)
+> after pairing with a Mac. That's a keymap profile, not the Bluetooth slot. The owner's keymap
+> (this file) is written to **Profile1**, so switching to Profile2 would replace it. Skip that step.
+
+**Keyboard Setup Assistant (finding):** after pairing the Studio over Bluetooth this way, macOS
+ran the Keyboard Setup Assistant. It registered the keys next to the Shift keys correctly and
+identified the board as JIS. No separate Bluetooth entry appeared in
+`/Library/Preferences/com.apple.keyboardtype`: the Studio keeps using `"21-1278-0" = 42`, the
+same as over USB. If the assistant misreads those keys, or doesn't appear, set JIS by hand
+(`02-macos.md`).
 
 ## Bluetooth: one combined device
 
 Over USB, Karabiner lists the Studio three times (keyboard, pointing device, consumer). Over
-**Bluetooth** it lists it **once**, as `HHKB-Studio1`, with both flags set:
+**Bluetooth** it lists it **once**, as `HHKB-Studio<n>` (n = pairing slot), with both flags set:
 
 ```
-HHKB-Studio1 {'is_keyboard': True, 'is_pointing_device': True, 'product_id': 21, 'vendor_id': 1278}
+HHKB-Studio2 {'is_keyboard': True, 'is_pointing_device': True, 'product_id': 21, 'vendor_id': 1278}
 transport: Bluetooth Low Energy
 ```
 
@@ -42,15 +74,17 @@ transport: Bluetooth Low Energy
   match this device, and Karabiner treats it as a pointing device it only *observes*. Nothing is
   remapped: 半/全 types `` ` `` instead of switching to Korean, and Fn1+P isn't Play/Pause. The
   global rules (ろ, Print Screen) don't apply either, because they only run on grabbed devices.
-  `/var/log/karabiner/core_service.log` shows `HHKB-Studio1 … monitor is started (grabbed)` once
+  `/var/log/karabiner/core_service.log` shows `HHKB-Studio<n> … monitor is started (grabbed)` once
   the combined entry is in place.
 - Fix: the second Studio entry in `03-karabiner.md`
   (`is_keyboard` + `is_pointing_device`, vendor `1278`, product `21`).
 - Side effect: Karabiner can't grab only the keyboard half of a combined device, so it also grabs
   the pointing stick and gesture pads. Checked on the owner's board: the stick, vertical and
   horizontal scroll, and the arrow pads all keep working through Karabiner.
-- The `1` in the name is most likely the Bluetooth pairing slot. Other slots may show as
-  `HHKB-Studio2`, and so on (not checked). The entries match on vendor/product ID, not the name.
+- The number in the name is the Bluetooth pairing slot (`HHKB-Studio1` … `HHKB-Studio4`). The
+  entries match on vendor/product ID, not the name, so one combined entry covers every slot.
+  Checked on slot 2: 半/全 → Korean, 英数 → ABC, かな → Kana, Fn1+P → Play/Pause, and the stick and
+  scroll pads all work.
 
 ## Using the gesture pads
 

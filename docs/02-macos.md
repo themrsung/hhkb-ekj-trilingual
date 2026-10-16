@@ -5,7 +5,9 @@ Checked on macOS 27.0.1. Earlier releases with "System Settings" (macOS 13+) use
 ## 1. Keyboard type = JIS
 
 When each HHKB is first connected, macOS runs the **Keyboard Setup Assistant**. Pick **JIS
-(Japanese)**. macOS stores the type per keyboard, so do this for each model you use. If it didn't appear, or the wrong type was picked:
+(Japanese)**. macOS stores the type per keyboard, so do this for each model you use. The
+Studio over Bluetooth shares its entry with the Studio over USB (`07-hhkb-studio.md`). If the
+assistant didn't appear, or the wrong type was picked:
 System Settings → Keyboard → **Change Keyboard Type…** → follow the prompts → JIS.
 
 Check:

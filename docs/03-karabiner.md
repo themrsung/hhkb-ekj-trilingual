@@ -49,7 +49,7 @@ Notes:
   `21` (Studio), both vendor `1278`, `is_keyboard: true`. The two entries are identical except
   for the product ID. The Studio's pointing-device and consumer entries need nothing over USB.
 - **Studio over Bluetooth needs a second entry.** Over Bluetooth the Studio shows up as one combined
-  device (`HHKB-Studio1`) with `is_keyboard: true` **and** `is_pointing_device: true`. Karabiner
+  device (`HHKB-Studio<n>`, n = pairing slot) with `is_keyboard: true` **and** `is_pointing_device: true`. Karabiner
   matches identifiers exactly, so the keyboard-only entry never matches it, and Karabiner only
   observes the device (no remaps; 半/全 types `` ` `` instead of switching to Korean). Add a second
   Studio entry with both flags set. Both are in the JSON below. The side effect: Karabiner now grabs
