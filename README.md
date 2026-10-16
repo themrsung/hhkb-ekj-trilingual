@@ -24,7 +24,8 @@ Bottom row, the same on both models (remapped with PFU's keymap tool where neede
 Fn | HHKB | Option | Command | 英数 | Space | かな | Command | Option | Fn | ← | ↓ | →
 ```
 
-Control sits left of A.
+On the Studio, the HHKB-key role is the **半/全** key. Control sits left of A. The full Studio
+keymap and pointing-stick / gesture-pad settings are in [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md).
 
 Built with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) and
 [Hammerspoon](https://www.hammerspoon.org/).
@@ -91,7 +92,7 @@ backups are.
 ```
 
 To set it up by hand instead, follow [`AGENTS.md`](AGENTS.md), then `docs/01` → `docs/06` in
-order. There are no config files to install. The exact Karabiner JSON and Hammerspoon Lua are in
+order (plus `docs/07` for a Studio). There are no config files to install. The exact Karabiner JSON and Hammerspoon Lua are in
 the docs.
 
 ## Maintenance

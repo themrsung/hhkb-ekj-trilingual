@@ -59,7 +59,7 @@ Studio did), there's nothing to write.
 | # | Legend / role | Must emit (Karabiner key code) | macOS meaning |
 | --- | --- | --- | --- |
 | 1 | Fn | (HHKB internal Fn layer) | — |
-| 2 | **HHKB** (logo key) | `grave_accent_and_tilde` | Karabiner turns it into `f18` → Korean 2-Set |
+| 2 | **HHKB** (logo key; **半/全** on the Studio) | `grave_accent_and_tilde` | Karabiner turns it into `f18` → Korean 2-Set |
 | 3 | Option | `left_option` | ⌥ |
 | 4 | Command | `left_command` | ⌘ |
 | 5 | **英数 (Romaji)** | `japanese_eisuu` | → English ABC |
@@ -70,8 +70,10 @@ Studio did), there's nothing to write.
 | 10 | Fn | (HHKB internal Fn layer) | — |
 | 11–13 | ← ↓ → | `left_arrow`, `down_arrow`, `right_arrow` | |
 
-On the Studio, the pointing-stick buttons and gesture pads aren't part of this setup. Leave them
-as they are.
+On the Studio, Fn is labeled **Fn1**, and the pointing-stick buttons and gesture pads aren't
+part of the trilingual setup. The owner's full Studio keymap (all layers, with screenshots of the
+keymap tool), pointing-stick and gesture-pad settings are in
+[`07-hhkb-studio.md`](07-hhkb-studio.md).
 
 Other fixed points of the layout:
 

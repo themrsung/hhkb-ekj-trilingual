@@ -12,6 +12,7 @@ The detailed steps are in `docs/`:
 | [`docs/04-hammerspoon.md`](docs/04-hammerspoon.md) | Hammerspoon install and the Korean 2-Set switcher (Lua) |
 | [`docs/05-customization.md`](docs/05-customization.md) | How to point the HHKB / 英数 / かな keys at other input sources (QWERTZ, AZERTY, …) |
 | [`docs/06-verification.md`](docs/06-verification.md) | Acceptance checklist and troubleshooting |
+| [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
 
 This repo has **no config files on purpose**. All configuration lives as code blocks inside these
 Markdown files. Write those blocks into the user's real config locations (`~/.config/karabiner/karabiner.json`,
@@ -49,7 +50,8 @@ values described in `docs/05-customization.md` directly in their config.
   Fn | HHKB | Option | Command | 英数 (Romaji) | Space | かな (Kana) | Command | Option | Fn | ← | ↓ | →
   ```
 
-  - `HHKB` is the logo key. It sends `grave_accent_and_tilde`, which Karabiner turns into `F18`.
+  - `HHKB` is the logo key (the **半/全** key on the Studio). It sends `grave_accent_and_tilde`,
+    which Karabiner turns into `F18`.
   - `英数` / "Romaji" sends `japanese_eisuu`. `かな` / "Kana" sends `japanese_kana`.
 
 > **Order matters: set the DIP switches BEFORE writing any keymap with the keymap tool.**
@@ -99,7 +101,8 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 ## 4. Order of operations on a fresh Mac
 
 1. **Hardware:** set DIP switches (HYBRID Type-S: 1 and 5 ON; Studio: 4 ON; rest OFF) → *then*
-   apply the bottom-row keymap with the keymap tool, if needed (`docs/01-hardware.md`).
+   apply the bottom-row keymap with the keymap tool, if needed (`docs/01-hardware.md`; Studio:
+   `docs/07-hhkb-studio.md`).
 2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese
    (Kana typing) input sources and remove Japanese's Romaji mode. Set "Move focus to next
    window" to Option+Tab (`docs/02-macos.md`).
