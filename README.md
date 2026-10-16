@@ -5,6 +5,14 @@
 > this README. If you don't want AI-written code on your machine, **skip the interactive setup**
 > and read the files yourself before applying anything.
 
+> [!NOTE]
+> **Using a US (ANSI) HHKB?** Use [`themrsung/hhkb-us-bilingual`](https://github.com/themrsung/hhkb-us-bilingual)
+> instead. This repo is for the **JIS** layout only.
+>
+> A US board has no spare keys next to the space bar like JIS's 英数 and かな, so it's physically
+> very hard to give every language its own one-way button there. A toggle key is the realistic
+> compromise on US.
+
 English / Korean / Japanese on a **JIS HHKB Professional HYBRID Type-S** and/or a **JIS HHKB
 Studio** under **macOS**, with one key per language:
 
@@ -38,7 +46,9 @@ Built with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) and
 - **JIS only.** Built and tested on the HHKB Professional HYBRID Type-S **JIS** and the HHKB
   Studio **JIS**. **US ANSI
   support is not built in.** The ろ, ¥, 英数 and かな keys this setup depends on don't exist on
-  ANSI boards.
+  ANSI boards. For a US HHKB, use
+  [`themrsung/hhkb-us-bilingual`](https://github.com/themrsung/hhkb-us-bilingual), which uses a
+  toggle instead of one key per language.
 - The defaults are the author's own preferences. To send the HHKB key to a different input
   source (QWERTZ, AZERTY, …), see [`docs/05-customization.md`](docs/05-customization.md).
 
