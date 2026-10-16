@@ -42,6 +42,44 @@ keyboards, so every other keyboard on the PC (laptop, other USB boards) is read 
 Check after the restart: `LayerDriver JPN = kbd106.dll`, `OverrideKeyboardType = 7`,
 `OverrideKeyboardSubtype = 2`.
 
+**JIS applies only while Japanese is the active language.** Measured 2026-10-17 after forcing
+106/109 and restarting. The hardware layout is chosen **per language**, through one
+`LayerDriver <LANG>` value each under `HKLM\SYSTEM\CurrentControlSet\Services\i8042prt\Parameters`:
+
+| Value | Set to | Effect |
+| --- | --- | --- |
+| `LayerDriver JPN` | `kbd106.dll` | Japanese (F19 English, F20 kana) types the JIS keycap symbols |
+| `LayerDriver KOR` | `kbd101a.dll` (Windows' default for Korean) | Korean (F18) types **US ANSI symbols** (for example, Shift+2 gives `@` instead of the keycap's `"`) |
+
+The good part: Profile 4's English is "Japanese with the IME off", so English typing gets JIS
+symbols. The bad part: while Korean is active, the HHKB's symbol keys don't match their keycaps.
+The opposite applies to a US built-in keyboard: right in Korean, wrong in Japanese and English.
+Hangul itself is unaffected, because the letter keys sit in the same places on both layouts.
+
+Options for Korean, none tested yet:
+
+1. **Leave it as is.** Type Hangul in Korean and switch to F19 for symbols. No changes, no risk.
+2. **Point Korean at the JIS layout too:** set `LayerDriver KOR` to `kbd106.dll` (admin, restart;
+   back up the value first). Korean would then use JIS symbols as well, so the HHKB is consistent
+   everywhere. Costs: the built-in US keyboard becomes JIS in every language. The Korean IME on a
+   JIS layout isn't a configuration Microsoft documents, so check 한/영, 한자 and Hangul input
+   after the change.
+3. **Per-keyboard remapping** with a driver that tells keyboards apart: AutoHotInterception, on the
+   Interception kernel driver. AutoHotkey would rewrite the HHKB's symbol keys only while Korean is
+   active, leaving the built-in keyboard alone. Costs: a third-party kernel driver, and it may
+   conflict with keyboard-security software (common on Korean PCs for online banking).
+
+Not possible: plain AutoHotkey can't tell which keyboard a key came from, so it can't remap only
+the HHKB. The HHKB keymap tool maps keys, not Shift+key pairs, so it can't fix the shifted
+symbols either.
+
+**Don't pick "Detect connected keyboard"** (offered next to the 106/109 and 101/102 choices). It
+does not detect the HHKB as JIS. Tested on 25H2 build 26200 (2026-10-17), HHKB Studio on USB,
+Profile 4: after choosing it and restarting, the HHKB typed **US ANSI** symbols. In the registry,
+choosing it **removes** `LayerDriver JPN` and all the `Override*` values, so Windows falls back to
+its default (101-key) layout. So it doesn't give you a US built-in keyboard alongside a JIS
+HHKB either: whatever it detects, the HHKB came out US. Choose **Japanese keyboard (106/109 key)** and restart.
+
 ## 4. Microsoft Japanese IME
 
 Settings → Time & language → Language & region → 日本語 → Language options → Microsoft IME →

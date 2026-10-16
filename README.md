@@ -124,8 +124,10 @@ backups are.
 ```
 
 To set it up by hand instead, follow [`AGENTS.md`](AGENTS.md), then `docs/01` → `docs/06` in
-order (plus `docs/07` for a Studio, and `docs/08` to migrate an older Studio setup to F18). There are no config files to install. The exact Karabiner JSON and Hammerspoon Lua are in
-the docs.
+order (plus `docs/07` for a Studio, and `docs/08` to migrate an older Studio setup to F18). The exact Karabiner JSON and Hammerspoon Lua are in the docs. The only
+config file is the HHKB Studio keymap export
+([`docs/windows/hhkb-studio-setting-all.hks`](docs/windows/hhkb-studio-setting-all.hks)), which you
+can load in the Studio's keymap tool instead of setting each key by hand.
 
 ## Maintenance
 

@@ -44,8 +44,19 @@ old IME.
 👤 needs the user's OK: `winget install --id AutoHotkey.AutoHotkey -e` (AutoHotkey **v2**).
 
 Then save the script below as `%USERPROFILE%\Documents\AutoHotkey\hhkb-ekj-trilingual.ahk` (back up
-any existing file first: `Copy-Item f "f.bak-$(Get-Date -f yyyyMMddHHmmss)"`), and start it at
-sign-in with a shortcut in `shell:startup` pointing to it.
+any existing file first: `Copy-Item f "f.bak-$(Get-Date -f yyyyMMddHHmmss)"`). Then start it at
+sign-in with a **Run key**:
+
+```powershell
+$ahk = '"C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe" "' + "$env:USERPROFILE\Documents\AutoHotkey\hhkb-ekj-trilingual.ahk" + '"'
+New-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'hhkb-ekj-trilingual' -Value $ahk -PropertyType String -Force
+```
+
+Don't use a shortcut in `shell:startup`. On the owner's PC (`01-hardware.md`, "Tested on") a
+shortcut there **never ran** after two restarts, and the Shell-Core event log had no startup-folder
+entries at all. Run-key entries were logged and did start, though slowly: Windows works through
+them one at a time, and the last one started about 3 minutes after boot. The cause wasn't found.
+Check after the next restart that the script is running (the green **H** tray icon).
 
 ## `hhkb-ekj-trilingual.ahk`
 
@@ -135,6 +146,55 @@ ImeCtl(hwnd, cmd, value := 0) {
 }
 ```
 
+## Measured: IME keys (2026-10-17)
+
+AutoHotkey **KeyHistory** (keyboard hook installed), HHKB over **USB**, on the PC in
+`01-hardware.md` ("Tested on"). The JIS hardware layout (`02-windows.md`, step 3) was set in the
+registry but **not active yet** (no restart since it was set), and the Korean layout file is
+`kbd101a.dll`. The HHKB was on Profile3 while it still had PFU's stock Windows (JIS) keycodes, before its 変換 key
+was changed to `LANG1` (`01-hardware.md`), not on Profile 4.
+
+| Key pressed | VK | SC | Meaning |
+| --- | --- | --- | --- |
+| Laptop's built-in **한/영** | `15` | `138` | `VK_HANGUL`. SC `138` is the extended `E0 38` code (the Right Alt position), so 한/영 rides on Right Alt's scan code |
+| HHKB **半/全** | `C0` | `029` | Plain `` ` `` (`VK_OEM_3`); no IME meaning in this layout |
+| HHKB **無変換** | `EB` | `07B` | No standard VK name; `NONCONVERT` (`1D`) would need the JIS layout |
+| HHKB **変換** | `FF` | `079` | **Unmapped** (`FF` = no virtual key) |
+| HHKB **かな** | `FF` | `070` | **Unmapped** |
+
+Takeaways:
+
+- **What the Korean IME acts on for 한/영 is `VK_HANGUL` (`0x15`).** To toggle it from a script,
+  `Send("{vk15sc138}")` should work (**not tested yet**). The script doesn't need this: F18 sets 한 directly and never toggles.
+- Without the JIS layout active, the HHKB's own IME keys are dead or wrong on Windows. That's why
+  Profile 4 replaces them with F17–F20.
+- `0x15` is also `VK_KANA`, the same number under another name. So in Japanese, the same key
+  would toggle Kana lock instead. Send it only while Korean is active, the same rule as
+  `VK_HANJA` / `VK_KANJI` below.
+
+### Native 한/영 without AutoHotkey: map a key to Mac かな (`LANG1`)
+
+Checked by the owner (2026-10-17): a key set to **Mac かな** in the HHKB Studio Keymap Tool toggles
+**한/영** in the Microsoft Korean IME.
+
+- Mac かな sends USB HID `LANG1` (usage `0x90`), which is also the code a Korean USB keyboard's
+  한/영 key sends. Windows turns it into `VK_HANGUL` (`0x15`), the same VK as the laptop's 한/영 key
+  above. Mac 英数 sends `LANG2` (`0x91`), the code a Korean keyboard's 한자 key sends.
+- The stock Windows JIS かな key sends a different code (`International2`, SC `070`), which the
+  Korean layout leaves unmapped. That's why it does nothing.
+- **It works only while Korean is the active language.** In Japanese, `0x15` is `VK_KANA` and goes
+  to the Japanese IME instead, so the key seems dead. Switch to Korean first (F18 or Win+Space).
+  This is why the key "stopped working" once Japanese was added.
+- Expected codes for Mac かな: `VK 15 / SC 0F2`, and `VK 19 / SC 0F1` for Mac 英数. **Not
+  measured yet.** Check them with KeyHistory.
+
+Profile 4 doesn't use this. F18 sets 한 directly and never toggles, and F17 sends 한자. The
+fallback profile without AutoHotkey, **Profile3** (`01-hardware.md`), replaces the stock 変換 key, right of
+Space, with `LANG1`.
+
+To repeat the test, run a two-line script (`InstallKeybdHook` then `KeyHistory`), press the keys,
+and press F5 in the window to refresh.
+
 ## What is documented, inferred, or still to be measured
 
 | Piece | Status |
@@ -144,7 +204,7 @@ ImeCtl(hwnd, cmd, value := 0) {
 | Clearing `IME_CMODE_ROMAN` gives kana typing in the current Microsoft Japanese IME | **Inferred.** The IME's "かな入力" setting (`02-windows.md`) is the primary control; the script only avoids turning Romaji on |
 | Korean 한 = conversion mode `HANGUL` (0x01) with the IME open | Inferred from imm.h. **Measure** |
 | `VK_HANJA` (0x19) opens 한자 conversion in the Korean IME | Documented VK; behavior **to check**. Only sent while Korean is active, because on Japanese the same VK is `VK_KANJI` (IME toggle) |
-| The Studio sends F17–F20 as VK `0x80`–`0x83` on every layer | **Measure** (`01-hardware.md`) |
+| The Studio sends F17–F20 from the bottom row | **Checked** on the owner's board with a separate key-test tool (`01-hardware.md`) |
 | Elevated (admin) windows | A non-elevated AutoHotkey can't post messages to them (UIPI), so the keys won't switch there. Known limitation |
 
 Compared with doing it without a remapper: PowerToys Keyboard Manager can remap F18 → a key or

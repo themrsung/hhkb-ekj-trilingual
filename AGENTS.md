@@ -15,11 +15,21 @@ The detailed steps are in `docs/`:
 | [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
 | [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
 
-This repo has **no config files on purpose**. All configuration lives as code blocks inside these
-Markdown files. Write those blocks into the user's real config locations (`~/.config/karabiner/karabiner.json`,
-`~/.hammerspoon/init.lua`, macOS preferences). Don't add a separate settings file, installer
-framework, or abstraction layer to this repo. If the user wants different behavior, edit the
-values described in `docs/05-customization.md` directly in their config.
+Software configuration lives as code blocks inside these Markdown files. Write those blocks into
+the user's real config locations (`~/.config/karabiner/karabiner.json`, `~/.hammerspoon/init.lua`,
+macOS preferences). Don't add a separate settings file, installer framework, or abstraction layer
+to this repo. If the user wants different behavior, edit the values described in
+`docs/05-customization.md` directly in their config.
+
+**One exception: the keyboard's own settings.** PFU's keymap tool can't be driven from code, so the
+owner's HHKB Studio export ships as an example file for faster deployment:
+[`docs/windows/hhkb-studio-setting-all.hks`](docs/windows/hhkb-studio-setting-all.hks). It holds
+the **defaults** (DIP switches, pointing stick, gesture pads, and the keymap for every profile,
+including Profile1 for macOS, Profile 4 for Windows with AutoHotkey, and Profile3 as the
+Windows fallback without AutoHotkey). The user loads it in the HHKB Studio Keymap
+Tool and writes it to the keyboard; importing replaces all profiles, so ask first if they keep
+their own keymap on another profile. Keep it in sync with the keymap screenshots and tables in the
+docs. Don't add other config files.
 
 **Scope:**
 - **macOS only.** On another OS, tell the user this setup isn't officially supported there and
