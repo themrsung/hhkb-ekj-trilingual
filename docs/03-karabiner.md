@@ -15,7 +15,8 @@ Or download the `.dmg` from <https://karabiner-elements.pqrs.org/>. Then the **u
    **Karabiner-DriverKit-VirtualHIDDevice**.
 3. System Settings → Privacy & Security → **Input Monitoring** → allow `karabiner_grabber`
    and `karabiner_observer` (Karabiner-Core-Service on newer versions).
-4. Karabiner-Elements → **Devices**: make sure **HHKB-Hybrid** has "Modify events" **on**.
+4. Karabiner-Elements → **Devices**: make sure **HHKB-Hybrid** and/or **HHKB-Studio** (the
+   keyboard entry) have "Modify events" **on**.
 5. Karabiner-Elements → **Virtual Keyboard**: keyboard type **JIS** (ISO/ANSI are wrong for
    this setup). This is `"virtual_hid_keyboard": {"keyboard_type_v2": "jis"}` below.
 
@@ -23,8 +24,8 @@ Or download the `.dmg` from <https://karabiner-elements.pqrs.org/>. Then the **u
 
 | # | Scope | From | To | Purpose |
 | --- | --- | --- | --- | --- |
-| A | HHKB only (simple modification) | `grave_accent_and_tilde` (HHKB key) | `f18` | Hammerspoon catches F18 and selects Korean 2-Set |
-| B | HHKB only (simple modification) | `pause` (Fn+P) | consumer `play_or_pause` | Media play/pause |
+| A | Each HHKB (simple modification) | `grave_accent_and_tilde` (HHKB key) | `f18` | Hammerspoon catches F18 and selects Korean 2-Set |
+| B | Each HHKB (simple modification) | `pause` (Fn+P) | consumer `play_or_pause` | Media play/pause |
 | C | Global (complex rule) | `international1` (ろ), Caps Lock optional | `international3` (¥) + `left_option` | Types `\` unshifted; Shift+ろ isn't matched and types `_` as usual. **Only when the input source language isn't `ja`** |
 | D | Global (complex rule) | `print_screen` (Fn+I on HHKB), any modifiers | `4` + `left_command` + `left_shift` | Screenshot selection |
 | E | Profile | — | `virtual_hid_keyboard.keyboard_type_v2 = "jis"` | Karabiner's virtual keyboard must report JIS, or ¥/ろ/英数/かな come out wrong |
@@ -44,6 +45,9 @@ Notes:
   asks.
 - The HHKB key (`grave_accent_and_tilde`) is remapped with a **device-scoped simple
   modification**. Other keyboards keep their `` ` `` key.
+- **A** and **B** go in one device entry per HHKB model: product ID `34` (HYBRID Type-S) and
+  `21` (Studio), both vendor `1278`, `is_keyboard: true`. The two entries are identical except
+  for the product ID. The Studio's pointing-device and consumer entries need nothing.
 
 ## Fresh install: full `~/.config/karabiner/karabiner.json`
 
@@ -91,6 +95,14 @@ Use this only if the file doesn't exist yet or holds only the default empty prof
             { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
             { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] }
           ]
+        },
+        {
+          "identifiers": { "is_keyboard": true, "vendor_id": 1278, "product_id": 21 },
+          "ignore": false,
+          "simple_modifications": [
+            { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
+            { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] }
+          ]
         }
       ]
     }
@@ -111,11 +123,14 @@ cp "$KJ" "$KJ.bak-$(date +%Y%m%d%H%M%S)"
 ```
 
 Then apply this to the **selected** profile with `jq`. It's idempotent: it replaces rules and
-the HHKB device entry by their description and identifiers, and never adds duplicates:
+the HHKB device entries by their description and identifiers, and never adds duplicates.
+`hhkb_pids` lists the product IDs to configure: `34` HYBRID Type-S, `21` Studio. Keep the
+models the user has.
 
 ```sh
 KJ=~/.config/karabiner/karabiner.json
 jq '
+  def hhkb_pids: [34, 21];
   def hhkb_rules: [
     { "description": "Print Screen to Cmd+Shift+4",
       "manipulators": [ { "type": "basic",
@@ -127,8 +142,8 @@ jq '
         "to": [ { "key_code": "international3", "modifiers": ["left_option"] } ],
         "conditions": [ { "type": "input_source_unless", "input_sources": [ { "language": "^ja$" } ] } ] } ] }
   ];
-  def hhkb_device: {
-    "identifiers": { "is_keyboard": true, "vendor_id": 1278, "product_id": 34 },
+  def hhkb_device($pid): {
+    "identifiers": { "is_keyboard": true, "vendor_id": 1278, "product_id": $pid },
     "ignore": false,
     "simple_modifications": [
       { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
@@ -142,15 +157,16 @@ jq '
           + hhkb_rules)
       | .devices = (
           [ (.devices // [])[]
-            | select((.identifiers.vendor_id == 1278 and .identifiers.product_id == 34
+            | select((.identifiers.vendor_id == 1278
+                      and (.identifiers.product_id as $p | hhkb_pids | index($p))
                       and (.identifiers.is_keyboard // false)) | not) ]
-          + [hhkb_device])
+          + [hhkb_pids[] | hhkb_device(.)])
     else . end)
 ' "$KJ" > "$KJ.tmp" && mv "$KJ.tmp" "$KJ"
 ```
 
 If an existing HHKB device entry has *other* simple modifications or settings the user added,
-put them back into `hhkb_device` before running this. The script replaces that entry.
+put them back into `hhkb_device` before running this. The script replaces those entries.
 
 ## Check
 
@@ -160,7 +176,7 @@ jq '.profiles[] | select(.selected) | {vk: .virtual_hid_keyboard,
      hhkb: [.devices[] | select(.identifiers.vendor_id==1278)]}' ~/.config/karabiner/karabiner.json
 ```
 
-Then in Karabiner-EventViewer: the HHKB key → `f18`, Fn+P → `play_or_pause`, Fn+I →
+Then in Karabiner-EventViewer, on each HHKB: the HHKB key → `f18`, Fn+P → `play_or_pause`, Fn+I →
 `left_command`+`left_shift`+`4`, ろ (in ABC or Korean) → `left_option`+`international3`.
 
 ## Troubleshooting: 英数 doesn't reach ABC from Korean

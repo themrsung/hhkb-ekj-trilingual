@@ -1,14 +1,14 @@
 # 06 — Verification checklist and troubleshooting
 
 Don't call the setup done until every row passes. Rows marked 👤 need the user to press keys and
-tell you the result. Ask them, and don't assume.
+tell you the result. Ask them, and don't assume. With both models, run rows 3–14 on **each** HHKB.
 
 ## Acceptance checklist
 
 | # | Action | Expected |
 | --- | --- | --- |
-| 1 | `karabiner_cli --list-connected-devices` | `HHKB-Hybrid` with vendor 1278 / product 34 |
-| 2 | `defaults read /Library/Preferences/com.apple.keyboardtype` | HHKB (`34-1278-…`) = 42; Karabiner virtual keyboard (`593-1452-0`) = 42 |
+| 1 | `karabiner_cli --list-connected-devices` | `HHKB-Hybrid` with vendor 1278 / product 34 and/or `HHKB-Studio` (keyboard) with vendor 1278 / product 21 |
+| 2 | `defaults read /Library/Preferences/com.apple.keyboardtype` | each HHKB (`34-1278-…`, `21-1278-0`) = 42; Karabiner virtual keyboard (`593-1452-0`) = 42 |
 | 3 | 👤 Press the key left of A + C in Terminal | Interrupts (Control) |
 | 4 | 👤 EventViewer: bottom row left → right | `fn`, `f18`, `left_option`, `left_command`, `japanese_eisuu`, `spacebar`, `japanese_kana`, `right_command`, `right_option`, `fn`, arrows |
 | 5 | 👤 From ABC, press HHKB key | Korean 2-Set, overlay shown **once** |
@@ -28,8 +28,8 @@ tell you the result. Ask them, and don't assume.
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| Bottom row keys are wrong after flipping a DIP switch | DIP change overwrote the keymap | Set DIP switches first (1 & 5 ON), then apply the keymap again with the HHKB Keymap Tool |
-| HHKB key types `` ` `` / `^` / nothing in EventViewer | Karabiner not modifying the HHKB, or device IDs differ | Karabiner → Devices → enable HHKB-Hybrid; check IDs in `karabiner.json` |
+| Bottom row keys are wrong after flipping a DIP switch | DIP change overwrote the keymap | Set DIP switches first (HYBRID Type-S: 1 & 5 ON; Studio: 4 ON), then apply the keymap again with the keymap tool |
+| HHKB key types `` ` `` / `^` / nothing in EventViewer | Karabiner not modifying the HHKB, or device IDs differ | Karabiner → Devices → enable HHKB-Hybrid / HHKB-Studio; check that `karabiner.json` has a device entry for that model's IDs (34 / 21) |
 | EventViewer shows `f18` but the source doesn't change | Hammerspoon not running or config not loaded | Start Hammerspoon, Reload Config, check the console for errors; Launch at login on |
 | Menu bar says Korean but the field still types English/Kana (rare, ~1%) | Known macOS bug: a background `TISSelectInputSource` didn't reach the focused field. The retry guard can't detect it | Press the HHKB key again, or click out of the field and back. See "Known issue" in `04-hammerspoon.md`. Don't add a focus-bounce or unconditional retry |
 | Korean overlay appears twice | Retry is missing its check | Restore the `if hs.keycodes.currentSourceID() ~= KOREAN` guard (`04-hammerspoon.md`) |
@@ -39,4 +39,5 @@ tell you the result. Ask them, and don't assume.
 | ろ types `_` in ABC | Rule missing, or virtual keyboard not JIS | Check rule C and `keyboard_type_v2: "jis"` |
 | ろ types `\` in Japanese | Rule's `input_source_unless ^ja$` condition missing | Restore the condition |
 | `¥` / `\` / `_` come out swapped or wrong everywhere | macOS keyboard type for the HHKB isn't JIS | System Settings → Keyboard → Change Keyboard Type… → JIS |
+| HHKB key works on one HHKB but not the other | Only one model has a device entry | Add the missing product ID to `hhkb_pids` and rerun the merge (`03-karabiner.md`) |
 | Option+Tab does nothing | Shortcut not applied yet | Set it in the GUI once, or log out/in after the `defaults write` |

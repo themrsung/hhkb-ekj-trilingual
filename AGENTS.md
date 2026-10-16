@@ -6,7 +6,7 @@ The detailed steps are in `docs/`:
 
 | File | Covers |
 | --- | --- |
-| [`docs/01-hardware.md`](docs/01-hardware.md) | HHKB model, DIP switches, firmware keymap (bottom row) |
+| [`docs/01-hardware.md`](docs/01-hardware.md) | HHKB models (HYBRID Type-S, Studio), DIP switches, firmware keymap (bottom row) |
 | [`docs/02-macos.md`](docs/02-macos.md) | macOS keyboard type, input sources, Japanese Kana typing, Option+Tab window cycling |
 | [`docs/03-karabiner.md`](docs/03-karabiner.md) | Karabiner-Elements install, permissions, the exact rules (JSON) |
 | [`docs/04-hammerspoon.md`](docs/04-hammerspoon.md) | Hammerspoon install and the Korean 2-Set switcher (Lua) |
@@ -32,11 +32,18 @@ values described in `docs/05-customization.md` directly in their config.
 
 ## 1. The physical setup
 
-- **Keyboard:** PFU **HHKB Professional HYBRID Type-S, JIS layout** (日本語配列). USB vendor ID
-  `1278` (0x04FE, PFU Limited), product ID `34` (0x0022). Karabiner shows it as `HHKB-Hybrid`.
-- **Mode:** Mac mode. On the HYBRID Type-S JIS this means **DIP switches 1 and 5 ON, all others OFF**.
+- **Keyboards:** two PFU JIS models (日本語配列) are supported. They can be used side by side, and
+  both get the same behavior. USB vendor ID `1278` (0x04FE, PFU Limited) for both.
+
+  | Model | Product ID | Karabiner name | DIP switches |
+  | --- | --- | --- | --- |
+  | **HHKB Professional HYBRID Type-S** JIS | `34` (0x0022) | `HHKB-Hybrid` | Mac mode: **1 and 5 ON**, rest OFF |
+  | **HHKB Studio** JIS | `21` (0x0015) | `HHKB-Studio` | **4 ON** (reverse scroll direction), rest OFF |
+
+  Configure only the models the user has.
 - **Key left of A:** **Control** (HHKB default; there is no Caps Lock key. Caps Lock is Fn+Tab).
-- **Bottom row, left to right** (as remapped with the HHKB Keymap Tool):
+- **Bottom row, left to right** (same on both models; remap with PFU's keymap tool if it doesn't
+  already emit these codes):
 
   ```
   Fn | HHKB | Option | Command | 英数 (Romaji) | Space | かな (Kana) | Command | Option | Fn | ← | ↓ | →
@@ -45,9 +52,9 @@ values described in `docs/05-customization.md` directly in their config.
   - `HHKB` is the logo key. It sends `grave_accent_and_tilde`, which Karabiner turns into `F18`.
   - `英数` / "Romaji" sends `japanese_eisuu`. `かな` / "Kana" sends `japanese_kana`.
 
-> **Order matters: set the DIP switches BEFORE writing any keymap with the HHKB Keymap Tool.**
-> Changing DIP switches afterwards overwrites the stored keymap, and you have to do the bottom-row
-> remap again.
+> **Order matters: set the DIP switches BEFORE writing any keymap with the keymap tool.**
+> On the HYBRID Type-S, changing DIP switches afterwards overwrites the stored keymap, and you have
+> to do the bottom-row remap again. Use the same order on the Studio (not tested there).
 
 ## 2. Default behavior (the owner's settings; use these unless the user asks otherwise)
 
@@ -57,7 +64,7 @@ values described in `docs/05-customization.md` directly in their config.
 | **英数 (Romaji)** | Always switches to **English ABC (QWERTY)** | macOS native 英数 handling (Japanese IME has no Romaji/英字 mode enabled) |
 | **かな (Kana)** | Always switches to **Japanese with Kana typing** (not Romaji input) | macOS native かな handling + Japanese IME set to Kana typing |
 | **ろ** key (`international1`, right of `/`) | `\` unshifted, `_` shifted, in every **non-Japanese** input source. Unchanged (ろ) in Japanese | Karabiner complex rule (sends Option+¥) |
-| **Fn+P** (HHKB sends `pause`) | Media **Play/Pause** | Karabiner simple modification on the HHKB |
+| **Fn+P** (HHKB sends `pause`) | Media **Play/Pause** | Karabiner simple modification on each HHKB |
 | **Fn+I** (HHKB sends `print_screen`) | Cmd+Shift+4 (screenshot selection) | Karabiner complex rule (global, any keyboard) |
 | **Option+Tab** | Move focus to the next window of the same app (macOS default is Cmd+`) | macOS keyboard shortcut (System Settings) |
 
@@ -91,9 +98,9 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 
 ## 4. Order of operations on a fresh Mac
 
-1. **Hardware:** set DIP switches (1 and 5 ON, rest OFF) → *then* apply the bottom-row keymap
-   with the HHKB Keymap Tool (`docs/01-hardware.md`).
-2. **macOS:** set the HHKB keyboard type to JIS. Enable the ABC, Korean 2-Set, and Japanese
+1. **Hardware:** set DIP switches (HYBRID Type-S: 1 and 5 ON; Studio: 4 ON; rest OFF) → *then*
+   apply the bottom-row keymap with the keymap tool, if needed (`docs/01-hardware.md`).
+2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese
    (Kana typing) input sources and remove Japanese's Romaji mode. Set "Move focus to next
    window" to Option+Tab (`docs/02-macos.md`).
 3. **Karabiner-Elements:** install, approve the driver and permissions, then merge the rules
@@ -107,11 +114,11 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 - **Merge, don't clobber.** The user may already have a `karabiner.json` and an `init.lua` with
   unrelated rules (other devices, games, etc.). Back them up
   (`cp file file.bak-$(date +%Y%m%d%H%M%S)`) and merge only the HHKB pieces.
-- **Scope rules to the HHKB by device identifier** (`vendor_id 1278`, `product_id 34`) where the
-  doc does. Some rules (ろ, Print Screen) are global on purpose.
+- **Scope rules to each HHKB by device identifier** (`vendor_id 1278`; `product_id 34` for the
+  HYBRID Type-S, `21` for the Studio) where the doc does. Some rules (ろ, Print Screen) are global on purpose.
 - **Don't change the defaults** in section 2 unless the user asks. These are the owner's settings
   and they take priority. Users can still change them.
-- Things that need human hands: DIP switches, the HHKB Keymap Tool, approving system extensions,
+- Things that need human hands: DIP switches, the keymap tool, approving system extensions,
   and granting Privacy & Security permissions. Tell the user exactly what to click, and ask them
   to confirm before you continue.
 - Check with **Karabiner-EventViewer** (key codes) and the input menu or

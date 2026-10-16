@@ -38,7 +38,7 @@ For a plain keyboard layout (QWERTZ, AZERTY) the retry rarely fires, and it cost
 By default these use native macOS behavior (英数 → ABC, かな → Japanese Kana). To send either key
 somewhere else, use the same pattern as the HHKB key:
 
-1. Karabiner: add to the HHKB device's `simple_modifications`, for example
+1. Karabiner: add to each HHKB device entry's `simple_modifications`, for example
    `japanese_eisuu → f19` or `japanese_kana → f20`.
 2. Hammerspoon: `hs.hotkey.bind({}, "f19", function() … end)` with the same select/check/retry
    body and a different ID.
@@ -62,5 +62,5 @@ To keep `\` from ろ in Japanese too (making ろ impossible to type in Kana), re
 
 ## Things to keep regardless
 
-- DIP switches **before** the Keymap Tool (otherwise the keymap gets overwritten).
-- Karabiner virtual keyboard = JIS and macOS keyboard type for the HHKB = JIS.
+- DIP switches **before** the keymap tool (otherwise the keymap gets overwritten).
+- Karabiner virtual keyboard = JIS and macOS keyboard type for each HHKB = JIS.
