@@ -25,7 +25,11 @@ values described in `docs/05-customization.md` directly in their config.
   ask whether to continue. Don't refuse if they confirm. Adapt what you can and say what doesn't
   carry over.
 - **JIS HHKB only.** US ANSI support is not built in: the ろ, ¥, 英数 and かな keys don't exist on
-  ANSI boards. If the user has ANSI, warn them and ask before continuing.
+  ANSI boards. If the user has ANSI, point them to
+  [`themrsung/hhkb-us-bilingual`](https://github.com/themrsung/hhkb-us-bilingual) instead. Continue
+  with this repo only if they ask to, after warning them. If they aren't sure which layout they
+  have, help them check: JIS has arrow keys at the bottom right, an Enter key spanning two rows,
+  and a ¥ key directly left of Backspace. US ANSI has no arrow keys.
 - This repo is AI-generated and not serviced. Follow the docs at the ref the user gave you
   (normally a release tag), not `main`.
 

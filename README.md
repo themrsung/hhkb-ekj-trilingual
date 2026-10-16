@@ -59,29 +59,49 @@ Codex, etc.). It asks you a few questions, then does the rest on its own. It sto
 that need your hands: DIP switches, the keymap tool, macOS permission prompts, and key-press
 checks.
 
-The prompt is **pinned to the release tag `v1.3.1`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.3.2`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.3.1.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.3.2.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.3.1/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.3.1 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.3.2/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.3.2 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.3.1/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.3.2/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
+
+Before anything else, ask me this one question on its own, word for word, and wait for my answer:
+
+  Which layout is your HHKB, or whatever keyboard you are setting up?
+  - US ANSI (no arrow keys, the classic "HHKB" look)
+  - JIS (arrow keys on the bottom-right, big enter key spanning two rows, Yen (¥) key directly
+    left of Backspace (BS))
+  - Not sure, help me figure it out.
+
+Then, depending on my answer:
+  - If US ANSI: this repo is for JIS only. Point me to
+    https://github.com/themrsung/hhkb-us-bilingual instead and stop, unless I explicitly ask to
+    continue with this repo anyway (then warn me that the ろ, ¥, 英数 and かな keys it depends
+    on don't exist on ANSI).
+  - If JIS: continue below.
+  - If not sure: help me tell them apart using the features listed above. Ask me to look at the
+    board, or to send a photo if I can. You may also check which keyboard is connected (for
+    example with Karabiner's karabiner_cli --list-connected-devices, or System Information),
+    but the model name alone doesn't prove the layout, so confirm with me before going on. Then
+    follow the US ANSI or JIS branch.
 
 Before changing anything:
 1. Check the OS. This repo is designed for macOS only. If this isn't macOS, tell me the
    interactive setup isn't officially supported here and ask whether to continue anyway. Continue
    only if I confirm, adapting where you can and telling me what doesn't carry over.
 2. Ask me, in one batch, and show the default for each:
-   a. Which keyboard(s) I have. The repo is built for the HHKB Professional HYBRID Type-S and
-      the HHKB Studio, both JIS layout (one or both). Other JIS HHKBs may need different USB IDs. US ANSI is not built in. If I have
-      ANSI, warn me and ask whether to continue.
+   a. Which JIS keyboard model(s) I have. The repo is built for the HHKB Professional HYBRID
+      Type-S and the HHKB Studio, both JIS layout (one or both). Other JIS HHKBs may need
+      different USB IDs.
    b. Which input source the HHKB key should switch to (default: Korean 2-Set).
    c. Where 英数 and かな should go (default: English ABC / Japanese with Kana typing).
    d. The "Move focus to next window" shortcut (default: Option+Tab).
