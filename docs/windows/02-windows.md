@@ -56,9 +56,10 @@ symbols. The bad part: while Korean is active, the HHKB's symbol keys don't matc
 The opposite applies to a US built-in keyboard: right in Korean, wrong in Japanese and English.
 Hangul itself is unaffected, because the letter keys sit in the same places on both layouts.
 
-Options for Korean, none tested yet:
+Options for Korean (option 1 is the repo default; options 2 and 3 are untested):
 
-1. **Leave it as is.** Type Hangul in Korean and switch to F19 for symbols. No changes, no risk.
+1. **Leave it as is (default).** Type Hangul in Korean and switch to F19 for symbols. No changes,
+   no risk. This is the owner's compromise, explained in `03-autohotkey.md` ("The compromise").
 2. **Point Korean at the JIS layout too:** set `LayerDriver KOR` to `kbd106.dll` (admin, restart;
    back up the value first). Korean would then use JIS symbols as well, so the HHKB is consistent
    everywhere. Costs: the built-in US keyboard becomes JIS in every language. The Korean IME on a

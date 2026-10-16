@@ -17,6 +17,23 @@ English is "Japanese IME with the IME off", not a separate English layout. That 
 symbol key matching the JIS legends (the Windows US layout would type US symbols on JIS keys) and
 keeps ろ native (`\` / `_`). The cost: the taskbar shows **JA** (or **A**) while you type English.
 
+### The compromise (owner's default)
+
+| Language | Key | Handled by | Symbol keys |
+| --- | --- | --- | --- |
+| Korean | F18 | Hand off to the **Microsoft Korean IME** (한 mode) | **US ANSI**: they don't match the JIS keycaps |
+| English | F19 | **Japanese with the IME off** | **JIS**: they match the keycaps |
+| Japanese | F20 | **Microsoft Japanese IME**, kana typing | **JIS** |
+
+Why: the Microsoft Korean IME always uses US ANSI symbol mappings. Windows picks the hardware
+layout per language, and Korean's is `kbd101a.dll` (`02-windows.md`, step 3). English and
+Japanese both run on the Japanese language, so they get the JIS layout and every symbol matches
+its keycap. The repo owner types English by default and uses Korean only when needed, mostly for
+Hangul, so the US symbols in Korean cost little. For symbols, switch to English with F19.
+
+**Results may vary with typing habits.** Someone who types many symbols in Korean may prefer one
+of the other options in `02-windows.md`, step 3. Adjust it for the end user as they prefer.
+
 ## Two levels of switching
 
 1. **Language** (Korean vs Japanese): `WM_INPUTLANGCHANGEREQUEST` posted to the focused window with
@@ -45,18 +62,34 @@ old IME.
 
 Then save the script below as `%USERPROFILE%\Documents\AutoHotkey\hhkb-ekj-trilingual.ahk` (back up
 any existing file first: `Copy-Item f "f.bak-$(Get-Date -f yyyyMMddHHmmss)"`). Then start it at
-sign-in with a **Run key**:
+sign-in with a **Task Scheduler logon task**. Creating it needs admin (one UAC prompt), but the
+task itself runs as the user, **not** elevated:
 
 ```powershell
-$ahk = '"C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe" "' + "$env:USERPROFILE\Documents\AutoHotkey\hhkb-ekj-trilingual.ahk" + '"'
-New-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'hhkb-ekj-trilingual' -Value $ahk -PropertyType String -Force
+# Run in an elevated PowerShell. $user must be the account that signs in (DOMAIN\name).
+$user   = "$env:USERDOMAIN\$env:USERNAME"
+$script = "$env:USERPROFILE\Documents\AutoHotkey\hhkb-ekj-trilingual.ahk"
+$a = New-ScheduledTaskAction -Execute 'C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe' -Argument "`"$script`""
+$t = New-ScheduledTaskTrigger -AtLogOn -User $user
+$p = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive -RunLevel Limited
+$s = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
+       -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew
+Register-ScheduledTask -TaskName 'hhkb-ekj-trilingual' -Action $a -Trigger $t -Principal $p -Settings $s -Force
 ```
 
-Don't use a shortcut in `shell:startup`. On the owner's PC (`01-hardware.md`, "Tested on") a
-shortcut there **never ran** after two restarts, and the Shell-Core event log had no startup-folder
-entries at all. Run-key entries were logged and did start, though slowly: Windows works through
-them one at a time, and the last one started about 3 minutes after boot. The cause wasn't found.
-Check after the next restart that the script is running (the green **H** tray icon).
+The settings matter. By default a task doesn't start on battery, and it's stopped after 3 days.
+`-RunLevel Limited` keeps AutoHotkey at the same level as normal apps. Start it right away with
+`Start-ScheduledTask hhkb-ekj-trilingual`. `LastTaskResult` `267009` (`0x41301`) means it's running.
+Remove it with `Unregister-ScheduledTask hhkb-ekj-trilingual`.
+
+**Don't use `shell:startup` or a Run key.** On the owner's PC (`01-hardware.md`, "Tested on"),
+neither ran AutoHotkey at sign-in, over three restarts. The Shell-Core event log
+(`Microsoft-Windows-Shell-Core/Operational`, events 9705–9708) showed Windows working through
+every other HKCU Run entry. It skipped this one without even logging an attempt, although the
+value was present and readable. It also logged no startup-folder entries at all. The cause wasn't
+found, and the logon task avoids both mechanisms. **Verified** on the owner's PC (2026-10-17):
+after a restart, the task started AutoHotkey and the F keys worked. On a new PC, check that the
+green **H** tray icon is there after a restart.
 
 ## `hhkb-ekj-trilingual.ahk`
 

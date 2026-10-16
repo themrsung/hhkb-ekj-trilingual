@@ -1,4 +1,4 @@
-# AGENTS.md — HHKB JIS trilingual (English / Korean / Japanese) setup for macOS
+# AGENTS.md — HHKB JIS trilingual (English / Korean / Japanese) setup for macOS (Windows 11 experimental)
 
 Read this file first. It is the entry point for any agent asked to rebuild this keyboard setup on a
 brand-new Mac. It covers the physical setup, the order of operations, and what "done" looks like.
@@ -14,6 +14,9 @@ The detailed steps are in `docs/`:
 | [`docs/06-verification.md`](docs/06-verification.md) | Acceptance checklist and troubleshooting |
 | [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
 | [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
+| [`docs/windows/01-hardware.md`](docs/windows/01-hardware.md) | **Windows (experimental):** HHKB Studio keymap Profile 4 (and the Profile3 fallback), the tested PC |
+| [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
+| [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
 
 Software configuration lives as code blocks inside these Markdown files. Write those blocks into
 the user's real config locations (`~/.config/karabiner/karabiner.json`, `~/.hammerspoon/init.lua`,
@@ -32,9 +35,11 @@ their own keymap on another profile. Keep it in sync with the keymap screenshots
 docs. Don't add other config files.
 
 **Scope:**
-- **macOS only.** On another OS, tell the user this setup isn't officially supported there and
-  ask whether to continue. Don't refuse if they confirm. Adapt what you can and say what doesn't
-  carry over.
+- **macOS first.** Sections 1–5 below are the macOS setup.
+- **Windows 11: experimental, HHKB Studio JIS only, with a compromise** (section 6). Explain the
+  compromise and ask before continuing. The HYBRID Type-S has no Windows setup.
+- **Any other OS:** tell the user this setup isn't supported there and ask whether to continue.
+  Don't refuse if they confirm. Adapt what you can and say what doesn't carry over.
 - **JIS HHKB only.** US ANSI support is not built in: the ろ, ¥, 英数 and かな keys don't exist on
   ANSI boards. If the user has ANSI, point them to
   [`themrsung/hhkb-us-bilingual`](https://github.com/themrsung/hhkb-us-bilingual) instead. Continue
@@ -153,3 +158,38 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
   *enabled* Karabiner rule targets the built-in keyboard, because ignoring it turns those off.
 - Check with **Karabiner-EventViewer** (key codes) and the input menu or
   `hs -c 'hs.keycodes.currentSourceID()'` (active source). Don't assume.
+
+## 6. Windows 11 (experimental): HHKB Studio JIS only
+
+Tested on one PC, over USB only (Bluetooth not yet), as of v1.5.0. The details are in `docs/windows/`.
+
+**The compromise** (the owner's default; adjust for the end user as they prefer):
+
+| Language | Key (Profile 4) | Handled by | Symbol keys |
+| --- | --- | --- | --- |
+| Korean | F18 | Hand off to the **Microsoft Korean IME** (한 mode) | **US ANSI**: the Korean IME enforces them |
+| English | F19 | **Japanese with the IME off** | JIS, matching the keycaps |
+| Japanese | F20 | **Microsoft Japanese IME**, kana typing | JIS |
+
+F17 sends 한자 in Korean. Windows picks the hardware layout **per language** (Korean `kbd101a.dll`,
+Japanese `kbd106.dll`), so Korean can't have JIS symbols without the trade-offs listed in
+`docs/windows/02-windows.md`, step 3. The owner types English by default and Korean only when
+needed, so this costs little. Results may vary with typing habits, so tell the user before you
+start.
+
+Order of operations:
+
+1. **Hardware:** DIP switches all OFF, then keymap **Profile 4**: load
+   `docs/windows/hhkb-studio-setting-all.hks` in the HHKB Studio Keymap Tool (it replaces all
+   profiles, so ask first), or set the keys by hand (`docs/windows/01-hardware.md`). Without
+   AutoHotkey, **Profile3** is the fallback: Win+Space plus native 한/영 via `LANG1`.
+2. **Windows:** Korean + Japanese, Japanese keyboard (106/109 key) as the hardware layout, not
+   "Detect connected keyboard", then restart. Turn **kana input** on in the Microsoft Japanese IME
+   (`docs/windows/02-windows.md`).
+3. **AutoHotkey v2:** install it, write the script, and start it with a **Task Scheduler logon
+   task**, not `shell:startup` or a Run key (`docs/windows/03-autohotkey.md`).
+4. **Verify:** after a restart, AutoHotkey is running and F18 / F19 / F20 / F17 / Fn1+P behave as
+   in the table above.
+
+Every install and every system-setting change needs the user's OK first. Measure; don't assume.
+Use AutoHotkey's KeyHistory for key codes, and read back registry values after each change.
