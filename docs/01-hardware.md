@@ -12,7 +12,7 @@ the DIP switches differ.
 | Manufacturer | PFU Limited | PFU Limited |
 | USB vendor ID | `1278` (0x04FE) | `1278` (0x04FE) |
 | USB product ID | `34` (0x0022) | `21` (0x0015) |
-| Karabiner device name | `HHKB-Hybrid` | `HHKB-Studio` (shows up 3 times: keyboard, pointing device, consumer) |
+| Karabiner device name | `HHKB-Hybrid` | USB: `HHKB-Studio` (shows up 3 times: keyboard, pointing device, consumer). Bluetooth: `HHKB-Studio1` (one combined keyboard + pointing device; see `07-hhkb-studio.md`) |
 | macOS keyboard type | JIS (`42` in `/Library/Preferences/com.apple.keyboardtype`) | JIS (`42`) |
 
 Confirm on the target machine:
@@ -23,7 +23,9 @@ Confirm on the target machine:
 # expect one or both of:
 #   HHKB-Hybrid {'is_keyboard': True, 'product_id': 34, 'vendor_id': 1278}
 #   HHKB-Studio {'is_keyboard': True, 'product_id': 21, 'vendor_id': 1278}
-#   (the Studio also lists is_pointing_device and is_consumer entries; only the is_keyboard one is configured)
+#   (over USB the Studio also lists is_pointing_device and is_consumer entries; only the is_keyboard one is configured)
+#   HHKB-Studio1 {'is_keyboard': True, 'is_pointing_device': True, 'product_id': 21, 'vendor_id': 1278}
+#   (Studio over Bluetooth: ONE combined entry, which needs its own device entry in 03-karabiner.md)
 ```
 
 If the IDs are different (another HHKB revision, for example), use the real IDs wherever

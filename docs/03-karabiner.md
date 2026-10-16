@@ -47,7 +47,14 @@ Notes:
   modification**. Other keyboards keep their `` ` `` key.
 - **A** and **B** go in one device entry per HHKB model: product ID `34` (HYBRID Type-S) and
   `21` (Studio), both vendor `1278`, `is_keyboard: true`. The two entries are identical except
-  for the product ID. The Studio's pointing-device and consumer entries need nothing.
+  for the product ID. The Studio's pointing-device and consumer entries need nothing over USB.
+- **Studio over Bluetooth needs a second entry.** Over Bluetooth the Studio shows up as one combined
+  device (`HHKB-Studio1`) with `is_keyboard: true` **and** `is_pointing_device: true`. Karabiner
+  matches identifiers exactly, so the keyboard-only entry never matches it, and Karabiner only
+  observes the device (no remaps; 半/全 types `` ` `` instead of switching to Korean). Add a second
+  Studio entry with both flags set. Both are in the JSON below. The side effect: Karabiner now grabs
+  the Studio's pointing stick and gesture pads too. They keep working (checked: stick, vertical
+  and horizontal scroll, arrow pads).
 
 ## Fresh install: full `~/.config/karabiner/karabiner.json`
 
@@ -103,6 +110,14 @@ Use this only if the file doesn't exist yet or holds only the default empty prof
             { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
             { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] }
           ]
+        },
+        {
+          "identifiers": { "is_keyboard": true, "is_pointing_device": true, "vendor_id": 1278, "product_id": 21 },
+          "ignore": false,
+          "simple_modifications": [
+            { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
+            { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] }
+          ]
         }
       ]
     }
@@ -125,7 +140,7 @@ cp "$KJ" "$KJ.bak-$(date +%Y%m%d%H%M%S)"
 Then apply this to the **selected** profile with `jq`. It's idempotent: it replaces rules and
 the HHKB device entries by their description and identifiers, and never adds duplicates.
 `hhkb_pids` lists the product IDs to configure: `34` HYBRID Type-S, `21` Studio. Keep the
-models the user has.
+models the user has. For `21` it also writes the combined Bluetooth entry for the Studio.
 
 ```sh
 KJ=~/.config/karabiner/karabiner.json
@@ -142,8 +157,8 @@ jq '
         "to": [ { "key_code": "international3", "modifiers": ["left_option"] } ],
         "conditions": [ { "type": "input_source_unless", "input_sources": [ { "language": "^ja$" } ] } ] } ] }
   ];
-  def hhkb_device($pid): {
-    "identifiers": { "is_keyboard": true, "vendor_id": 1278, "product_id": $pid },
+  def hhkb_device($ids): {
+    "identifiers": $ids,
     "ignore": false,
     "simple_modifications": [
       { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
@@ -160,7 +175,10 @@ jq '
             | select((.identifiers.vendor_id == 1278
                       and (.identifiers.product_id as $p | hhkb_pids | index($p))
                       and (.identifiers.is_keyboard // false)) | not) ]
-          + [hhkb_pids[] | hhkb_device(.)])
+          + [hhkb_pids[] as $p
+             | hhkb_device({ "is_keyboard": true, "vendor_id": 1278, "product_id": $p }),
+               (if $p == 21 then hhkb_device({ "is_keyboard": true, "is_pointing_device": true,
+                                               "vendor_id": 1278, "product_id": 21 }) else empty end)])
     else . end)
 ' "$KJ" > "$KJ.tmp" && mv "$KJ.tmp" "$KJ"
 ```

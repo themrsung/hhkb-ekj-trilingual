@@ -23,9 +23,52 @@ F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
 As with the HYBRID Type-S, **set the DIP switches before writing the keymap** (`01-hardware.md`).
 
-Karabiner's only Studio-specific config is the `is_keyboard` device entry for vendor `1278` /
-product `21` (`03-karabiner.md`). Leave the Studio's pointing-device and consumer entries alone.
-The gesture pads and pointing stick keep working through Karabiner without any rules.
+Karabiner's only Studio-specific config is the device entries for vendor `1278` / product `21`
+(`03-karabiner.md`): one `is_keyboard` entry for USB, and one combined entry for Bluetooth (below).
+Over USB, leave the Studio's pointing-device and consumer entries alone. The gesture pads and
+pointing stick keep working through Karabiner without any rules.
+
+## Bluetooth: one combined device
+
+Over USB, Karabiner lists the Studio three times (keyboard, pointing device, consumer). Over
+**Bluetooth** it lists it **once**, as `HHKB-Studio1`, with both flags set:
+
+```
+HHKB-Studio1 {'is_keyboard': True, 'is_pointing_device': True, 'product_id': 21, 'vendor_id': 1278}
+transport: Bluetooth Low Energy
+```
+
+- Karabiner matches device identifiers exactly. The USB-style `is_keyboard`-only entry doesn't
+  match this device, and Karabiner treats it as a pointing device it only *observes*. Nothing is
+  remapped: 半/全 types `` ` `` instead of switching to Korean, and Fn1+P isn't Play/Pause. The
+  global rules (ろ, Print Screen) don't apply either, because they only run on grabbed devices.
+  `/var/log/karabiner/core_service.log` shows `HHKB-Studio1 … monitor is started (grabbed)` once
+  the combined entry is in place.
+- Fix: the second Studio entry in `03-karabiner.md`
+  (`is_keyboard` + `is_pointing_device`, vendor `1278`, product `21`).
+- Side effect: Karabiner can't grab only the keyboard half of a combined device, so it also grabs
+  the pointing stick and gesture pads. Checked on the owner's board: the stick, vertical and
+  horizontal scroll, and the arrow pads all keep working through Karabiner.
+- The `1` in the name is most likely the Bluetooth pairing slot. Other slots may show as
+  `HHKB-Studio2`, and so on (not checked). The entries match on vendor/product ID, not the name.
+
+## Using the gesture pads
+
+The pads are touch strips on the **edges of the case**, not on the top: one on the left side, one
+on the right side, and two on the front face (below the space bar), front-left and front-right.
+Slide a bare fingertip **along** the strip. Taps and brushes over the top edge don't register.
+
+| Pad | Slide | Owner's setting |
+| --- | --- | --- |
+| Left side | front ↔ back | ↑ / ↓ |
+| Right side | front ↔ back | vertical scroll |
+| Front left | left ↔ right, along the front face | ← / → |
+| Front right | left ↔ right, along the front face | horizontal scroll |
+
+If the front pads seem dead while the side pads work, check the technique first: slide along the
+front face itself, and keep a wrist rest or resting thumbs off that edge. On the owner's board the
+front pads "didn't work" until they were used this way. Nothing in the keymap or on the Mac was
+wrong.
 
 ## Standard layer
 
