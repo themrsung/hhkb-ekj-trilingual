@@ -27,7 +27,7 @@ Or download the `.dmg` from <https://karabiner-elements.pqrs.org/>. Then the **u
 
 | # | Scope | From | To | Purpose |
 | --- | --- | --- | --- | --- |
-| A | Each HHKB (simple modification) | `grave_accent_and_tilde` (HHKB key) | `f18` | Hammerspoon catches F18 and selects Korean 2-Set |
+| A | **HYBRID Type-S only** (simple modification) | `grave_accent_and_tilde` (HHKB key) | `f18` | Hammerspoon catches F18 and selects Korean 2-Set. The Studio sends F18 itself (set in its keymap tool), so it doesn't need this |
 | B | Each HHKB (simple modification) | `pause` (Fn+P) | consumer `play_or_pause` | Media play/pause |
 | C | Global (complex rule) | `international1` (ろ), Caps Lock optional | `international3` (¥) + `left_option` | Types `\` unshifted; Shift+ろ isn't matched and types `_` as usual. **Only when the input source language isn't `ja`** |
 | D | Global (complex rule) | `print_screen` (Fn+I on HHKB), any modifiers | `4` + `left_command` + `left_shift` | Screenshot selection |
@@ -35,6 +35,10 @@ Or download the `.dmg` from <https://karabiner-elements.pqrs.org/>. Then the **u
 
 Notes:
 
+- **A** exists because the HYBRID Type-S's HHKB Keymap Tool can't assign F18 to a key, so its
+  HHKB key sends `` ` `` and Karabiner turns that into F18. The Studio's keymap tool can assign
+  F18 directly, so the Studio sends F18 from the firmware and needs no remap (migrating an older
+  Studio setup: `08-migrate-studio-f18.md`).
 - **A** uses a simple modification, so it applies whatever modifiers you hold. Hammerspoon only
   binds bare F18, so Shift/Cmd+HHKB does nothing. That's fine: on JIS, `` ` `` is Shift+@ and
   `~` is Shift+^, so you lose nothing.
@@ -46,16 +50,16 @@ Notes:
 - **D** is a global rule that came before the HHKB setup. The HHKB is the keyboard that sends
   `print_screen` (via Fn+I), so it's part of this behavior set. Leave it out only if the user
   asks.
-- The HHKB key (`grave_accent_and_tilde`) is remapped with a **device-scoped simple
-  modification**. Other keyboards keep their `` ` `` key.
-- **A** and **B** go in one device entry per HHKB model: product ID `34` (HYBRID Type-S) and
-  `21` (Studio), both vendor `1278`, `is_keyboard: true`. The two entries are identical except
-  for the product ID. The Studio's pointing-device and consumer entries need nothing over USB.
+- The HYBRID Type-S's HHKB key (`grave_accent_and_tilde`) is remapped with a **device-scoped
+  simple modification**. Other keyboards keep their `` ` `` key.
+- One device entry per HHKB model: product ID `34` (HYBRID Type-S) gets **A** and **B**, and
+  product ID `21` (Studio) gets **B** only. Both are vendor `1278`, `is_keyboard: true`. The
+  Studio's pointing-device and consumer entries need nothing over USB.
 - **Studio over Bluetooth needs a second entry.** Over Bluetooth the Studio shows up as one combined
   device (`HHKB-Studio<n>`, n = pairing slot) with `is_keyboard: true` **and** `is_pointing_device: true`. Karabiner
   matches identifiers exactly, so the keyboard-only entry never matches it, and Karabiner only
-  observes the device (no remaps; 半/全 types `` ` `` instead of switching to Korean). Add a second
-  Studio entry with both flags set. Both are in the JSON below. The side effect: Karabiner now grabs
+  observes the device (no remaps: Fn1+P isn't Play/Pause, and the global ろ / Print Screen rules
+  don't apply). Add a second Studio entry with both flags set. Both are in the JSON below. The side effect: Karabiner now grabs
   the Studio's pointing stick and gesture pads too. They keep working (checked: stick, vertical
   and horizontal scroll, arrow pads).
 
@@ -110,7 +114,6 @@ Use this only if the file doesn't exist yet or holds only the default empty prof
           "identifiers": { "is_keyboard": true, "vendor_id": 1278, "product_id": 21 },
           "ignore": false,
           "simple_modifications": [
-            { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
             { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] }
           ]
         },
@@ -118,7 +121,6 @@ Use this only if the file doesn't exist yet or holds only the default empty prof
           "identifiers": { "is_keyboard": true, "is_pointing_device": true, "vendor_id": 1278, "product_id": 21 },
           "ignore": false,
           "simple_modifications": [
-            { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
             { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] }
           ]
         }
@@ -142,7 +144,8 @@ cp "$KJ" "$KJ.bak-$(date +%Y%m%d%H%M%S)"
 
 Then apply this to the **selected** profile with `jq`. It's idempotent: it replaces rules and
 the HHKB device entries by their description and identifiers, and never adds duplicates.
-`hhkb_pids` lists the product IDs to configure: `34` HYBRID Type-S, `21` Studio. Keep the
+`hhkb_pids` lists the product IDs to configure: `34` HYBRID Type-S (gets the `` ` `` → F18
+remap), `21` Studio (no `` ` `` remap; it sends F18 itself). Keep the
 models the user has. For `21` it also writes the combined Bluetooth entry for the Studio.
 
 ```sh
@@ -163,9 +166,13 @@ jq '
   def hhkb_device($ids): {
     "identifiers": $ids,
     "ignore": false,
-    "simple_modifications": [
-      { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] },
-      { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] } ] };
+    "simple_modifications": (
+      # HYBRID Type-S only: its keymap tool cannot assign F18, so grave -> F18 here.
+      # The Studio sends F18 itself (set in its keymap tool).
+      (if $ids.product_id == 34
+       then [ { "from": { "key_code": "grave_accent_and_tilde" }, "to": [ { "key_code": "f18" } ] } ]
+       else [] end)
+      + [ { "from": { "key_code": "pause" }, "to": [ { "consumer_key_code": "play_or_pause" } ] } ]) };
   .profiles |= map(
     if .selected then
       .virtual_hid_keyboard = ((.virtual_hid_keyboard // {}) + { "keyboard_type_v2": "jis" })
@@ -197,7 +204,7 @@ jq '.profiles[] | select(.selected) | {vk: .virtual_hid_keyboard,
      hhkb: [.devices[] | select(.identifiers.vendor_id==1278)]}' ~/.config/karabiner/karabiner.json
 ```
 
-Then in Karabiner-EventViewer, on each HHKB: the HHKB key → `f18`, Fn+P → `play_or_pause`, Fn+I →
+Then in Karabiner-EventViewer, on each HHKB: the HHKB key (HYBRID Type-S) / F18 key (Studio) → `f18`, Fn+P → `play_or_pause`, Fn+I →
 `left_command`+`left_shift`+`4`, ろ (in ABC or Korean) → `left_option`+`international3`.
 
 ## Non-JIS built-in keyboard (US ANSI / ISO MacBook)

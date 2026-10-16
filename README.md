@@ -32,7 +32,9 @@ Bottom row, the same on both models (remapped with PFU's keymap tool where neede
 Fn | HHKB | Option | Command | 英数 | Space | かな | Command | Option | Fn | ← | ↓ | →
 ```
 
-On the Studio, the HHKB-key role is the **半/全** key. Control sits left of A. The full Studio
+On the Studio, the HHKB-key role is the key in the **半/全** position, set to **F18** in the Studio's
+keymap tool so it sends F18 itself. The HYBRID Type-S's keymap tool can't do that, so its HHKB key
+is remapped to F18 in Karabiner. Control sits left of A. The full Studio
 keymap and pointing-stick / gesture-pad settings are in [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md).
 
 Built with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) and
@@ -59,18 +61,18 @@ Codex, etc.). It asks you a few questions, then does the rest on its own. It sto
 that need your hands: DIP switches, the keymap tool, macOS permission prompts, and key-press
 checks.
 
-The prompt is **pinned to the release tag `v1.3.2`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.4.0`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.3.2.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.4.0.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.3.2/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.3.2 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.4.0/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.4.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.3.2/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.4.0/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
@@ -122,7 +124,7 @@ backups are.
 ```
 
 To set it up by hand instead, follow [`AGENTS.md`](AGENTS.md), then `docs/01` → `docs/06` in
-order (plus `docs/07` for a Studio). There are no config files to install. The exact Karabiner JSON and Hammerspoon Lua are in
+order (plus `docs/07` for a Studio, and `docs/08` to migrate an older Studio setup to F18). There are no config files to install. The exact Karabiner JSON and Hammerspoon Lua are in
 the docs.
 
 ## Maintenance

@@ -58,13 +58,13 @@ bottom-row codes in Step 2 (checked on a Mac).
 
 Use PFU's keymap tool for the model (**HHKB Keymap Tool** for the HYBRID Type-S, the Studio's
 own keymap tool for the Studio; free downloads from the PFU / HHKB official site) so the bottom
-row emits these codes, left to right. Check first. If the board already emits them (the owner's
-Studio did), there's nothing to write.
+row emits these codes, left to right. Check first. If the board already emits them, there's
+nothing to write. On the Studio, set key 2 to **F18** in its keymap tool (`07-hhkb-studio.md`).
 
 | # | Legend / role | Must emit (Karabiner key code) | macOS meaning |
 | --- | --- | --- | --- |
 | 1 | Fn | (HHKB internal Fn layer) | — |
-| 2 | **HHKB** (logo key; **半/全** on the Studio) | `grave_accent_and_tilde` | Karabiner turns it into `f18` → Korean 2-Set |
+| 2 | **HHKB** (logo key) on the HYBRID Type-S; **F18** (the 半/全 position) on the Studio | HYBRID Type-S: `grave_accent_and_tilde`. Studio: `f18` | HYBRID Type-S: Karabiner turns it into `f18`. Studio: sends `f18` itself. Either way → Korean 2-Set |
 | 3 | Option | `left_option` | ⌥ |
 | 4 | Command | `left_command` | ⌘ |
 | 5 | **英数 (Romaji)** | `japanese_eisuu` | → English ABC |
@@ -89,12 +89,18 @@ Other fixed points of the layout:
   - **Fn+P → `pause`** (macOS sees it as F15). Karabiner turns this into media Play/Pause.
   - **Fn+I → `print_screen`** (macOS sees it as F13). Karabiner turns this into Cmd+Shift+4.
 
+Why key 2 differs between the models: the HYBRID Type-S's HHKB Keymap Tool **can't assign F18**
+to a key, so its HHKB key keeps sending `` ` `` and Karabiner remaps it (software). The Studio's
+keymap tool **can** assign F18, so the Studio sends F18 straight from its firmware, with no
+Karabiner remap. Moving an existing Studio setup from the old `` ` `` remap to F18:
+[`08-migrate-studio-f18.md`](08-migrate-studio-f18.md).
+
 Use the keycaps that match these roles (Option/Command swapped as needed) so the legends match.
 
 ## Step 3 — Check with Karabiner-EventViewer
 
 After Karabiner is installed (`03-karabiner.md`), open **Karabiner-EventViewer → Main** and
 press each bottom-row key **on each HHKB**. The "key_code" column must match the table above.
-EventViewer shows the codes *after* Karabiner's changes, so the HHKB key shows `f18` once the
-rules are in place. Use the **Unknown Events** tab or turn off the device's modifications for a
+EventViewer shows the codes *after* Karabiner's changes, so the HYBRID Type-S's HHKB key shows
+`f18` once the rules are in place. The Studio's F18 key shows `f18` with or without Karabiner. Use the **Unknown Events** tab or turn off the device's modifications for a
 moment if you need the raw code.

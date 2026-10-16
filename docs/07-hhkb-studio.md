@@ -6,7 +6,7 @@ as the reference when setting up a Studio. `01-hardware.md` covers the parts bot
 Studio.
 
 Checked on the owner's board: with these settings, the Standard bottom row emits
-`grave_accent_and_tilde`, `left_option`, `left_command`, `japanese_eisuu`, `spacebar`,
+**`f18`**, `left_option`, `left_command`, `japanese_eisuu`, `spacebar`,
 `japanese_kana`, `right_command`, `right_option`, then the arrows. Fn1+P emits `pause` (macOS sees
 F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
@@ -14,10 +14,10 @@ F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
 | Setting | Value |
 | --- | --- |
-| DIP switches | **All OFF** (SW4 ON would reverse the scroll direction; the screenshots below were taken with SW4 ON) |
+| DIP switches | **All OFF** (SW4 ON would reverse the scroll direction) |
 | Pointing stick → Button | **On** (LB / Fn2 / RB keys below the space bar) |
-| Gesture Pad – Left Side | On: ↑ / ↓ (arrow keys) |
-| Gesture Pad – Front Left | On: ← / → (arrow keys) |
+| Gesture Pad – Left Side | **Off** |
+| Gesture Pad – Front Left | **Off** |
 | Gesture Pad – Front Right | On: **MW←** / **MW→** (horizontal mouse wheel) |
 | Gesture Pad – Right Side | On: MW↓ / MW↑ (vertical mouse wheel) |
 
@@ -31,8 +31,26 @@ Only SW4 was tested. For the other switches, set DIP switches first and recheck 
 afterwards.
 This differs from the HYBRID Type-S, where changing DIP switches overwrites the keymap.
 
+## The F18 key (the Studio's "HHKB key")
+
+The key in the **半/全** position (left of Opt, bottom row) is set to **F18** in the HHKB Studio
+Keymap Tool, on **every layer** (Standard, Fn1, Fn2, Fn3). The Studio sends F18 straight from its
+firmware, and Hammerspoon turns it into Korean 2-Set. Karabiner doesn't remap this key on the
+Studio.
+
+- Checked on the owner's board (USB): F18 pressed 3× → `f18` 3× reached Hammerspoon with no
+  Karabiner remap, and the input source switched to Korean 2-Set.
+- Set it on all four layers, so the key still switches to Korean while Fn1 or Fn2 is held, and
+  so no layer falls back to `` ` ``.
+- The **HYBRID Type-S can't do this**: its HHKB Keymap Tool can't assign F18, so it still needs
+  the Karabiner `` ` `` → F18 remap (`03-karabiner.md`, rule A).
+- Upgrading a Studio that was set up with the old `` ` `` remap: `08-migrate-studio-f18.md`.
+
+## Karabiner and the Studio
+
 Karabiner's only Studio-specific config is the device entries for vendor `1278` / product `21`
 (`03-karabiner.md`): one `is_keyboard` entry for USB, and one combined entry for Bluetooth (below).
+They hold only Fn1+P → Play/Pause. The F18 key needs no Karabiner entry.
 Hammerspoon and the macOS settings don't care how the Studio is connected.
 Over USB, leave the Studio's pointing-device and consumer entries alone. The gesture pads and
 pointing stick keep working through Karabiner without any rules.
@@ -80,8 +98,8 @@ transport: Bluetooth Low Energy
 
 - Karabiner matches device identifiers exactly. The USB-style `is_keyboard`-only entry doesn't
   match this device, and Karabiner treats it as a pointing device it only *observes*. Nothing is
-  remapped: 半/全 types `` ` `` instead of switching to Korean, and Fn1+P isn't Play/Pause. The
-  global rules (ろ, Print Screen) don't apply either, because they only run on grabbed devices.
+  remapped: Fn1+P isn't Play/Pause (with the old `` ` `` remap, 半/全 also typed `` ` `` instead of
+  switching to Korean). The global rules (ろ, Print Screen) don't apply either, because they only run on grabbed devices.
   `/var/log/karabiner/core_service.log` shows `HHKB-Studio<n> … monitor is started (grabbed)` once
   the combined entry is in place.
 - Fix: the second Studio entry in `03-karabiner.md`
@@ -91,7 +109,7 @@ transport: Bluetooth Low Energy
   horizontal scroll, and the arrow pads all keep working through Karabiner.
 - The number in the name is the Bluetooth pairing slot (`HHKB-Studio1` … `HHKB-Studio4`). The
   entries match on vendor/product ID, not the name, so one combined entry covers every slot.
-  Checked on slot 2: 半/全 → Korean, 英数 → ABC, かな → Kana, Fn1+P → Play/Pause, and the stick and
+  Checked on slot 2: the HHKB-key role → Korean, 英数 → ABC, かな → Kana, Fn1+P → Play/Pause, and the stick and
   scroll pads all work.
 - Also checked on a second machine: **MacBook Air (M4), macOS 27.0.1**, Studio paired over
   Bluetooth on **slot 3** (`HHKB-Studio3`), Karabiner-Elements 16.3.0, Hammerspoon 1.1.1. Rows 3–15 of the
@@ -106,10 +124,12 @@ Slide a bare fingertip **along** the strip. Taps and brushes over the top edge d
 
 | Pad | Slide | Owner's setting |
 | --- | --- | --- |
-| Left side | front ↔ back | ↑ / ↓ |
+| Left side | front ↔ back | **Off** (was ↑ / ↓) |
 | Right side | front ↔ back | vertical scroll |
-| Front left | left ↔ right, along the front face | ← / → |
+| Front left | left ↔ right, along the front face | **Off** (was ← / →) |
 | Front right | left ↔ right, along the front face | horizontal scroll |
+
+Turn a pad back on with Fn2+A / S / D / F (Fn2 layer below), or in the keymap tool.
 
 If the front pads seem dead while the side pads work, check the technique first: slide along the
 front face itself, and keep a wrist rest or resting thumbs off that edge. On the owner's board the
@@ -123,12 +143,12 @@ wrong.
 Stock JIS layout except for the bottom row:
 
 ```
-Fn1 | 半/全 | Opt | ⌘ | 英数 | Space | かな | ⌘ | Opt | Fn1 | ← | ↓ | →
+Fn1 | F18 | Opt | ⌘ | 英数 | Space | かな | ⌘ | Opt | Fn1 | ← | ↓ | →
               LB | Fn2 | RB          (pointing-stick buttons, below Space)
 ```
 
-- **半/全** is the Studio's "HHKB key" (the Studio has no HHKB-logo key on the bottom row). It
-  emits `grave_accent_and_tilde`, which Karabiner turns into F18 → Korean 2-Set.
+- **F18** (in the 半/全 position) is the Studio's "HHKB key" (the Studio has no HHKB-logo key on
+  the bottom row). It emits `f18` itself → Korean 2-Set via Hammerspoon.
 - **Opt / ⌘ / 英数** on the left and **かな / ⌘ / Opt** on the right match the HYBRID Type-S
   layout.
 - The key left of A is **Control**. ↑ sits in the Shift row, left of the right Shift.
@@ -173,7 +193,7 @@ Hold **Fn2** (between LB and RB). Pointing-stick and gesture-pad controls:
 | Z / X / C / V | Gesture pad off: Left Side / Front Left / Front Right / Right Side |
 | Space | Middle mouse button |
 
-The bottom row stays the same as Standard, so 半/全, 英数 and かな work while Fn2 is held.
+The bottom row stays the same as Standard, so F18, 英数 and かな work while Fn2 is held.
 
 ## Fn3 layer
 
@@ -184,4 +204,4 @@ Unused: identical to Standard.
 ## Check
 
 With Karabiner and Hammerspoon set up, run the checklist in `06-verification.md` on the Studio.
-Rows 3–14 cover the bottom row, Fn1+P and Fn1+I.
+Rows 3–14 cover the bottom row (F18 → `f18`), Fn1+P and Fn1+I.

@@ -6,8 +6,9 @@ Checked with Hammerspoon **1.1.1**.
 
 Selecting a CJK input method from a hotkey is flaky: the first select sometimes doesn't take, and
 the input-source overlay can show twice. Hammerspoon lets us select, check, and retry *only when
-needed*. That's how this setup handles both problems. Karabiner only turns the HHKB key into
-`F18`. Hammerspoon does the switching.
+needed*. That's how this setup handles both problems. The key only has to send
+`F18`: the HHKB Studio sends it from its own keymap, and Karabiner turns the HYBRID Type-S's
+HHKB key into F18. Hammerspoon does the switching.
 
 ## Install and permissions
 
@@ -33,7 +34,8 @@ block, keeping the user's other code. Don't load `hs.ipc` twice.
 ```lua
 require("hs.ipc") -- lets the `hs` CLI query this instance
 
--- to_korean key (remapped to F18 by Karabiner) → Korean 2-Set
+-- to_korean key → Korean 2-Set. F18 comes from the HHKB Studio's keymap, or from Karabiner
+-- (HYBRID Type-S HHKB key, remapped from `)
 local KOREAN = "com.apple.inputmethod.Korean.2SetKorean"
 
 local function toKorean()

@@ -10,7 +10,7 @@ tell you the result. Ask them, and don't assume. With both models, run rows 3–
 | 1 | `karabiner_cli --list-connected-devices` | `HHKB-Hybrid` with vendor 1278 / product 34 and/or `HHKB-Studio` (keyboard) with vendor 1278 / product 21 |
 | 2 | `defaults read /Library/Preferences/com.apple.keyboardtype` | each HHKB (`34-1278-…`, `21-1278-0`) = 42; Karabiner virtual keyboard (`593-1452-0`) = 42 |
 | 3 | 👤 Press the key left of A + C in Terminal | Interrupts (Control) |
-| 4 | 👤 EventViewer: bottom row left → right | `fn`, `f18`, `left_option`, `left_command`, `japanese_eisuu`, `spacebar`, `japanese_kana`, `right_command`, `right_option`, `fn`, arrows |
+| 4 | 👤 EventViewer: bottom row left → right | `fn`, `f18` (HHKB key on the HYBRID Type-S, F18 key on the Studio), `left_option`, `left_command`, `japanese_eisuu`, `spacebar`, `japanese_kana`, `right_command`, `right_option`, `fn`, arrows |
 | 5 | 👤 From ABC, press HHKB key | Korean 2-Set, overlay shown **once** |
 | 6 | 👤 From Japanese, press HHKB key | Korean 2-Set, overlay shown **once** |
 | 7 | 👤 While in Korean, press HHKB key | Still Korean 2-Set; key is never "dead" |
@@ -46,9 +46,10 @@ tell you the result. Ask them, and don't assume. With both models, run rows 3–
 | ろ types `_` in ABC | Rule missing, or virtual keyboard not JIS | Check rule C and `keyboard_type_v2: "jis"` |
 | ろ types `\` in Japanese | Rule's `input_source_unless ^ja$` condition missing | Restore the condition |
 | `¥` / `\` / `_` come out swapped or wrong everywhere | macOS keyboard type for the HHKB isn't JIS | System Settings → Keyboard → Change Keyboard Type… → JIS |
-| Studio over Bluetooth: 半/全 types `` ` ``, no remaps at all | Karabiner sees the Bluetooth Studio as one combined keyboard + pointing device, and the keyboard-only entry doesn't match it | Add the combined Studio entry (`is_keyboard` + `is_pointing_device`, product 21) from `03-karabiner.md`; see `07-hhkb-studio.md` |
+| Studio over Bluetooth: Fn1+P isn't Play/Pause, ろ / Print Screen rules don't apply | Karabiner sees the Bluetooth Studio as one combined keyboard + pointing device, and the keyboard-only entry doesn't match it | Add the combined Studio entry (`is_keyboard` + `is_pointing_device`, product 21) from `03-karabiner.md`; see `07-hhkb-studio.md` |
 | Studio front gesture pads do nothing (side pads work) | Swiping the wrong way, or a wrist rest / thumb resting on the front edge | Slide along the front face of the case (`07-hhkb-studio.md`, "Using the gesture pads") |
 | Studio: Space pastes the clipboard, other keys act strangely | Probably the Fn2 layer is stuck: Fn2+Space is the middle mouse button, which pastes in many apps (not confirmed) | Tap Fn2. If that doesn't help, turn the Studio off and on |
+| Studio's HHKB-key position types `` ` `` | The key isn't set to F18 in the Studio's keymap tool (older setup), and the Karabiner `` ` `` remap for the Studio is gone | Set the key to F18 on every layer in the HHKB Studio Keymap Tool (`08-migrate-studio-f18.md`) |
 | HHKB key works on one HHKB but not the other | Only one model has a device entry | Add the missing product ID to `hhkb_pids` and rerun the merge (`03-karabiner.md`) |
 | Option+Tab does nothing | Shortcut not applied yet | Set it in the GUI once, or log out/in after the `defaults write` |
 | MacBook's own US/ISO keyboard types wrong symbols after setup | Karabiner grabs the built-in keyboard and sends it through the JIS virtual keyboard | Set the built-in keyboard's device entry to `ignore: true` (`03-karabiner.md`, "Non-JIS built-in keyboard"). Don't switch the virtual keyboard back to ANSI |

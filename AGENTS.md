@@ -13,6 +13,7 @@ The detailed steps are in `docs/`:
 | [`docs/05-customization.md`](docs/05-customization.md) | How to point the HHKB / 英数 / かな keys at other input sources (QWERTZ, AZERTY, …) |
 | [`docs/06-verification.md`](docs/06-verification.md) | Acceptance checklist and troubleshooting |
 | [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
+| [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
 
 This repo has **no config files on purpose**. All configuration lives as code blocks inside these
 Markdown files. Write those blocks into the user's real config locations (`~/.config/karabiner/karabiner.json`,
@@ -54,8 +55,11 @@ values described in `docs/05-customization.md` directly in their config.
   Fn | HHKB | Option | Command | 英数 (Romaji) | Space | かな (Kana) | Command | Option | Fn | ← | ↓ | →
   ```
 
-  - `HHKB` is the logo key (the **半/全** key on the Studio). It sends `grave_accent_and_tilde`,
-    which Karabiner turns into `F18`.
+  - `HHKB` is the logo key on the HYBRID Type-S. It sends `grave_accent_and_tilde`, which
+    Karabiner turns into `F18`, because the HYBRID's HHKB Keymap Tool can't assign F18.
+  - On the Studio, that key (the 半/全 position) is set to **F18** in the Studio's keymap tool, so
+    it sends `F18` itself. No Karabiner remap. Migrating an older Studio setup that still used
+    the `` ` `` remap: `docs/08-migrate-studio-f18.md`.
   - `英数` / "Romaji" sends `japanese_eisuu`. `かな` / "Kana" sends `japanese_kana`.
 
 > **Order matters: set the DIP switches BEFORE writing any keymap with the keymap tool.**
@@ -67,7 +71,7 @@ values described in `docs/05-customization.md` directly in their config.
 
 | Key / combo | Result | Implemented by |
 | --- | --- | --- |
-| **HHKB** key | Always switches to **Korean 2-Set** (`com.apple.inputmethod.Korean.2SetKorean`), even if Korean is already active | Karabiner (HHKB → F18) + Hammerspoon (F18 → select source) |
+| **HHKB** key | Always switches to **Korean 2-Set** (`com.apple.inputmethod.Korean.2SetKorean`), even if Korean is already active | HYBRID Type-S: Karabiner (HHKB → F18). Studio: F18 from its own keymap. Then Hammerspoon (F18 → select source) |
 | **英数 (Romaji)** | Always switches to **English ABC (QWERTY)** | macOS native 英数 handling (Japanese IME has no Romaji/英字 mode enabled) |
 | **かな (Kana)** | Always switches to **Japanese with Kana typing** (not Romaji input) | macOS native かな handling + Japanese IME set to Kana typing |
 | **ろ** key (`international1`, right of `/`) | `\` unshifted, `_` shifted, in every **non-Japanese** input source. Unchanged (ろ) in Japanese | Karabiner complex rule (sends Option+¥) |
@@ -119,6 +123,9 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 
 ## 5. Rules for agents working on this
 
+- **Older Studio setups:** if the user's `karabiner.json` still remaps `grave_accent_and_tilde` →
+  `f18` on a Studio entry (product `21`), follow `docs/08-migrate-studio-f18.md` (keymap tool
+  first, then remove that remap). Never remove it from the HYBRID Type-S entry (product `34`).
 - **Merge, don't clobber.** The user may already have a `karabiner.json` and an `init.lua` with
   unrelated rules (other devices, games, etc.). Back them up
   (`cp file file.bak-$(date +%Y%m%d%H%M%S)`) and merge only the HHKB pieces.
