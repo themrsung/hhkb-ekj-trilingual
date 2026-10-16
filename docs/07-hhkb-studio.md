@@ -85,6 +85,10 @@ transport: Bluetooth Low Energy
   entries match on vendor/product ID, not the name, so one combined entry covers every slot.
   Checked on slot 2: 半/全 → Korean, 英数 → ABC, かな → Kana, Fn1+P → Play/Pause, and the stick and
   scroll pads all work.
+- Also checked on a second machine: **MacBook Air (M4), macOS 27.0.1**, Studio paired over
+  Bluetooth on **slot 3** (`HHKB-Studio3`), Karabiner-Elements 16.3.0, Hammerspoon 1.1.1. Rows 3–15 of the
+  checklist in `06-verification.md` passed, except that in Korean 2-Set ろ types `¥` instead of
+  `\` (accepted; see the note under the checklist).
 
 ## Using the gesture pads
 
