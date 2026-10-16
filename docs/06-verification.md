@@ -51,3 +51,4 @@ tell you the result. Ask them, and don't assume. With both models, run rows 3–
 | Studio: Space pastes the clipboard, other keys act strangely | Probably the Fn2 layer is stuck: Fn2+Space is the middle mouse button, which pastes in many apps (not confirmed) | Tap Fn2. If that doesn't help, turn the Studio off and on |
 | HHKB key works on one HHKB but not the other | Only one model has a device entry | Add the missing product ID to `hhkb_pids` and rerun the merge (`03-karabiner.md`) |
 | Option+Tab does nothing | Shortcut not applied yet | Set it in the GUI once, or log out/in after the `defaults write` |
+| MacBook's own US/ISO keyboard types wrong symbols after setup | Karabiner grabs the built-in keyboard and sends it through the JIS virtual keyboard | Set the built-in keyboard's device entry to `ignore: true` (`03-karabiner.md`, "Non-JIS built-in keyboard"). Don't switch the virtual keyboard back to ANSI |

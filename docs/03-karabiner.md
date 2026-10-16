@@ -18,7 +18,10 @@ Or download the `.dmg` from <https://karabiner-elements.pqrs.org/>. Then the **u
 4. Karabiner-Elements → **Devices**: make sure **HHKB-Hybrid** and/or **HHKB-Studio** (the
    keyboard entry) have "Modify events" **on**.
 5. Karabiner-Elements → **Virtual Keyboard**: keyboard type **JIS** (ISO/ANSI are wrong for
-   this setup). This is `"virtual_hid_keyboard": {"keyboard_type_v2": "jis"}` below.
+   this setup). This is `"virtual_hid_keyboard": {"keyboard_type_v2": "jis"}` below. This
+   setting applies to **every** keyboard Karabiner grabs, including a MacBook's built-in
+   keyboard. On a Mac with a US (ANSI) or ISO built-in keyboard, see
+   "Non-JIS built-in keyboard" below.
 
 ## What Karabiner does in this setup
 
@@ -196,6 +199,50 @@ jq '.profiles[] | select(.selected) | {vk: .virtual_hid_keyboard,
 
 Then in Karabiner-EventViewer, on each HHKB: the HHKB key → `f18`, Fn+P → `play_or_pause`, Fn+I →
 `left_command`+`left_shift`+`4`, ろ (in ABC or Korean) → `left_option`+`international3`.
+
+## Non-JIS built-in keyboard (US ANSI / ISO MacBook)
+
+Karabiner sends every keyboard it grabs through **one** virtual keyboard, and Karabiner-Elements
+16.3.0 has no per-device keyboard type. With `keyboard_type_v2 = "jis"`, a grabbed US built-in
+keyboard is read by macOS as JIS, so some of its symbol keys type the wrong characters. macOS
+still lists the built-in keyboard as U.S. (`KeyboardLanguage = "U.S."` in `ioreg`). Only the
+path through Karabiner changes.
+
+Seen on a MacBook Air (M4) with a US QWERTY keyboard, macOS 27.0.1, Karabiner-Elements 16.3.0.
+
+**Fix: let Karabiner ignore the built-in keyboard.** macOS then reads it natively (US ANSI), and
+the virtual keyboard stays JIS for the HHKB. Find the built-in keyboard's identifiers first:
+
+```sh
+'/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_cli' --list-connected-devices \
+  | python3 -c "import json,sys;[print(d.get('product'),d['device_identifiers']) for d in json.load(sys.stdin)]"
+# Apple silicon: Apple Internal Keyboard / Trackpad {'is_keyboard': True}   (no vendor/product ID)
+# Intel Macs report a vendor_id 1452 and a product_id; use those instead
+```
+
+Back up `karabiner.json`, then set `ignore: true` on the device entry with exactly those
+identifiers. If there's no such entry, add one. On Apple silicon:
+
+```sh
+KJ=~/.config/karabiner/karabiner.json
+cp "$KJ" "$KJ.bak-$(date +%Y%m%d%H%M%S)"
+jq '.profiles |= map(if .selected then
+      .devices = (if any((.devices // [])[]; .identifiers == {"is_keyboard": true})
+                  then .devices | map(if .identifiers == {"is_keyboard": true} then .ignore = true else . end)
+                  else (.devices // []) + [{ "identifiers": { "is_keyboard": true }, "ignore": true }] end)
+    else . end)' "$KJ" > "$KJ.tmp" && mv "$KJ.tmp" "$KJ"
+```
+
+`/var/log/karabiner/core_service.log` then shows `Apple Internal Keyboard / Trackpad … monitor is
+stopped`, while the HHKB stays grabbed. Checked: the built-in keyboard types US characters again
+(`` ` `` `\` `[` `'` Shift+2 → `@`), and the Bluetooth Studio behaves the same as before.
+
+Trade-off: Karabiner rules no longer apply to the built-in keyboard. For simple modifier swaps
+(Caps Lock ↔ Control) use System Settings → Keyboard → Keyboard Shortcuts → **Modifier Keys**,
+with the built-in keyboard selected. If you need Karabiner rules on the built-in keyboard *and*
+the HHKB, there's no clean option in 16.3.0: one of the two gets the wrong keyboard type. Don't
+set the virtual keyboard back to ANSI to fix the built-in keyboard, because that breaks ¥/ろ on
+the HHKB.
 
 ## Troubleshooting: 英数 doesn't reach ABC from Korean
 

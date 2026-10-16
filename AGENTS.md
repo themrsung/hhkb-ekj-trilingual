@@ -124,5 +124,10 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 - Things that need human hands: DIP switches, the keymap tool, approving system extensions,
   and granting Privacy & Security permissions. Tell the user exactly what to click, and ask them
   to confirm before you continue.
+- **Check the Mac's built-in keyboard.** If it isn't JIS (`ioreg -r -c IOHIDDevice -l | grep
+  KeyboardLanguage`, for example `"U.S."`) and Karabiner grabs it, the JIS virtual keyboard makes
+  it type the wrong symbols. Tell the user, and offer to set the built-in keyboard's device entry
+  to `ignore: true` (`docs/03-karabiner.md`, "Non-JIS built-in keyboard"). Check first whether any
+  *enabled* Karabiner rule targets the built-in keyboard, because ignoring it turns those off.
 - Check with **Karabiner-EventViewer** (key codes) and the input menu or
   `hs -c 'hs.keycodes.currentSourceID()'` (active source). Don't assume.
