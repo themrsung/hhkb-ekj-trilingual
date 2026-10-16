@@ -5,6 +5,25 @@ as the reference when setting up a Studio. `01-hardware.md` covers the parts bot
 (the bottom-row codes and the DIP-before-keymap order). This file covers what's specific to the
 Studio.
 
+## Fast path: load the default settings file
+
+[`hhkb-studio-setting-all.hks`](hhkb-studio-setting-all.hks) is the owner's full export from the
+HHKB Studio Keymap Tool. It's the quickest way to put all of this page's settings on a Studio, for
+macOS and Windows alike. It holds the keymap for **every profile**:
+
+| Profile | For |
+| --- | --- |
+| **Profile1** | macOS (this page) |
+| Profile2 | PFU's default Mac mode, unchanged |
+| **Profile3** | Windows without AutoHotkey (`windows/01-hardware.md`) |
+| **Profile 4** | Windows with AutoHotkey (`windows/01-hardware.md`) |
+
+It also holds the pointing-stick and gesture-pad settings in the table below. In the keymap tool,
+load the file and write it to the keyboard. **Importing replaces all profiles**, so first export
+your own settings if you keep a custom keymap on any profile. Then pick the profile for your OS and
+check the layers against the screenshots. The DIP switches are physical, so set them by hand
+first (all OFF).
+
 Checked on the owner's board: with these settings, the Standard bottom row emits
 **`f18`**, `left_option`, `left_command`, `japanese_eisuu`, `spacebar`,
 `japanese_kana`, `right_command`, `right_option`, then the arrows. Fn1+P emits `pause` (macOS sees
@@ -14,7 +33,7 @@ F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
 | Setting | Value |
 | --- | --- |
-| DIP switches | **All OFF** (SW4 ON would reverse the scroll direction) |
+| DIP switches | **All OFF** (SW4 ON would reverse the scroll direction; SW6 ON turns the aggressive power saving **off**, see `../issues/dip-switch-6-power-saving.md`) |
 | Pointing stick → Button | **On** (LB / Fn2 / RB keys below the space bar) |
 | Gesture Pad – Left Side | **Off** |
 | Gesture Pad – Front Left | **Off** |
@@ -27,8 +46,14 @@ As with the HYBRID Type-S, **set the DIP switches before writing the keymap** (`
 keymap written by the HHKB Studio Keymap Tool in place, SW4 was flipped **ON → OFF**, then
 **OFF → ON → OFF**. After every flip the custom keybinds were all still there, and SW4 still
 switched the scroll direction. So changing the scroll direction with SW4 is safe on the Studio.
-Only SW4 was tested. For the other switches, set DIP switches first and recheck the keymap
-afterwards.
+
+**Finding: flipping SW6 (power saving) doesn't reset it either.** On 2026-10-17, SW6 was flipped
+**OFF → ON** on the owner's board, which was on Profile 4 over Bluetooth. Afterwards the keyboard
+was still on Profile 4, the F keys still worked, and the Bluetooth pairing stayed in the same slot.
+SW6 is inverted: **OFF = power saving on**. See `../issues/dip-switch-6-power-saving.md`.
+
+Only SW4 and SW6 were tested. For the other switches, set DIP switches first and recheck the
+keymap afterwards.
 This differs from the HYBRID Type-S, where changing DIP switches overwrites the keymap.
 
 ## The F18 key (the Studio's "HHKB key")

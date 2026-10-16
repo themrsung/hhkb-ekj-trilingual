@@ -49,10 +49,10 @@ bottom-row codes in Step 2 (checked on a Mac).
 
 > **Set the DIP switches BEFORE the keymap.** On the HYBRID Type-S, changing DIP switches
 > overwrites the keymap written with the HHKB Keymap Tool, and you have to apply it again.
-> **On the Studio this was tested for SW4 only:** flipping SW4 in **either direction** (ON → OFF
-> and OFF → ON) did **not** reset the custom keymap written with the HHKB Studio Keymap Tool
-> (`07-hhkb-studio.md`). The other switches weren't tested, so keep the DIP-first order on the
-> Studio too.
+> **On the Studio this was tested for SW4 and SW6:** flipping SW4 in **either direction** (ON →
+> OFF and OFF → ON) and SW6 **OFF → ON** did **not** reset the custom keymap written with the
+> HHKB Studio Keymap Tool, the active profile, or the Bluetooth pairing slot (`07-hhkb-studio.md`).
+> The other switches weren't tested, so keep the DIP-first order on the Studio too.
 
 ## Step 2 — Bottom-row keymap
 

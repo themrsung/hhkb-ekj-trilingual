@@ -17,7 +17,7 @@ changed to the international key `LANG1`, native Korean IME ([below](#profile3-f
 
 ## Fast path: load the default settings file
 
-[`hhkb-studio-setting-all.hks`](hhkb-studio-setting-all.hks) is the owner's full HHKB Studio
+[`../hhkb-studio-setting-all.hks`](../hhkb-studio-setting-all.hks) (shared with macOS, `../07-hhkb-studio.md`) is the owner's full HHKB Studio
 export (Keymap Tool 1.1.2.0): DIP switches all OFF, pointing-stick button on, gesture pads
 (Front Right and Right Side on), and the keymap for **every profile**, including Profile1 for macOS,
 Profile 4 below, and the Profile3 fallback. In the HHKB Studio Keymap Tool, load the file and write it to the keyboard.

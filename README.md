@@ -78,18 +78,18 @@ PC) you want to set up (Claude Code, Codex, etc.). It asks you a few questions, 
 on its own. It stops only for steps that need your hands: DIP switches, the keymap tool,
 permission prompts, settings that change the system, and key-press checks.
 
-The prompt is **pinned to the release tag `v1.5.1`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.5.2`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.5.1.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.5.2.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.5.1/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.5.1 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.5.2/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.5.2 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.5.1/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.5.2/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
@@ -151,10 +151,16 @@ backups are.
 To set it up by hand instead, follow [`AGENTS.md`](AGENTS.md), then `docs/01` → `docs/06` in
 order (plus `docs/07` for a Studio, and `docs/08` to migrate an older Studio setup to F18). On
 Windows, follow `docs/windows/01` → `03` instead. The exact Karabiner JSON, Hammerspoon Lua and
-AutoHotkey script are in the docs. The only
-config file is the HHKB Studio keymap export
-([`docs/windows/hhkb-studio-setting-all.hks`](docs/windows/hhkb-studio-setting-all.hks)), which you
-can load in the Studio's keymap tool instead of setting each key by hand.
+AutoHotkey script are in the docs.
+
+**Quick Studio setup (macOS or Windows):** the only config file is the HHKB Studio settings export,
+[`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks). Load it in the Studio's
+keymap tool instead of setting each key by hand. It holds every profile (Profile1 for macOS,
+Profiles 4 and 3 for Windows) and replaces whatever profiles are on the keyboard.
+
+**Known issues** the author has run into, with workarounds, are in [`issues/`](issues/README.md):
+inter-OS muscle memory, DIP switch 6 (aggressive power saving), and inconsistent symbol typing on
+Windows.
 
 ## Maintenance
 

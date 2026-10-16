@@ -17,6 +17,8 @@ The detailed steps are in `docs/`:
 | [`docs/windows/01-hardware.md`](docs/windows/01-hardware.md) | **Windows (experimental):** HHKB Studio keymap Profile 4 (and the Profile3 fallback), the tested PC |
 | [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
 | [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
+| [`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks) | HHKB Studio settings export, all profiles: the quick way to set up a Studio for either OS |
+| [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows. Check here before "fixing" something |
 
 Software configuration lives as code blocks inside these Markdown files. Write those blocks into
 the user's real config locations (`~/.config/karabiner/karabiner.json`, `~/.hammerspoon/init.lua`,
@@ -26,7 +28,7 @@ to this repo. If the user wants different behavior, edit the values described in
 
 **One exception: the keyboard's own settings.** PFU's keymap tool can't be driven from code, so the
 owner's HHKB Studio export ships as an example file for faster deployment:
-[`docs/windows/hhkb-studio-setting-all.hks`](docs/windows/hhkb-studio-setting-all.hks). It holds
+[`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks). It holds
 the **defaults** (DIP switches, pointing stick, gesture pads, and the keymap for every profile,
 including Profile1 for macOS, Profile 4 for Windows with AutoHotkey, and Profile3 as the
 Windows fallback without AutoHotkey). The user loads it in the HHKB Studio Keymap
@@ -79,8 +81,9 @@ docs. Don't add other config files.
 
 > **Order matters: set the DIP switches BEFORE writing any keymap with the keymap tool.**
 > On the HYBRID Type-S, changing DIP switches afterwards overwrites the stored keymap, and you have
-> to do the bottom-row remap again. On the Studio, flipping SW4 in either direction was tested and did
-> **not** reset the custom keymap. Other Studio switches weren't tested, so use the same order there.
+> to do the bottom-row remap again. On the Studio, flipping SW4 in either direction and SW6 OFF → ON
+> were tested and did **not** reset the custom keymap. Other Studio switches weren't tested, so use
+> the same order there.
 
 ## 2. Default behavior (the owner's settings; use these unless the user asks otherwise)
 
@@ -126,7 +129,8 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 
 1. **Hardware:** set DIP switches (HYBRID Type-S: 1 and 5 ON, rest OFF; Studio: all OFF) → *then*
    apply the bottom-row keymap with the keymap tool, if needed (`docs/01-hardware.md`; Studio:
-   `docs/07-hhkb-studio.md`).
+   `docs/07-hhkb-studio.md`). **Studio fast path:** load `docs/hhkb-studio-setting-all.hks` in the
+   HHKB Studio Keymap Tool and use Profile1 (it replaces all profiles, so ask first).
 2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese
    (Kana typing) input sources and remove Japanese's Romaji mode. Set "Move focus to next
    window" to Option+Tab (`docs/02-macos.md`).
@@ -180,7 +184,7 @@ start.
 Order of operations:
 
 1. **Hardware:** DIP switches all OFF, then keymap **Profile 4**: load
-   `docs/windows/hhkb-studio-setting-all.hks` in the HHKB Studio Keymap Tool (it replaces all
+   `docs/hhkb-studio-setting-all.hks` in the HHKB Studio Keymap Tool (it replaces all
    profiles, so ask first), or set the keys by hand (`docs/windows/01-hardware.md`). Without
    AutoHotkey, **Profile3** is the fallback: Win+Space plus native 한/영 via `LANG1`.
 2. **Windows:** Korean + Japanese, Japanese keyboard (106/109 key) as the hardware layout, not
