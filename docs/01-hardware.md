@@ -48,8 +48,10 @@ OFF**. With this setting, the owner's Studio emits the bottom-row codes in Step 
 Mac).
 
 > **Set the DIP switches BEFORE the keymap.** On the HYBRID Type-S, changing DIP switches
-> overwrites the keymap written with the HHKB Keymap Tool, and you have to apply it again. This
-> wasn't tested on the Studio. Use the same order there to be safe.
+> overwrites the keymap written with the HHKB Keymap Tool, and you have to apply it again.
+> **On the Studio this was tested for SW4 only:** flipping SW4 from ON to OFF did **not** reset
+> the custom keymap written with the HHKB Studio Keymap Tool (`07-hhkb-studio.md`). Other
+> switches and OFF→ON weren't tested, so keep the DIP-first order on the Studio too.
 
 ## Step 2 — Bottom-row keymap
 

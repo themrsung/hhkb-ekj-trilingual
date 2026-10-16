@@ -23,6 +23,13 @@ F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
 As with the HYBRID Type-S, **set the DIP switches before writing the keymap** (`01-hardware.md`).
 
+**Finding: flipping SW4 doesn't reset the Studio's keymap.** On the owner's board, SW4 was
+flipped from **ON to OFF** with a custom keymap written by the HHKB Studio Keymap Tool in place.
+Afterwards everything was the same: the custom keybinds were all still there. So changing the
+scroll direction with SW4 is safe on the Studio. Only SW4 ON → OFF was tested. Other switches
+and OFF → ON weren't, so for those, set DIP switches first and recheck the keymap afterwards.
+This differs from the HYBRID Type-S, where changing DIP switches overwrites the keymap.
+
 Karabiner's only Studio-specific config is the device entries for vendor `1278` / product `21`
 (`03-karabiner.md`): one `is_keyboard` entry for USB, and one combined entry for Bluetooth (below).
 Hammerspoon and the macOS settings don't care how the Studio is connected.

@@ -62,5 +62,6 @@ To keep `\` from ろ in Japanese too (making ろ impossible to type in Kana), re
 
 ## Things to keep regardless
 
-- DIP switches **before** the keymap tool (otherwise the keymap gets overwritten).
+- DIP switches **before** the keymap tool (otherwise the keymap gets overwritten on the HYBRID
+  Type-S; on the Studio, flipping SW4 ON → OFF was tested and did not reset it).
 - Karabiner virtual keyboard = JIS and macOS keyboard type for each HHKB = JIS.

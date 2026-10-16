@@ -35,7 +35,7 @@ tell you the result. Ask them, and don't assume. With both models, run rows 3–
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| Bottom row keys are wrong after flipping a DIP switch | DIP change overwrote the keymap | Set DIP switches first (HYBRID Type-S: 1 & 5 ON; Studio: 4 ON), then apply the keymap again with the keymap tool |
+| Bottom row keys are wrong after flipping a DIP switch | DIP change overwrote the keymap (HYBRID Type-S; on the Studio, SW4 ON → OFF was tested and doesn't do this) | Set DIP switches first (HYBRID Type-S: 1 & 5 ON; Studio: 4 ON), then apply the keymap again with the keymap tool |
 | HHKB key types `` ` `` / `^` / nothing in EventViewer | Karabiner not modifying the HHKB, or device IDs differ | Karabiner → Devices → enable HHKB-Hybrid / HHKB-Studio; check that `karabiner.json` has a device entry for that model's IDs (34 / 21) |
 | EventViewer shows `f18` but the source doesn't change | Hammerspoon not running or config not loaded | Start Hammerspoon, Reload Config, check the console for errors; Launch at login on |
 | Menu bar says Korean but the field still types English/Kana (rare, ~1%) | Known macOS bug: a background `TISSelectInputSource` didn't reach the focused field. The retry guard can't detect it | Press the HHKB key again, or click out of the field and back. See "Known issue" in `04-hammerspoon.md`. Don't add a focus-bounce or unconditional retry |

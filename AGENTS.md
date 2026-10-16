@@ -56,7 +56,8 @@ values described in `docs/05-customization.md` directly in their config.
 
 > **Order matters: set the DIP switches BEFORE writing any keymap with the keymap tool.**
 > On the HYBRID Type-S, changing DIP switches afterwards overwrites the stored keymap, and you have
-> to do the bottom-row remap again. Use the same order on the Studio (not tested there).
+> to do the bottom-row remap again. On the Studio, flipping SW4 ON → OFF was tested and did **not**
+> reset the custom keymap. Other Studio switches weren't tested, so use the same order there.
 
 ## 2. Default behavior (the owner's settings; use these unless the user asks otherwise)
 
