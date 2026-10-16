@@ -47,6 +47,12 @@ To get Japanese **Romaji** typing on かな instead of Kana typing, change the J
 source's Input setting to Romaji (`02-macos.md`) instead of remapping anything. Note that the
 ろ rule's `^ja$` condition then also skips Romaji-typing Japanese.
 
+## HHKB Studio scroll direction
+
+The Studio default here is all DIP switches OFF. To reverse the scroll direction, turn **SW4 ON**
+(power off first). On the owner's board,
+flipping SW4 in either direction didn't reset the custom keymap (`07-hhkb-studio.md`).
+
 ## Window cycling shortcut
 
 Option+Tab is the repo default for "Move focus to next window". Any shortcut works. Change it in
@@ -63,5 +69,5 @@ To keep `\` from ろ in Japanese too (making ろ impossible to type in Kana), re
 ## Things to keep regardless
 
 - DIP switches **before** the keymap tool (otherwise the keymap gets overwritten on the HYBRID
-  Type-S; on the Studio, flipping SW4 ON → OFF was tested and did not reset it).
+  Type-S; on the Studio, flipping SW4 either way was tested and did not reset it).
 - Karabiner virtual keyboard = JIS and macOS keyboard type for each HHKB = JIS.

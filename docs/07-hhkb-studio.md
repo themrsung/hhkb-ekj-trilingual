@@ -14,7 +14,7 @@ F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
 | Setting | Value |
 | --- | --- |
-| DIP switches | **SW4 ON** (reverse scroll direction), SW1–3, 5, 6 OFF |
+| DIP switches | **All OFF** (SW4 ON would reverse the scroll direction; the screenshots below were taken with SW4 ON) |
 | Pointing stick → Button | **On** (LB / Fn2 / RB keys below the space bar) |
 | Gesture Pad – Left Side | On: ↑ / ↓ (arrow keys) |
 | Gesture Pad – Front Left | On: ← / → (arrow keys) |
@@ -23,11 +23,12 @@ F15), and Fn1+I emits `print_screen` (macOS sees F13).
 
 As with the HYBRID Type-S, **set the DIP switches before writing the keymap** (`01-hardware.md`).
 
-**Finding: flipping SW4 doesn't reset the Studio's keymap.** On the owner's board, SW4 was
-flipped from **ON to OFF** with a custom keymap written by the HHKB Studio Keymap Tool in place.
-Afterwards everything was the same: the custom keybinds were all still there. So changing the
-scroll direction with SW4 is safe on the Studio. Only SW4 ON → OFF was tested. Other switches
-and OFF → ON weren't, so for those, set DIP switches first and recheck the keymap afterwards.
+**Finding: flipping SW4 doesn't reset the Studio's keymap.** On the owner's board, with a custom
+keymap written by the HHKB Studio Keymap Tool in place, SW4 was flipped **ON → OFF**, then
+**OFF → ON → OFF**. After every flip the custom keybinds were all still there, and SW4 still
+switched the scroll direction. So changing the scroll direction with SW4 is safe on the Studio.
+Only SW4 was tested. For the other switches, set DIP switches first and recheck the keymap
+afterwards.
 This differs from the HYBRID Type-S, where changing DIP switches overwrites the keymap.
 
 Karabiner's only Studio-specific config is the device entries for vendor `1278` / product `21`

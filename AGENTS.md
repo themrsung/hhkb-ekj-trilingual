@@ -39,7 +39,7 @@ values described in `docs/05-customization.md` directly in their config.
   | Model | Product ID | Karabiner name | DIP switches |
   | --- | --- | --- | --- |
   | **HHKB Professional HYBRID Type-S** JIS | `34` (0x0022) | `HHKB-Hybrid` | Mac mode: **1 and 5 ON**, rest OFF |
-  | **HHKB Studio** JIS | `21` (0x0015) | `HHKB-Studio` | **4 ON** (reverse scroll direction), rest OFF |
+  | **HHKB Studio** JIS | `21` (0x0015) | `HHKB-Studio` | **All OFF** (SW4 ON would reverse the scroll direction) |
 
   Configure only the models the user has.
 - **Key left of A:** **Control** (HHKB default; there is no Caps Lock key. Caps Lock is Fn+Tab).
@@ -56,8 +56,8 @@ values described in `docs/05-customization.md` directly in their config.
 
 > **Order matters: set the DIP switches BEFORE writing any keymap with the keymap tool.**
 > On the HYBRID Type-S, changing DIP switches afterwards overwrites the stored keymap, and you have
-> to do the bottom-row remap again. On the Studio, flipping SW4 ON → OFF was tested and did **not**
-> reset the custom keymap. Other Studio switches weren't tested, so use the same order there.
+> to do the bottom-row remap again. On the Studio, flipping SW4 in either direction was tested and did
+> **not** reset the custom keymap. Other Studio switches weren't tested, so use the same order there.
 
 ## 2. Default behavior (the owner's settings; use these unless the user asks otherwise)
 
@@ -101,7 +101,7 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 
 ## 4. Order of operations on a fresh Mac
 
-1. **Hardware:** set DIP switches (HYBRID Type-S: 1 and 5 ON; Studio: 4 ON; rest OFF) → *then*
+1. **Hardware:** set DIP switches (HYBRID Type-S: 1 and 5 ON, rest OFF; Studio: all OFF) → *then*
    apply the bottom-row keymap with the keymap tool, if needed (`docs/01-hardware.md`; Studio:
    `docs/07-hhkb-studio.md`).
 2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese

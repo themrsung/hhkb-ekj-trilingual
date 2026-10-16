@@ -43,15 +43,16 @@ unplugged** while you flip them.
 | --- | --- | --- | --- | --- | --- |
 | **ON** | OFF | OFF | OFF | **ON** | OFF |
 
-**Studio JIS** (the owner's setting): **SW4 ON** (reverses the scroll direction), **all others
-OFF**. With this setting, the owner's Studio emits the bottom-row codes in Step 2 (checked on a
-Mac).
+**Studio JIS** (the owner's setting): **all switches OFF**. SW4 ON reverses the scroll direction
+if you want that (`05-customization.md`). With SW4 either ON or OFF, the owner's Studio emits the
+bottom-row codes in Step 2 (checked on a Mac).
 
 > **Set the DIP switches BEFORE the keymap.** On the HYBRID Type-S, changing DIP switches
 > overwrites the keymap written with the HHKB Keymap Tool, and you have to apply it again.
-> **On the Studio this was tested for SW4 only:** flipping SW4 from ON to OFF did **not** reset
-> the custom keymap written with the HHKB Studio Keymap Tool (`07-hhkb-studio.md`). Other
-> switches and OFF→ON weren't tested, so keep the DIP-first order on the Studio too.
+> **On the Studio this was tested for SW4 only:** flipping SW4 in **either direction** (ON → OFF
+> and OFF → ON) did **not** reset the custom keymap written with the HHKB Studio Keymap Tool
+> (`07-hhkb-studio.md`). The other switches weren't tested, so keep the DIP-first order on the
+> Studio too.
 
 ## Step 2 — Bottom-row keymap
 
