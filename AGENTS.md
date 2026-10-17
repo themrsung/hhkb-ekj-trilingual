@@ -19,6 +19,7 @@ The detailed steps are in `docs/`:
 | [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
 | [`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks) | HHKB Studio settings export, all profiles: the quick way to set up a Studio for either OS |
 | [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows. Check here before "fixing" something |
+| [`layout-104-or-108-key/`](layout-104-or-108-key/README.md) | **Not an HHKB, support limited:** a full-size 104 / 108-key US ANSI keyboard (TFG Magnetox) sending F18 / F19 / F20 / F17. Only if the user insists |
 
 Software configuration lives as code blocks inside these Markdown files. Write those blocks into
 the user's real config locations (`~/.config/karabiner/karabiner.json`, `~/.hammerspoon/init.lua`,
@@ -34,7 +35,8 @@ including Profile1 for macOS, Profile 4 for Windows with AutoHotkey, and Profile
 Windows fallback without AutoHotkey). The user loads it in the HHKB Studio Keymap
 Tool and writes it to the keyboard; importing replaces all profiles, so ask first if they keep
 their own keymap on another profile. Keep it in sync with the keymap screenshots and tables in the
-docs. Don't add other config files.
+docs. The only other config file is the owner's full-size keyboard export in
+`layout-104-or-108-key/` (same idea, limited support). Don't add other config files.
 
 **Scope:**
 - **macOS first.** Sections 1–5 below are the macOS setup.
@@ -47,7 +49,11 @@ docs. Don't add other config files.
   [`themrsung/hhkb-us-bilingual`](https://github.com/themrsung/hhkb-us-bilingual) instead. Continue
   with this repo only if they ask to, after warning them. If they aren't sure which layout they
   have, help them check: JIS has arrow keys at the bottom right, an Enter key spanning two rows,
-  and a ¥ key directly left of Backspace. US ANSI has no arrow keys.
+  and a ¥ key directly left of Backspace. A US ANSI HHKB has no arrow keys.
+- **104 / 108-key US ANSI keyboards (not HHKB): limited support, not part of the default setup.**
+  Only if the user insists: warn them, then follow
+  [`layout-104-or-108-key/README.md`](layout-104-or-108-key/README.md) for the keyboard's keymap
+  and the HHKB docs for the rest, minus what that page lists as not carrying over.
 - This repo is AI-generated and not serviced. Follow the docs at the ref the user gave you
   (normally a release tag), not `main`.
 

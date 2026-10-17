@@ -68,6 +68,9 @@ Built with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) and
   ANSI boards. For a US HHKB, use
   [`themrsung/hhkb-us-bilingual`](https://github.com/themrsung/hhkb-us-bilingual), which uses a
   toggle instead of one key per language.
+- **Full-size 104 / 108-key US ANSI keyboards (not HHKB): support limited**, outside the default
+  setup. The owner's keymap is in [`layout-104-or-108-key/`](layout-104-or-108-key/README.md); the
+  agent uses it only if you insist.
 - The defaults are the author's own preferences. To send the HHKB key to a different input
   source (QWERTZ, AZERTY, …), see [`docs/05-customization.md`](docs/05-customization.md).
 
@@ -78,18 +81,18 @@ PC) you want to set up (Claude Code, Codex, etc.). It asks you a few questions, 
 on its own. It stops only for steps that need your hands: DIP switches, the keymap tool,
 permission prompts, settings that change the system, and key-press checks.
 
-The prompt is **pinned to the release tag `v1.5.2`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.5.3`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.5.2.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.5.3.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.5.2/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.5.2 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.5.3/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.5.3 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.5.2/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.5.3/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
@@ -99,6 +102,7 @@ Before anything else, ask me this one question on its own, word for word, and wa
   - US ANSI (no arrow keys, the classic "HHKB" look)
   - JIS (arrow keys on the bottom-right, big enter key spanning two rows, Yen (¥) key directly
     left of Backspace (BS))
+  - 104/108 key US-ANSI layout (not HHKB; support limited)
   - Not sure, help me figure it out.
 
 Then, depending on my answer:
@@ -107,6 +111,10 @@ Then, depending on my answer:
     continue with this repo anyway (then warn me that the ろ, ¥, 英数 and かな keys it depends
     on don't exist on ANSI).
   - If JIS: continue below.
+  - If 104/108 key US-ANSI: tell me this isn't part of the default setup and support is limited,
+    and stop, unless I insist on continuing. If I do, follow layout-104-or-108-key/README.md for
+    the keyboard's own keymap, and the rest of the repo for the OS side, skipping what that page
+    says doesn't carry over.
   - If not sure: help me tell them apart using the features listed above. Ask me to look at the
     board, or to send a photo if I can. You may also check which keyboard is connected (for
     example with Karabiner's karabiner_cli --list-connected-devices, or System Information),
