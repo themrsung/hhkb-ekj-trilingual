@@ -1,6 +1,8 @@
 # Inconsistent symbol typing on Windows
 
-**Applies to:** the Windows setup (`../docs/windows/`).
+**Applies to:** the Windows setup, Path A (`../docs/windows/03-autohotkey.md`). Path B
+(FKeyIME) types JIS symbols in every language and keeps one mode for all windows, so it shouldn't
+happen there (not measured for this issue yet).
 **Status:** known, with a one-key workaround.
 
 ## Symptom

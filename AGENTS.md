@@ -16,9 +16,10 @@ The detailed steps are in `docs/`:
 | [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
 | [`docs/windows/01-hardware.md`](docs/windows/01-hardware.md) | **Windows (experimental):** HHKB Studio keymap Profile 4 (and the Profile3 fallback), the tested PC |
 | [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
-| [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
+| [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows, Path A:** the compromise, AutoHotkey v2 script (FKeyIME-aware), logon task, measured key codes |
+| [`docs/windows/04-fkeyime.md`](docs/windows/04-fkeyime.md) | **Windows, Path B (preview):** FKeyIME, an input method with JIS symbols in every language: dependencies, build and install, verification, limits |
 | [`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks) | HHKB Studio settings export, all profiles: the quick way to set up a Studio for either OS |
-| [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows. Check here before "fixing" something |
+| [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows, restarting apps after installing FKeyIME. Check here before "fixing" something |
 | [`layout-104-or-108-key/`](layout-104-or-108-key/README.md) | **Not an HHKB, support limited:** a full-size 104 / 108-key US ANSI keyboard (TFG Magnetox) sending F18 / F19 / F20 / F17. Only if the user insists |
 
 Software configuration lives as code blocks inside these Markdown files. Write those blocks into
@@ -31,8 +32,8 @@ to this repo. If the user wants different behavior, edit the values described in
 owner's HHKB Studio export ships as an example file for faster deployment:
 [`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks). It holds
 the **defaults** (DIP switches, pointing stick, gesture pads, and the keymap for every profile,
-including Profile1 for macOS, Profile 4 for Windows with AutoHotkey, and Profile3 as the
-Windows fallback without AutoHotkey). The user loads it in the HHKB Studio Keymap
+including Profile1 for macOS, Profile 4 for Windows (both paths), and Profile3 as the
+Windows fallback without AutoHotkey or FKeyIME). The user loads it in the HHKB Studio Keymap
 Tool and writes it to the keyboard; importing replaces all profiles, so ask first if they keep
 their own keymap on another profile. Keep it in sync with the keymap screenshots and tables in the
 docs. The only other config file is the owner's full-size keyboard export in
@@ -40,8 +41,9 @@ docs. The only other config file is the owner's full-size keyboard export in
 
 **Scope:**
 - **macOS first.** Sections 1–5 below are the macOS setup.
-- **Windows 11: experimental, HHKB Studio JIS only, with a compromise** (section 6). Explain the
-  compromise and ask before continuing. The HYBRID Type-S has no Windows setup.
+- **Windows 11: experimental, HHKB Studio JIS only, two paths** (section 6): AutoHotkey with a
+  compromise (default), or FKeyIME (preview, installs dependencies). Explain both and ask before
+  continuing. The HYBRID Type-S has no Windows setup.
 - **Any other OS:** tell the user this setup isn't supported there and ask whether to continue.
   Don't refuse if they confirm. Adapt what you can and say what doesn't carry over.
 - **JIS HHKB only.** US ANSI support is not built in: the ろ, ¥, 英数 and かな keys don't exist on
@@ -55,7 +57,8 @@ docs. The only other config file is the owner's full-size keyboard export in
   [`layout-104-or-108-key/README.md`](layout-104-or-108-key/README.md) for the keyboard's keymap
   and the HHKB docs for the rest, minus what that page lists as not carrying over.
 - This repo is AI-generated and not serviced. Follow the docs at the ref the user gave you
-  (normally a release tag), not `main`.
+  (normally a release tag), not `main`. This is the **2.0.0-preview** (branch
+  `experimental/2.0.0-preview`); the latest release is `v1.5.3`.
 
 ---
 
@@ -169,11 +172,40 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
 - Check with **Karabiner-EventViewer** (key codes) and the input menu or
   `hs -c 'hs.keycodes.currentSourceID()'` (active source). Don't assume.
 
-## 6. Windows 11 (experimental): HHKB Studio JIS only
+## 6. Windows 11 (experimental): HHKB Studio JIS only, two paths
 
-Tested on one PC, over USB and Bluetooth (no Bluetooth-specific setup needed). The details are in `docs/windows/`.
+Tested on one PC. The details are in `docs/windows/`. Windows has **two paths**. Both use the same
+keyboard setup (keymap Profile 4, F18 / F19 / F20 / F17) and the Japanese 106/109 hardware layout:
 
-**The compromise** (the owner's default; adjust for the end user as they prefer):
+- **Path A (default, tested): AutoHotkey** hands each language to the Microsoft IMEs
+  (`docs/windows/03-autohotkey.md`). Over USB and Bluetooth.
+- **Path B (preview): FKeyIME**, a separate input method that replaces the Microsoft IMEs for
+  these keys (`docs/windows/04-fkeyime.md`). No installer yet: it's built from source.
+
+**Choose a path with the user.** Explain the table below, say plainly that **FKeyIME installs
+dependencies** (system-wide DLLs, a conversion server, binaries from another repo, a build
+toolchain), and ask which one they want. Wait for the answer. If they have no preference, use
+Path A. Check first whether Path A is already set up (`Get-ScheduledTask hhkb-ekj-trilingual`):
+moving to Path B then follows `docs/windows/04-fkeyime.md`, step 7.
+
+| | Path A: AutoHotkey | Path B: FKeyIME (preview) |
+| --- | --- | --- |
+| **Dependencies** | AutoHotkey v2, a script from these docs, a logon task. User-level, readable | System-wide in-process DLLs (x64 + x86) loaded into every app that takes text input, a conversion server (Mozc, renamed; about 23 MB while running; runs without Mozc's sandbox), binaries built from [`themrsung/fkeyime`](https://github.com/themrsung/fkeyime) (BSD-3-Clause), and a build toolchain. Admin to install |
+| Korean | Microsoft Korean IME. **US ANSI symbols** (the compromise below). Full Hanja | FKeyIME's own 2-Set. **JIS symbols**. No Hanja yet |
+| English | Japanese with the IME off: JIS symbols; the taskbar shows JA | Real en-US profile, JIS symbols from FKeyIME's table, macOS-style ¥. Apps that read raw keys (games) still see Windows' layout |
+| Japanese | Microsoft Japanese IME, kana typing (cloud suggestions, Microsoft dictionary) | FKeyIME's kana input, F6 / F7 / F8 like macOS, kanji conversion through Mozc (offline, its own learning) |
+| F17 | 한자 in Korean | Caps Lock in English; Hanja and romaji not implemented yet |
+| Mode across windows | Per window, can drift (`issues/windows-inconsistent-symbols.md`) | One global mode |
+| Fn1+P → Play/Pause | AutoHotkey | Still AutoHotkey (FKeyIME handles language keys only) |
+| After installing | Nothing special | Sign out or restart apps (`issues/windows-fkeyime-restart-apps.md`) |
+| Removal | Delete the task and the script | `tools/spike.ps1 -Uninstall` in the FKeyIME checkout |
+| Maturity | Tested on the owner's PC, USB and Bluetooth | Preview, measured by FKeyIME's test tools on the owner's PC |
+
+Both can be installed at once: with the FKeyIME-aware AutoHotkey script (`docs/windows/03-autohotkey.md`),
+Win+Space decides. With FKeyIME selected, F-keys go to FKeyIME; with a Microsoft IME selected,
+AutoHotkey switches as in Path A.
+
+**The compromise** (Path A; the owner's default there; adjust for the end user as they prefer):
 
 | Language | Key (Profile 4) | Handled by | Symbol keys |
 | --- | --- | --- | --- |
@@ -185,9 +217,9 @@ F17 sends 한자 in Korean. Windows picks the hardware layout **per language** (
 Japanese `kbd106.dll`), so Korean can't have JIS symbols without the trade-offs listed in
 `docs/windows/02-windows.md`, step 3. The owner types English by default and Korean only when
 needed, so this costs little. Results may vary with typing habits, so tell the user before you
-start.
+start. Path B removes the compromise.
 
-Order of operations:
+Order of operations, **Path A**:
 
 1. **Hardware:** DIP switches all OFF, then keymap **Profile 4**: load
    `docs/hhkb-studio-setting-all.hks` in the HHKB Studio Keymap Tool (it replaces all
@@ -199,7 +231,17 @@ Order of operations:
 3. **AutoHotkey v2:** install it, write the script, and start it with a **Task Scheduler logon
    task**, not `shell:startup` or a Run key (`docs/windows/03-autohotkey.md`).
 4. **Verify:** after a restart, AutoHotkey is running and F18 / F19 / F20 / F17 / Fn1+P behave as
-   in the table above.
+   in the compromise table.
+
+Order of operations, **Path B** (`docs/windows/04-fkeyime.md`):
+
+1. **Hardware:** the same as Path A, step 1 (Profile 4).
+2. **Windows:** the Japanese 106/109 hardware layout (`docs/windows/02-windows.md`, step 3), then
+   restart.
+3. **FKeyIME:** build and install it at the pinned commit, turn off "a different input method for
+   each app window", decide about AutoHotkey (keep it FKeyIME-aware for Play/Pause and the
+   Microsoft fallback, or stop it), then sign out and back in.
+4. **Verify** with the table in `docs/windows/04-fkeyime.md`.
 
 Every install and every system-setting change needs the user's OK first. Measure; don't assume.
 Use AutoHotkey's KeyHistory for key codes, and read back registry values after each change.

@@ -3,6 +3,11 @@
 Checked against Windows 11 25H2 (build 26200). Every step here changes a system setting:
 👤 ask the user first, and back up what you change.
 
+**Which steps apply:** Path A (AutoHotkey) uses all of them. Path B (FKeyIME,
+`04-fkeyime.md`) uses steps 1 and 3; its installer adds its own languages, and the Microsoft
+IME settings (steps 4 and 5) only matter for the Microsoft IMEs it keeps as a fallback. Path B
+also needs step 7.
+
 ## 1. Survey first (read-only)
 
 ```powershell
@@ -12,7 +17,7 @@ Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\i8042prt\Parameters' |
 Get-PnpDevice -PresentOnly | Where-Object InstanceId -match 'VID_04FE'
 ```
 
-## 2. Languages: Korean + Japanese
+## 2. Languages: Korean + Japanese (Path A)
 
 Two languages, two IMEs, nothing else:
 
@@ -33,7 +38,7 @@ $list.Add('ja-JP')
 Set-WinUserLanguageList $list -Force
 ```
 
-## 3. Hardware keyboard layout: Japanese 106/109
+## 3. Hardware keyboard layout: Japanese 106/109 (both paths)
 
 Settings → Time & language → Language & region → 日本語 → Language options → **Change layout** →
 **Japanese keyboard (106/109 key)** → restart. Windows keeps **one** hardware layout for all
@@ -56,7 +61,10 @@ symbols. The bad part: while Korean is active, the HHKB's symbol keys don't matc
 The opposite applies to a US built-in keyboard: right in Korean, wrong in Japanese and English.
 Hangul itself is unaffected, because the letter keys sit in the same places on both layouts.
 
-Options for Korean (option 1 is the repo default; options 2 and 3 are untested):
+Options for Korean on Path A (option 1 is the repo default; options 2 and 3 are untested). Path B
+doesn't need them: FKeyIME types the JIS symbols in Korean itself, from its own table.
+
+Options for Korean:
 
 1. **Leave it as is (default).** Type Hangul in Korean and switch to F19 for symbols. No changes,
    no risk. This is the owner's compromise, explained in `03-autohotkey.md` ("The compromise").
@@ -81,7 +89,7 @@ choosing it **removes** `LayerDriver JPN` and all the `Override*` values, so Win
 its default (101-key) layout. So it doesn't give you a US built-in keyboard alongside a JIS
 HHKB either: whatever it detects, the HHKB came out US. Choose **Japanese keyboard (106/109 key)** and restart.
 
-## 4. Microsoft Japanese IME
+## 4. Microsoft Japanese IME (Path A)
 
 Settings → Time & language → Language & region → 日本語 → Language options → Microsoft IME →
 **General**:
@@ -91,10 +99,17 @@ Settings → Time & language → Language & region → 日本語 → Language op
 The IME's own key settings (無変換 / 変換 / 半角/全角) don't matter: the HHKB sends none of those
 keys on Profile 4.
 
-## 5. Microsoft Korean IME
+## 5. Microsoft Korean IME (Path A)
 
 Defaults. F18 forces 한 mode, so the 한/영 toggle is never needed. F17 sends 한자 (`VK_HANJA`) in Korean.
 
 ## 6. Input-language hotkeys
 
-Leave the defaults (Win+Space). The HHKB keys don't depend on them.
+Leave the defaults (Win+Space). The HHKB keys don't depend on them. With Path B and the
+FKeyIME-aware AutoHotkey script, Win+Space also chooses between FKeyIME and the Microsoft IMEs.
+
+## 7. One input method for all windows (Path B)
+
+Settings → Time & language → Typing → Advanced keyboard settings → "Let me use a different input
+method for each app window": **off**. FKeyIME's mode is global; with this on, each window keeps
+its own.

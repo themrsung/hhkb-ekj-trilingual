@@ -36,22 +36,23 @@ for F18, so holding Fn1 or Fn2 never changes what they send.
 Fn1 | F18 | Alt | Win | F19 | Space | F20 | F17 | RAlt | Fn1 | ← | ↓ | →
 ```
 
-| # | Position (Mac Profile1 role) | Profile 4 | Windows meaning |
+| # | Position (Mac Profile1 role) | Profile 4 | Windows meaning (Path A: AutoHotkey / Path B: FKeyIME) |
 | --- | --- | --- | --- |
 | 1 | Fn1 | Fn1 | HHKB Fn layer |
-| 2 | 半/全 (F18 / HHKB key) | **F18** | → Korean, 한 (`03-autohotkey.md`) |
+| 2 | 半/全 (F18 / HHKB key) | **F18** | → Korean. A: Microsoft Korean IME, 한 (`03-autohotkey.md`). B: FKeyIME 2-Set (`04-fkeyime.md`) |
 | 3 | Option | Alt | Left Alt |
 | 4 | Command | Win | Left Windows |
-| 5 | 英数 | **F19** | → English (Japanese IME off) |
+| 5 | 英数 | **F19** | → English. A: Japanese IME off. B: FKeyIME EN |
 | 6 | Space | Space | |
-| 7 | かな | **F20** | → Japanese hiragana, kana typing |
-| 8 | Command | **F17** | Context action: 한자 in Korean, nothing elsewhere yet |
+| 7 | かな | **F20** | → Japanese, kana typing. A: Microsoft Japanese IME. B: FKeyIME JA |
+| 8 | Command | **F17** | Context action. A: 한자 in Korean. B: Caps Lock in English (Hanja and romaji not implemented yet) |
 | 9 | Option | Right Alt | |
 | 10 | Fn1 | Fn1 | HHKB Fn layer |
 | 11–13 | ← ↓ → | ← ↓ → | |
 
-Fn-layer keys used (stock Fn1 layer): **Fn1+P → Pause** (→ Media Play/Pause in AutoHotkey),
-**Fn1+I → Print Screen** (behavior on Windows: not decided yet).
+Fn-layer keys used (stock Fn1 layer): **Fn1+P → Pause** (→ Media Play/Pause in AutoHotkey, on
+either path), **Fn1+I → Print Screen** (behavior on Windows: not decided yet). Path B also has
+**F16** (Japanese, romaji input), which no key sends on Profile 4 yet.
 
 ## Tested on
 
@@ -89,7 +90,8 @@ interface, and a converted HID keyboard. All of them get the same hardware layou
 ## Bluetooth
 
 **Windows needs nothing extra for Bluetooth.** AutoHotkey acts on the key, not on the device, so
-the same script and logon task work over both connections. That differs from macOS, where Karabiner
+the same script and logon task work over both connections. FKeyIME (Path B) also acts on the key;
+it hasn't been tested over Bluetooth yet. That differs from macOS, where Karabiner
 needs a second device entry for the Bluetooth Studio (`../07-hhkb-studio.md`).
 
 Windows sees the Studio as a **Bluetooth LE** HID device named `HHKB-Studio<n>`, where n is the

@@ -83,7 +83,7 @@ whether importing replaces the profiles already on the keyboard, and ask the use
 
 The language keys send the same codes as the HHKB setups, so the existing switchers work:
 
-| Key | macOS (`../docs/04-hammerspoon.md`) | Windows (`../docs/windows/03-autohotkey.md`) |
+| Key | macOS (`../docs/04-hammerspoon.md`) | Windows, Path A (`../docs/windows/03-autohotkey.md`) |
 | --- | --- | --- |
 | F18 | Korean 2-Set (Hammerspoon, any keyboard) | Korean (AutoHotkey) |
 | F19 | **No handler by default.** Bind it to ABC (`../docs/05-customization.md`) | English (AutoHotkey) |
@@ -106,5 +106,7 @@ The language keys send the same codes as the HHKB setups, so the existing switch
   (`kbd106.dll`) to match JIS keycaps. On ANSI keycaps that makes English (F19) and Japanese (F20)
   type symbols that don't match the keys. Not tested on this keyboard: ask the user how they want
   it before changing the layout.
+- **Windows Path B (FKeyIME) doesn't fit this keyboard:** FKeyIME types the JIS keycap symbols
+  from its own table, which don't match ANSI keycaps. Use Path A.
 - Tested only on the owner's TFG Magnetox. Measure (Karabiner-EventViewer on macOS, AutoHotkey
   KeyHistory on Windows); don't assume another board sends the same codes.
