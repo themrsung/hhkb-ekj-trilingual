@@ -13,6 +13,7 @@ and enable that source in System Settings → Keyboard → Input Sources.
 | Target | Input source ID |
 | --- | --- |
 | Korean 2-Set (default) | `com.apple.inputmethod.Korean.2SetKorean` |
+| JIS Korean (optional, third-party; `09-jis-korean.md`) | `me.sjun.inputmethod.JISKorean` |
 | Korean 3-Set (390 / Final) | `com.apple.inputmethod.Korean.390Sebulshik` / `com.apple.inputmethod.Korean.3SetKorean` |
 | German QWERTZ | `com.apple.keylayout.German` |
 | Swiss German QWERTZ | `com.apple.keylayout.SwissGerman` |

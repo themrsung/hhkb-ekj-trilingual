@@ -47,6 +47,8 @@ Notes:
   untouched so `_` still works. `from.modifiers.optional` lists only `caps_lock`, so a held
   Shift means *no match* and the key passes through. The `input_source_unless language ^ja$`
   condition keeps ろ typeable in Japanese Kana. Without it, ろ would be impossible to type.
+  **With JIS Korean** (`09-jis-korean.md`), add JIS Korean to that condition as well: it types
+  `\` / `_` on ろ itself, and the rule's Option+¥ would make it commit mid-syllable.
 - **D** is a global rule that came before the HHKB setup. The HHKB is the keyboard that sends
   `print_screen` (via Fn+I), so it's part of this behavior set. Leave it out only if the user
   asks.

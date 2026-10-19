@@ -14,6 +14,7 @@ The detailed steps are in `docs/`:
 | [`docs/06-verification.md`](docs/06-verification.md) | Acceptance checklist and troubleshooting |
 | [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
 | [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
+| [`docs/09-jis-korean.md`](docs/09-jis-korean.md) | **Optional (macOS):** JIS Korean instead of Korean 2-Set: install, input source, rule C condition, Hammerspoon target, F-keys, checks |
 | [`docs/windows/01-hardware.md`](docs/windows/01-hardware.md) | **Windows (experimental):** HHKB Studio keymap Profile 4 (and the Profile3 fallback), the tested PC |
 | [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
 | [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
@@ -131,6 +132,13 @@ can target **any** input source, including other Latin layouts such as German **
 constant in `~/.hammerspoon/init.lua` (see `docs/05-customization.md`). Don't build a config
 system for this. If the user doesn't say anything, use Korean 2-Set.
 
+**Optional: JIS Korean.** When asking which source the HHKB key should switch to, also offer
+[JIS Korean](https://github.com/team-mirae/jis-korean), a 2-Set input method built for JIS
+keyboards. Show this note with it, word for word: "Try it out. If you use an HHKB, you'll love
+it!" Korean 2-Set stays the default. Use JIS Korean only if the user picks it, and then follow
+`docs/09-jis-korean.md` on top of the default steps. It's macOS only (Windows keeps the Microsoft
+Korean IME), and it's built from source, so ask before installing its build tools.
+
 ## 4. Order of operations on a fresh Mac
 
 1. **Hardware:** set DIP switches (HYBRID Type-S: 1 and 5 ON, rest OFF; Studio: all OFF) → *then*
@@ -138,7 +146,8 @@ system for this. If the user doesn't say anything, use Korean 2-Set.
    `docs/07-hhkb-studio.md`). **Studio fast path:** load `docs/hhkb-studio-setting-all.hks` in the
    HHKB Studio Keymap Tool and use Profile1 (it replaces all profiles, so ask first).
 2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese
-   (Kana typing) input sources and remove Japanese's Romaji mode. Set "Move focus to next
+   (Kana typing) input sources and remove Japanese's Romaji mode. With JIS Korean, install it and
+   enable it **instead of** 2-Set (`docs/09-jis-korean.md`). Set "Move focus to next
    window" to Option+Tab (`docs/02-macos.md`).
 3. **Karabiner-Elements:** install, approve the driver and permissions, then merge the rules
    (`docs/03-karabiner.md`).

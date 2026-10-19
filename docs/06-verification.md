@@ -2,6 +2,8 @@
 
 Don't call the setup done until every row passes. Rows marked 👤 need the user to press keys and
 tell you the result. Ask them, and don't assume. With both models, run rows 3–14 on **each** HHKB.
+With JIS Korean, read "JIS Korean" for "Korean 2-Set" in rows 5–7, and add the rows in
+`09-jis-korean.md`.
 
 ## Acceptance checklist
 
