@@ -8,3 +8,4 @@ Issues the owner has run into with this setup, and what to do about them. These 
 | [Inter-OS muscle memory](inter-os-muscle-memory.md) | macOS + Windows users | Not caused by this setup. Switching between the two OSes takes practice |
 | [DIP switch 6: power saving](dip-switch-6-power-saving.md) | HHKB Studio, mostly over Bluetooth | SW6 is inverted (OFF = power saving on). If the keyboard keeps sleeping, flip SW6 ON |
 | [Inconsistent symbol typing on Windows](windows-inconsistent-symbols.md) | Windows | Symbols come out US ANSI. Press F19 (English) or F20 (かな) to get JIS back |
+| [JIS Korean with a non-JIS built-in keyboard](jis-korean-non-jis-built-in.md) | macOS, JIS Korean, US/ISO MacBook | Keep 2-Set Korean for the built-in keyboard. Caps Lock / Ctrl+Space may land on JIS Korean; Ctrl+Option+Space steps on |

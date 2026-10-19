@@ -15,7 +15,7 @@ built for JIS keyboards. Every standard 2-Set key still types what it always did
 Try it out. If you use an HHKB, you'll love it!
 
 Checked with **JIS Korean 0.1.0** on macOS 27.0.1, Hammerspoon 1.1.1, Karabiner-Elements 16.3.0,
-and the HYBRID Type-S JIS. **macOS only**: there's no Windows build yet, so the Windows setup
+the HYBRID Type-S JIS, and the HHKB Studio JIS over Bluetooth. **macOS only**: there's no Windows build yet, so the Windows setup
 (`docs/windows/`) keeps the Microsoft Korean IME.
 
 The default setup carries over unchanged except for four steps:
@@ -39,7 +39,9 @@ targets:
 
 ```sh
 xcode-select --install                     # if the Command Line Tools aren't there yet
-brew install rustup && rustup-init -y      # or the installer from rustup.rs
+brew install rustup                        # or the installer from rustup.rs
+export PATH="$(brew --prefix rustup)/bin:$PATH"   # Homebrew's rustup is keg-only, see below
+rustup default stable
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
 git clone --depth 1 --branch v0.1.0 https://github.com/team-mirae/jis-korean.git
@@ -49,6 +51,16 @@ plutil -extract CFBundleShortVersionString raw ~/Library/Input\ Methods/JISKorea
 
 Ask the user before installing Rust or the Command Line Tools.
 
+- **Homebrew's `rustup` is keg-only and has no `rustup-init`** (Homebrew 7.0.7, rustup 1.29.1).
+  Its `rustup`, `cargo` and `rustc` live in `$(brew --prefix rustup)/bin`, which isn't on PATH.
+  `rustup default stable` installs the toolchain. The Makefile finds cargo with
+  `command -v cargo` (falling back to `~/.cargo/bin/cargo`), so keep that PATH for `make`, and
+  for any later rebuild or `make … uninstall`. With the rustup.rs installer, `~/.cargo/bin` is used instead.
+- `git clone --branch v0.1.0` warns `refs/tags/v0.1.0 … is not a commit!`. That's harmless:
+  v0.1.0 is an annotated tag and git checks out the commit it points to (`28d7d8e`, "Release 0.1.0").
+- `make install` prints `TISFileInterrogator … old data invalid` and "duplicate keyboard layout
+  identifier … replaced" lines about unrelated system layouts. Also harmless. It ends with "Registered.".
+
 ## 2. Input sources
 
 The **user** adds it: System Settings → Keyboard → Text Input → Input Sources → Edit… → **+** →
@@ -56,17 +68,47 @@ Korean → **JIS Korean**. If it isn't in the list, log out and back in once.
 
 Enable exactly ABC, Japanese – Kana and JIS Korean. Don't enable 2-Set Korean next to it. If it's
 already enabled, remove both the 2-Set Korean mode and its parent "Korean" entry (Edit… → select →
-**−**), or an empty "Korean" item can linger.
+**−**), or an empty "Korean" item can linger. **Exception:** a Mac whose built-in keyboard isn't
+JIS keeps 2-Set Korean (next section).
 
 Check:
 
 ```sh
-defaults read com.apple.HIToolbox AppleEnabledInputSources | grep -B1 -A2 JISKorean
-# Bundle ID = "me.sjun.inputmethod.JISKorean"; InputSourceKind = "Non Keyboard Input Method"
+defaults read com.apple.inputsources AppleEnabledThirdPartyInputSources
+# Bundle ID = "me.sjun.inputmethod.JISKorean"; InputSourceKind = "Keyboard Input Method"
 ```
 
-`hs.keycodes.methods(true)` **won't** list JIS Korean. It lists input modes only, and JIS Korean is
-an input method without modes. Use the check above, or select it and read it back (step 4).
+Third-party input methods are recorded there, **not** in `com.apple.HIToolbox
+AppleEnabledInputSources`. On macOS 27.0.1, JIS Korean shows up in HIToolbox only under
+`AppleInputSourceHistory`, so grepping `AppleEnabledInputSources` gives a false "not enabled".
+
+`hs.keycodes.methods(true)` **won't** list JIS Korean either. It lists input modes only, and JIS
+Korean is an input method without modes. Use the check above, or select it and read it back (step 4).
+
+### Non-JIS built-in keyboard: keep 2-Set Korean too
+
+On a MacBook with a US (ANSI) or ISO built-in keyboard, the usual setup lets Karabiner **ignore**
+the built-in keyboard (`03-karabiner.md`, "Non-JIS built-in keyboard"). macOS then reads it as a
+plain ANSI/ISO board. JIS Korean reads physical JIS key codes, so it doesn't fit that keyboard:
+ㅃ ㅉ ㄸ ㄲ ㅆ / ㅟ ㅝ ㅚ ㅢ ㅘ take over the number row (`1` types ㅃ, and Shift+`1` types `1`
+instead of `!`), the symbol keys get Korean punctuation the keycaps don't show, and ¥ and ろ don't exist.
+
+So, when the Mac is also used without the HHKB:
+
+- Enable **both** JIS Korean and 2-Set Korean (with its parent "Korean" entry). The input sources
+  are ABC, Japanese – Kana, JIS Korean and 2-Set Korean.
+- The **HHKB key** (F18 → Hammerspoon) always selects **JIS Korean**. Nothing else changes in step 4.
+- The **built-in keyboard** keeps using macOS's own switching (Caps Lock toggles ABC, Ctrl+Space
+  selects the previous source, Ctrl+Option+Space the next one) and types Korean in **2-Set**.
+- The user adds JIS Korean in the same Edit… sheet that lists 2-Set. Removing 2-Set out of habit
+  is easy because of the step above. If 2-Set was removed by accident,
+  `hs.keycodes.currentSourceID("com.apple.inputmethod.Korean.2SetKorean")` returns `false` and the
+  source doesn't change. Add 2-Set Korean back (+ → Korean → 2-Set Korean).
+
+Checked on a MacBook with a US ANSI built-in keyboard (ignored by Karabiner) plus an HHKB Studio
+over Bluetooth, macOS 27.0.1. Known catch: Caps Lock and Ctrl+Space return to the *most recently
+used* source, which can be JIS Korean. See
+[`../issues/jis-korean-non-jis-built-in.md`](../issues/jis-korean-non-jis-built-in.md).
 
 ## 3. Karabiner: keep rule C away from JIS Korean
 
@@ -114,6 +156,11 @@ local KOREAN = "me.sjun.inputmethod.JISKorean"
 
 Keep everything else, including the guarded retry, and reload from the menu bar.
 `hs -c 'hs.reload()'` doesn't return, because the reload drops the connection the CLI waits on.
+If an agent has to reload from a script, put a timeout on it:
+`perl -e 'alarm 3; exec @ARGV' hs -c 'hs.reload()'`. It then exits 69 with `message port was
+invalidated`, but the reload goes through (the Hammerspoon console shows `Enabled hotkey F18`).
+Put the same timeout on scripted `hs -c` source selections: one hung for minutes while input
+sources were being edited in System Settings. Hammerspoon itself stayed responsive.
 
 ```sh
 hs -c 'hs.keycodes.currentSourceID()'     # after pressing the HHKB key → me.sjun.inputmethod.JISKorean

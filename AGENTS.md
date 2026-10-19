@@ -19,7 +19,7 @@ The detailed steps are in `docs/`:
 | [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
 | [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
 | [`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks) | HHKB Studio settings export, all profiles: the quick way to set up a Studio for either OS |
-| [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows. Check here before "fixing" something |
+| [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows, JIS Korean with a non-JIS built-in keyboard. Check here before "fixing" something |
 | [`layout-104-or-108-key/`](layout-104-or-108-key/README.md) | **Not an HHKB, support limited:** a full-size 104 / 108-key US ANSI keyboard (TFG Magnetox) sending F18 / F19 / F20 / F17. Only if the user insists |
 
 Software configuration lives as code blocks inside these Markdown files. Write those blocks into
@@ -147,7 +147,8 @@ Korean IME), and it's built from source, so ask before installing its build tool
    HHKB Studio Keymap Tool and use Profile1 (it replaces all profiles, so ask first).
 2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese
    (Kana typing) input sources and remove Japanese's Romaji mode. With JIS Korean, install it and
-   enable it **instead of** 2-Set (`docs/09-jis-korean.md`). Set "Move focus to next
+   enable it **instead of** 2-Set (`docs/09-jis-korean.md`), or **next to** 2-Set if the Mac's
+   built-in keyboard isn't JIS (`docs/09-jis-korean.md`, "Non-JIS built-in keyboard"). Set "Move focus to next
    window" to Option+Tab (`docs/02-macos.md`).
 3. **Karabiner-Elements:** install, approve the driver and permissions, then merge the rules
    (`docs/03-karabiner.md`).
@@ -175,6 +176,8 @@ Korean IME), and it's built from source, so ask before installing its build tool
   it type the wrong symbols. Tell the user, and offer to set the built-in keyboard's device entry
   to `ignore: true` (`docs/03-karabiner.md`, "Non-JIS built-in keyboard"). Check first whether any
   *enabled* Karabiner rule targets the built-in keyboard, because ignoring it turns those off.
+  With JIS Korean on such a Mac, keep 2-Set Korean enabled for the built-in keyboard, and don't
+  remove it (`issues/jis-korean-non-jis-built-in.md`).
 - Check with **Karabiner-EventViewer** (key codes) and the input menu or
   `hs -c 'hs.keycodes.currentSourceID()'` (active source). Don't assume.
 
