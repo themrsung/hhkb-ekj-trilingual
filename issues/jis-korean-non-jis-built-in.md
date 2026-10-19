@@ -10,7 +10,7 @@ Two Korean input sources are enabled on purpose:
 
 | Keyboard | Switches with | Korean source |
 | --- | --- | --- |
-| HHKB (JIS) | HHKB key → F18 → Hammerspoon | **JIS Korean** (`me.sjun.inputmethod.JISKorean`) |
+| HHKB (JIS) | HHKB key → F18 → Hammerspoon | **JIS Korean** (`me.sjun.inputmethod.JISKorean.2Set`) |
 | Built-in (US ANSI / ISO, ignored by Karabiner) | Caps Lock, Ctrl+Space, Ctrl+Option+Space | **2-Set Korean** (`com.apple.inputmethod.Korean.2SetKorean`) |
 
 JIS Korean reads physical JIS key codes. On an ANSI board, the number row would type double

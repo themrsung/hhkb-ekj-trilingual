@@ -1,6 +1,7 @@
-# 09 — Optional: JIS Korean instead of Korean 2-Set (macOS)
+# 09 — Recommended option: JIS Korean instead of Korean 2-Set (macOS)
 
-**Korean 2-Set stays the default.** This page is the alternative for users who pick it.
+**Korean 2-Set stays the default, but JIS Korean is recommended** for anyone typing Korean on a JIS
+HHKB. This page is for users who pick it.
 
 [JIS Korean](https://github.com/team-mirae/jis-korean) is a Korean 2-Set (두벌식) input method
 built for JIS keyboards. Every standard 2-Set key still types what it always did. The JIS keys
@@ -11,10 +12,15 @@ built for JIS keyboards. Every standard 2-Set key still types what it always did
 - Korean punctuation on the symbol keys: `·` on `/`, `「」` on Shift+`[` / `]`, `—` on ¥.
 - Japanese-IME-style F6–F10: F6 commits, F7 hanja, F8 a temporary escape to standard 2-Set with
   stock JIS symbols (Shift+F8 returns), F9 / F10 full- and half-width letters.
+- `(` and `)` on the `^` key (Shift+¥ types `^`).
+- Predictions with a suggestion list, learning from your choices (local only), and per-app switches
+  in the input menu to stop learning or predicting in an app. Prediction starts off in terminals,
+  file-transfer apps, Finder and other sensitive apps, and in Minecraft.
+- Keyboard Viewer shows JIS Korean's legends while it's active.
 
 Try it out. If you use an HHKB, you'll love it!
 
-Checked with **JIS Korean 0.1.0** on macOS 27.0.1, Hammerspoon 1.1.1, Karabiner-Elements 16.3.0,
+Checked with **JIS Korean at commit `a1a38e4`** (after 0.1.0, not a tagged release yet) on macOS 27.0.1, Hammerspoon 1.1.1, Karabiner-Elements 16.3.0,
 the HYBRID Type-S JIS, and the HHKB Studio JIS over Bluetooth. **macOS only**: there's no Windows build yet, so the Windows setup
 (`docs/windows/`) keeps the Microsoft Korean IME.
 
@@ -24,16 +30,16 @@ The default setup carries over unchanged except for four steps:
 | --- | --- | --- |
 | Input source (`02-macos.md`) | Korean → 2-Set Korean | **JIS Korean**, installed from source (step 1 below) |
 | Karabiner rule C (`03-karabiner.md`) | skipped for `ja` | skipped for `ja` **and JIS Korean** (step 3) |
-| Hammerspoon (`04-hammerspoon.md`) | `KOREAN = "com.apple.inputmethod.Korean.2SetKorean"` | `KOREAN = "me.sjun.inputmethod.JISKorean"` (step 4) |
+| Hammerspoon (`04-hammerspoon.md`) | `KOREAN = "com.apple.inputmethod.Korean.2SetKorean"` | `KOREAN = "me.sjun.inputmethod.JISKorean.2Set"` (step 4) |
 | Function keys | as you like | **F1, F2, etc. as standard function keys** (step 5) |
 
 Everything else stays as it is: the always-select plus guarded-retry structure, bare F18, 英数 → ABC,
 かな → Kana, and JIS keyboard types for each HHKB and for Karabiner's virtual keyboard. JIS Korean
 reads physical key codes, and ¥ and ろ only arrive correctly with a JIS keyboard type.
 
-## 1. Install JIS Korean 0.1
+## 1. Install JIS Korean
 
-Pinned to tag **`v0.1.0`**. It's built from source (it's only ad-hoc signed, so a downloaded
+Pinned to commit **`a1a38e4`**. It's built from source (it's only ad-hoc signed, so a downloaded
 build would be blocked by Gatekeeper). It needs the Xcode Command Line Tools and Rust with both Mac
 targets:
 
@@ -44,9 +50,9 @@ export PATH="$(brew --prefix rustup)/bin:$PATH"   # Homebrew's rustup is keg-onl
 rustup default stable
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
-git clone --depth 1 --branch v0.1.0 https://github.com/team-mirae/jis-korean.git
+git clone https://github.com/team-mirae/jis-korean.git
+git -C jis-korean checkout a1a38e4
 make -C jis-korean/mac install             # builds JISKorean.app, copies it to ~/Library/Input Methods, registers it
-plutil -extract CFBundleShortVersionString raw ~/Library/Input\ Methods/JISKorean.app/Contents/Info.plist   # 0.1.0
 ```
 
 Ask the user before installing Rust or the Command Line Tools.
@@ -56,10 +62,19 @@ Ask the user before installing Rust or the Command Line Tools.
   `rustup default stable` installs the toolchain. The Makefile finds cargo with
   `command -v cargo` (falling back to `~/.cargo/bin/cargo`), so keep that PATH for `make`, and
   for any later rebuild or `make … uninstall`. With the rustup.rs installer, `~/.cargo/bin` is used instead.
-- `git clone --branch v0.1.0` warns `refs/tags/v0.1.0 … is not a commit!`. That's harmless:
-  v0.1.0 is an annotated tag and git checks out the commit it points to (`28d7d8e`, "Release 0.1.0").
 - `make install` prints `TISFileInterrogator … old data invalid` and "duplicate keyboard layout
-  identifier … replaced" lines about unrelated system layouts. Also harmless. It ends with "Registered.".
+  identifier … replaced" lines about unrelated system layouts. Harmless. It ends with
+  "Registered (with its Keyboard Viewer layout).", after "Re-enabled the input source." on an
+  upgrade.
+- **Upgrading or reinstalling: run `make install` only, never `make uninstall` first.** If the app is
+  missing for a while (an uninstall followed by a rebuild), apps that were already running can't
+  start JIS Korean again until they're restarted: the menu shows JIS Korean but Latin letters come
+  out. Quit and reopen the app, or log out and back in. Details:
+  [`docs/troubleshooting/macos-input-method-not-launching.md`](https://github.com/team-mirae/jis-korean/blob/a1a38e4/docs/troubleshooting/macos-input-method-not-launching.md)
+  in the JIS Korean repo.
+- **Upgrading from 0.1.0:** the input source is now an input mode, `me.sjun.inputmethod.JISKorean.2Set`.
+  Update the Hammerspoon constant (step 4) and rule C's condition (step 3). If JIS Korean isn't in
+  the input menu after the upgrade, remove it in Input Sources and add it again.
 
 ## 2. Input sources
 
@@ -78,12 +93,12 @@ defaults read com.apple.inputsources AppleEnabledThirdPartyInputSources
 # Bundle ID = "me.sjun.inputmethod.JISKorean"; InputSourceKind = "Keyboard Input Method"
 ```
 
-Third-party input methods are recorded there, **not** in `com.apple.HIToolbox
-AppleEnabledInputSources`. On macOS 27.0.1, JIS Korean shows up in HIToolbox only under
+Expect two entries, the input method and its mode (`"Input Mode" =
+"me.sjun.inputmethod.JISKorean.2Set"`). Third-party input methods are recorded there, **not** in
+`com.apple.HIToolbox AppleEnabledInputSources`. On macOS 27.0.1, JIS Korean shows up in HIToolbox only under
 `AppleInputSourceHistory`, so grepping `AppleEnabledInputSources` gives a false "not enabled".
 
-`hs.keycodes.methods(true)` **won't** list JIS Korean either. It lists input modes only, and JIS
-Korean is an input method without modes. Use the check above, or select it and read it back (step 4).
+`hs.keycodes.methods(true)` lists it as `me.sjun.inputmethod.JISKorean.2Set`.
 
 ### Non-JIS built-in keyboard: keep 2-Set Korean too
 
@@ -125,13 +140,17 @@ Use this condition list in rule C, both in the fresh-install JSON and after a me
     "type": "input_source_unless",
     "input_sources": [
       { "language": "^ja$" },
-      { "input_source_id": "^me\\.sjun\\.inputmethod\\.JISKorean$" }
+      { "input_source_id": "^me\\.sjun\\.inputmethod\\.JISKorean(\\..*)?$" }
     ]
   }
 ]
 ```
 
-On an existing install, back up `karabiner.json`, then add the entry idempotently:
+The pattern covers the input mode (`….JISKorean.2Set`). With only `…JISKorean$`, as written for
+0.1.0, ろ types Option+¥ in JIS Korean.
+
+On an existing install, back up `karabiner.json`, then add the entry idempotently (it also replaces
+the 0.1.0 pattern):
 
 ```sh
 KJ=~/.config/karabiner/karabiner.json
@@ -139,8 +158,8 @@ cp "$KJ" "$KJ.bak-$(date +%Y%m%d%H%M%S)"
 jq '(.profiles[] | select(.selected==true) | .complex_modifications.rules[]
      | select(.description | startswith("JIS ろ")) | .manipulators[].conditions[]
      | select(.type=="input_source_unless") | .input_sources)
-    |= (if any(.[]; .input_source_id? == "^me\\.sjun\\.inputmethod\\.JISKorean$") then .
-        else . + [{"input_source_id": "^me\\.sjun\\.inputmethod\\.JISKorean$"}] end)' \
+    |= (map(select((.input_source_id? // "") | startswith("^me\\.sjun\\.inputmethod\\.JISKorean") | not))
+        + [{"input_source_id": "^me\\.sjun\\.inputmethod\\.JISKorean(\\..*)?$"}])' \
   "$KJ" > "$KJ.tmp" && mv "$KJ.tmp" "$KJ" && chmod 600 "$KJ"
 ```
 
@@ -151,7 +170,7 @@ In the `~/.hammerspoon/init.lua` block from `04-hammerspoon.md`, change only the
 ```lua
 -- to_korean key → JIS Korean. F18 comes from the HHKB Studio's keymap, or from Karabiner
 -- (HYBRID Type-S HHKB key, remapped from `)
-local KOREAN = "me.sjun.inputmethod.JISKorean"
+local KOREAN = "me.sjun.inputmethod.JISKorean.2Set"
 ```
 
 Keep everything else, including the guarded retry, and reload from the menu bar.
@@ -163,7 +182,7 @@ Put the same timeout on scripted `hs -c` source selections: one hung for minutes
 sources were being edited in System Settings. Hammerspoon itself stayed responsive.
 
 ```sh
-hs -c 'hs.keycodes.currentSourceID()'     # after pressing the HHKB key → me.sjun.inputmethod.JISKorean
+hs -c 'hs.keycodes.currentSourceID()'     # after pressing the HHKB key → me.sjun.inputmethod.JISKorean.2Set
 ```
 
 **The ~1% lost switch** (`04-hammerspoon.md`, "Known issue") wasn't seen with JIS Korean in
@@ -194,16 +213,17 @@ Run `06-verification.md` with **JIS Korean** wherever it says Korean 2-Set (rows
 | J3 | 👤 `gkrry` (학교), then F7, then `1` | 學校 |
 | J4 | 👤 F8, then `1` | `1` (stock JIS). Shift+F8, then `1` → ㅃ again |
 | J5 | 👤 `gks`, then F10 | `gks`. F10 again → `GKS` |
+| J6 | 👤 `^`, then Shift+`^` | `()`. Shift+¥ → `^` |
+| J7 | 👤 Input menu → Show Keyboard Viewer | Korean legends (ㅂ on Q, `(` on `^`) |
 
 Don't verify by typing in an app where Karabiner remaps letter keys (for example, a rule scoped to
 TextEdit): Karabiner changes the keys before JIS Korean sees them.
 
-## Known limits of JIS Korean 0.1
+## Known limits of JIS Korean
 
-- **No hanja candidate window on macOS.** F7 shows the selected candidate inline. F7 or ↓ moves to
-  the next one, and 1–9 pick, but the list isn't drawn yet.
 - It's built from source and ad-hoc signed.
-- Behavior can change between JIS Korean versions. This page is checked against 0.1.0 only.
+- Its menu bar badge (한) is a shade lighter than Apple's Korean badges in System Settings.
+- Behavior can change between JIS Korean versions. This page is checked against commit `a1a38e4`.
 
 ## Switching back to 2-Set
 

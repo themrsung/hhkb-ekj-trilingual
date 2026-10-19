@@ -3,7 +3,7 @@
 Checked with Hammerspoon **1.1.1**.
 
 Using **JIS Korean** instead of 2-Set (`09-jis-korean.md`)? Everything here applies. Only the
-`KOREAN` constant changes, and `hs.keycodes.methods()` won't list it (see that page).
+`KOREAN` constant changes (see that page).
 
 ## Why Hammerspoon (and not Karabiner `select_input_source`)
 

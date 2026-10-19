@@ -132,10 +132,10 @@ can target **any** input source, including other Latin layouts such as German **
 constant in `~/.hammerspoon/init.lua` (see `docs/05-customization.md`). Don't build a config
 system for this. If the user doesn't say anything, use Korean 2-Set.
 
-**Optional: JIS Korean.** When asking which source the HHKB key should switch to, also offer
+**Optional, recommended: JIS Korean.** When asking which source the HHKB key should switch to, also offer
 [JIS Korean](https://github.com/team-mirae/jis-korean), a 2-Set input method built for JIS
 keyboards. Show this note with it, word for word: "Try it out. If you use an HHKB, you'll love
-it!" Korean 2-Set stays the default. Use JIS Korean only if the user picks it, and then follow
+it!" Present it as recommended, but Korean 2-Set stays the default: use JIS Korean only if the user picks it, and then follow
 `docs/09-jis-korean.md` on top of the default steps. It's macOS only (Windows keeps the Microsoft
 Korean IME), and it's built from source, so ask before installing its build tools.
 
