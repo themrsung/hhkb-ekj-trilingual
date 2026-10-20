@@ -74,7 +74,7 @@ On the Studio, over USB and over Bluetooth if you use both:
 | Check | Expected |
 | --- | --- |
 | Karabiner-EventViewer, press the F18 key | `f18` |
-| From ABC, press F18 | Korean 2-Set, overlay shown once |
+| From ABC, press F18 | JIS Korean, overlay shown once |
 | Fn1+P with music playing | Play/Pause (still Karabiner) |
 | Hold Fn1 or Fn2 and press F18 | Still `f18` (the key is F18 on every layer) |
 | HYBRID Type-S HHKB key | Still `f18` → Korean (its `` ` `` remap is untouched) |

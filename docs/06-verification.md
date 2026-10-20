@@ -2,8 +2,7 @@
 
 Don't call the setup done until every row passes. Rows marked 👤 need the user to press keys and
 tell you the result. Ask them, and don't assume. With both models, run rows 3–14 on **each** HHKB.
-With JIS Korean, read "JIS Korean" for "Korean 2-Set" in rows 5–7, and add the rows in
-`09-jis-korean.md`.
+Then run the JIS Korean rows J1–J7 in `09-jis-korean.md`.
 
 ## Acceptance checklist
 
@@ -13,25 +12,18 @@ With JIS Korean, read "JIS Korean" for "Korean 2-Set" in rows 5–7, and add the
 | 2 | `defaults read /Library/Preferences/com.apple.keyboardtype` | each HHKB (`34-1278-…`, `21-1278-0`) = 42; Karabiner virtual keyboard (`593-1452-0`) = 42 |
 | 3 | 👤 Press the key left of A + C in Terminal | Interrupts (Control) |
 | 4 | 👤 EventViewer: bottom row left → right | `fn`, `f18` (HHKB key on the HYBRID Type-S, F18 key on the Studio), `left_option`, `left_command`, `japanese_eisuu`, `spacebar`, `japanese_kana`, `right_command`, `right_option`, `fn`, arrows |
-| 5 | 👤 From ABC, press HHKB key | Korean 2-Set, overlay shown **once** |
-| 6 | 👤 From Japanese, press HHKB key | Korean 2-Set, overlay shown **once** |
-| 7 | 👤 While in Korean, press HHKB key | Still Korean 2-Set; key is never "dead" |
+| 5 | 👤 From ABC, press HHKB key | JIS Korean, overlay shown **once** |
+| 6 | 👤 From Japanese, press HHKB key | JIS Korean, overlay shown **once** |
+| 7 | 👤 While in Korean, press HHKB key | Still JIS Korean; key is never "dead" |
 | 8 | 👤 From Korean or Japanese, press 英数 | ABC (English QWERTY) |
 | 9 | 👤 From ABC or Korean, press かな | Japanese, **Kana** typing (`a` key types ち) |
 | 10 | 👤 In ABC: ろ / Shift+ろ | `\` / `_` |
-| 11 | 👤 In Korean 2-Set: ろ / Shift+ろ | `\` / `_` (`¥` / `_` is acceptable, see the note below) |
+| 11 | 👤 In JIS Korean: ろ / Shift+ろ | `\` / `_` (JIS Korean types these itself; Karabiner's rule C must skip it) |
 | 12 | 👤 In Japanese Kana: ろ | ろ |
 | 13 | 👤 Fn+P with music playing | Play/Pause toggles |
 | 14 | 👤 Fn+I | Screenshot selection crosshair (Cmd+Shift+4) |
 | 15 | 👤 Option+Tab with two windows of the same app | Focus moves to the app's other window |
 | 16 | Reboot or log out/in, repeat 5 and 8–9 | Still works (Karabiner and Hammerspoon start at login) |
-
-> **Note on row 11 (Korean 2-Set: ろ types `¥`).** On a MacBook Air (M4) running macOS 27.0.1, with
-> an HHKB Studio JIS connected over **Bluetooth** (`HHKB-Studio3`, Karabiner-Elements 16.3.0,
-> Hammerspoon 1.1.1), ろ typed `¥` instead of `\` in Korean 2-Set. Shift+ろ still typed `_`, and in
-> ABC ろ typed `\` as expected. Rows 3–15 otherwise passed (row 16 was not run). The rule sends Option+¥, and Korean 2-Set
-> evidently keeps that as `¥`. This is acceptable and not treated as a failure: use ABC (英数)
-> when you need `\`. No extra rule was added for it.
 
 ## Troubleshooting
 

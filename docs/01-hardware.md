@@ -64,7 +64,7 @@ nothing to write. On the Studio, set key 2 to **F18** in its keymap tool (`07-hh
 | # | Legend / role | Must emit (Karabiner key code) | macOS meaning |
 | --- | --- | --- | --- |
 | 1 | Fn | (HHKB internal Fn layer) | — |
-| 2 | **HHKB** (logo key) on the HYBRID Type-S; **F18** (the 半/全 position) on the Studio | HYBRID Type-S: `grave_accent_and_tilde`. Studio: `f18` | HYBRID Type-S: Karabiner turns it into `f18`. Studio: sends `f18` itself. Either way → Korean 2-Set |
+| 2 | **HHKB** (logo key) on the HYBRID Type-S; **F18** (the 半/全 position) on the Studio | HYBRID Type-S: `grave_accent_and_tilde`. Studio: `f18` | HYBRID Type-S: Karabiner turns it into `f18`. Studio: sends `f18` itself. Either way → Korean (JIS Korean) |
 | 3 | Option | `left_option` | ⌥ |
 | 4 | Command | `left_command` | ⌘ |
 | 5 | **英数 (Romaji)** | `japanese_eisuu` | → English ABC |

@@ -6,14 +6,14 @@ to this repo.
 
 ## HHKB key → any input source
 
-Korean 2-Set is plug-and-play, but the HHKB key can switch to **any** input source. Change the
+The HHKB key selects JIS Korean by default, but it can switch to **any** input source. Change the
 `KOREAN` constant in `~/.hammerspoon/init.lua` (renaming it is fine) to the target source's ID,
 and enable that source in System Settings → Keyboard → Input Sources.
 
 | Target | Input source ID |
 | --- | --- |
-| Korean 2-Set (default) | `com.apple.inputmethod.Korean.2SetKorean` |
-| JIS Korean (optional, recommended, third-party; `09-jis-korean.md`) | `me.sjun.inputmethod.JISKorean.2Set` |
+| JIS Korean (default, third-party; `09-jis-korean.md`) | `me.sjun.inputmethod.JISKorean.2Set` |
+| Korean 2-Set (**no longer maintained**; last set up in `v1.7.1`) | `com.apple.inputmethod.Korean.2SetKorean` |
 | Korean 3-Set (390 / Final) | `com.apple.inputmethod.Korean.390Sebulshik` / `com.apple.inputmethod.Korean.3SetKorean` |
 | German QWERTZ | `com.apple.keylayout.German` |
 | Swiss German QWERTZ | `com.apple.keylayout.SwissGerman` |

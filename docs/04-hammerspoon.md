@@ -1,9 +1,9 @@
-# 04 — Hammerspoon: HHKB key → Korean 2-Set
+# 04 — Hammerspoon: HHKB key → JIS Korean
 
 Checked with Hammerspoon **1.1.1**.
 
-Using **JIS Korean** instead of 2-Set (`09-jis-korean.md`)? Everything here applies. Only the
-`KOREAN` constant changes (see that page).
+The target is **JIS Korean** (`09-jis-korean.md`); install it before checking this step. Another
+target only changes the `KOREAN` constant (`05-customization.md`).
 
 ## Why Hammerspoon (and not Karabiner `select_input_source`)
 
@@ -37,9 +37,9 @@ block, keeping the user's other code. Don't load `hs.ipc` twice.
 ```lua
 require("hs.ipc") -- lets the `hs` CLI query this instance
 
--- to_korean key → Korean 2-Set. F18 comes from the HHKB Studio's keymap, or from Karabiner
+-- to_korean key → JIS Korean. F18 comes from the HHKB Studio's keymap, or from Karabiner
 -- (HYBRID Type-S HHKB key, remapped from `)
-local KOREAN = "com.apple.inputmethod.Korean.2SetKorean"
+local KOREAN = "me.sjun.inputmethod.JISKorean.2Set"
 
 local function toKorean()
   -- Always select, even if Korean is already reported as current: the reported source can be
@@ -62,15 +62,15 @@ Reload: Hammerspoon menu-bar icon → **Reload Config** (or `hs -c 'hs.reload()'
 
 ## Required behavior (don't "simplify" these away)
 
-1. **The HHKB key always selects Korean 2-Set, even when Korean is already active.**
+1. **The HHKB key always selects JIS Korean, even when Korean is already active.**
    An earlier version started with
    `if hs.keycodes.currentSourceID() == KOREAN then return end`. That was **removed**: the
    reported current source can be stale after a switch that didn't take, and the early return left
    the HHKB key dead until the user picked another source by hand. Don't add it back.
 2. **The retry is guarded by a check.** Known bug: the first switch from another language to
-   Korean 2-Set could show the switch overlay **twice**, because every select shows the overlay.
+   Korean could show the switch overlay **twice**, because every select shows the overlay.
    The fix is the guard: after 150 ms, re-select **only if** the current source is *not* already
-   2-Set. Never retry without checking.
+   the Korean target. Never retry without checking.
 3. **Bare F18 only.** `hs.hotkey.bind({}, "f18", …)` has no modifiers. Modified presses of the
    HHKB key do nothing, on purpose.
 
@@ -78,13 +78,13 @@ Reload: Hammerspoon menu-bar icon → **Reload Config** (or `hs -c 'hs.reload()'
 
 ```sh
 hs -c 'hs.keycodes.currentSourceID()'          # after pressing the HHKB key
-# com.apple.inputmethod.Korean.2SetKorean
+# me.sjun.inputmethod.JISKorean.2Set
 hs -c 'hs.inspect(hs.keycodes.methods(true))'  # enabled input methods (IDs)
 hs -c 'hs.inspect(hs.keycodes.layouts(true))'  # enabled keyboard layouts (IDs)
 ```
 
 Press the HHKB key from ABC, from Japanese, and from Korean itself. Each time the result must be
-2-Set Korean, with no double overlay when coming from another language.
+JIS Korean, with no double overlay when coming from another language.
 
 ## Known issue: the switch occasionally doesn't reach the focused text field (unfixed)
 

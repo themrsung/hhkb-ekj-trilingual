@@ -27,9 +27,9 @@ Or download the `.dmg` from <https://karabiner-elements.pqrs.org/>. Then the **u
 
 | # | Scope | From | To | Purpose |
 | --- | --- | --- | --- | --- |
-| A | **HYBRID Type-S only** (simple modification) | `grave_accent_and_tilde` (HHKB key) | `f18` | Hammerspoon catches F18 and selects Korean 2-Set. The Studio sends F18 itself (set in its keymap tool), so it doesn't need this |
+| A | **HYBRID Type-S only** (simple modification) | `grave_accent_and_tilde` (HHKB key) | `f18` | Hammerspoon catches F18 and selects JIS Korean. The Studio sends F18 itself (set in its keymap tool), so it doesn't need this |
 | B | Each HHKB (simple modification) | `pause` (Fn+P) | consumer `play_or_pause` | Media play/pause |
-| C | Global (complex rule) | `international1` (ろ), Caps Lock optional | `international3` (¥) + `left_option` | Types `\` unshifted; Shift+ろ isn't matched and types `_` as usual. **Only when the input source language isn't `ja`** |
+| C | Global (complex rule) | `international1` (ろ), Caps Lock optional | `international3` (¥) + `left_option` | Types `\` unshifted; Shift+ろ isn't matched and types `_` as usual. **Only when the input source language isn't `ja`, and not in JIS Korean** |
 | D | Global (complex rule) | `print_screen` (Fn+I on HHKB), any modifiers | `4` + `left_command` + `left_shift` | Screenshot selection |
 | E | Profile | — | `virtual_hid_keyboard.keyboard_type_v2 = "jis"` | Karabiner's virtual keyboard must report JIS, or ¥/ろ/英数/かな come out wrong |
 
@@ -47,8 +47,8 @@ Notes:
   untouched so `_` still works. `from.modifiers.optional` lists only `caps_lock`, so a held
   Shift means *no match* and the key passes through. The `input_source_unless language ^ja$`
   condition keeps ろ typeable in Japanese Kana. Without it, ろ would be impossible to type.
-  **With JIS Korean** (`09-jis-korean.md`), add JIS Korean to that condition as well: it types
-  `\` / `_` on ろ itself, and the rule's Option+¥ would make it commit mid-syllable.
+  The condition also skips **JIS Korean** (`09-jis-korean.md`, step 3): it types `\` / `_` on ろ
+  itself, and the rule's Option+¥ would make it commit mid-syllable.
 - **D** is a global rule that came before the HHKB setup. The HHKB is the keyboard that sends
   `print_screen` (via Fn+I), so it's part of this behavior set. Leave it out only if the user
   asks.
@@ -96,7 +96,7 @@ Use this only if the file doesn't exist yet or holds only the default empty prof
                 "from": { "key_code": "international1", "modifiers": { "optional": ["caps_lock"] } },
                 "to": [ { "key_code": "international3", "modifiers": ["left_option"] } ],
                 "conditions": [
-                  { "type": "input_source_unless", "input_sources": [ { "language": "^ja$" } ] }
+                  { "type": "input_source_unless", "input_sources": [ { "language": "^ja$" }, { "input_source_id": "^me\\.sjun\\.inputmethod\\.JISKorean(\\..*)?$" } ] }
                 ]
               }
             ]
@@ -163,7 +163,7 @@ jq '
       "manipulators": [ { "type": "basic",
         "from": { "key_code": "international1", "modifiers": { "optional": ["caps_lock"] } },
         "to": [ { "key_code": "international3", "modifiers": ["left_option"] } ],
-        "conditions": [ { "type": "input_source_unless", "input_sources": [ { "language": "^ja$" } ] } ] } ] }
+        "conditions": [ { "type": "input_source_unless", "input_sources": [ { "language": "^ja$" }, { "input_source_id": "^me\\.sjun\\.inputmethod\\.JISKorean(\\..*)?$" } ] } ] } ] }
   ];
   def hhkb_device($ids): {
     "identifiers": $ids,

@@ -32,7 +32,7 @@ Symbols palette can stay):
 | Input source | ID | Notes |
 | --- | --- | --- |
 | **ABC** | `com.apple.keylayout.ABC` | English QWERTY. This is where 英数 lands. |
-| **Korean → 2-Set Korean** (두벌식) | `com.apple.inputmethod.Korean.2SetKorean` | Target of the HHKB key |
+| **Korean → JIS Korean** (두벌식 for JIS) | `me.sjun.inputmethod.JISKorean.2Set` | Target of the HHKB key. Third-party: install it first (`09-jis-korean.md`). Don't enable Apple's 2-Set Korean next to it |
 | **Japanese → Kana** | `com.apple.inputmethod.Japanese` in bundle `com.apple.inputmethod.Kotoeri.KanaTyping` | Target of かな |
 
 ### Japanese must use Kana typing, not Romaji
@@ -50,9 +50,11 @@ Check:
 defaults read com.apple.inputmethod.Kotoeri JIMPrefTypingMethodKey   # 1 = Kana typing
 defaults read com.apple.HIToolbox AppleEnabledInputSources
 # must include: KeyboardLayout Name = ABC;
-#               Input Mode = com.apple.inputmethod.Korean.2SetKorean;
 #               Bundle ID = com.apple.inputmethod.Kotoeri.KanaTyping, Input Mode = com.apple.inputmethod.Japanese
-# must NOT include a com.apple.inputmethod.Roman / Kotoeri "...Roman" input mode
+# must NOT include a com.apple.inputmethod.Roman / Kotoeri "...Roman" input mode,
+#          or com.apple.inputmethod.Korean (2-Set Korean)
+defaults read com.apple.inputsources AppleEnabledThirdPartyInputSources
+# JIS Korean is recorded here, not in HIToolbox (09-jis-korean.md, step 2)
 ```
 
 Native macOS behavior used here (no Karabiner/Hammerspoon involved):

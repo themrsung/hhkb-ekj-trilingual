@@ -9,12 +9,12 @@ The detailed steps are in `docs/`:
 | [`docs/01-hardware.md`](docs/01-hardware.md) | HHKB models (HYBRID Type-S, Studio), DIP switches, firmware keymap (bottom row) |
 | [`docs/02-macos.md`](docs/02-macos.md) | macOS keyboard type, input sources, Japanese Kana typing, Option+Tab window cycling |
 | [`docs/03-karabiner.md`](docs/03-karabiner.md) | Karabiner-Elements install, permissions, the exact rules (JSON) |
-| [`docs/04-hammerspoon.md`](docs/04-hammerspoon.md) | Hammerspoon install and the Korean 2-Set switcher (Lua) |
+| [`docs/04-hammerspoon.md`](docs/04-hammerspoon.md) | Hammerspoon install and the HHKB-key Korean switcher (Lua) |
 | [`docs/05-customization.md`](docs/05-customization.md) | How to point the HHKB / 英数 / かな keys at other input sources (QWERTZ, AZERTY, …) |
 | [`docs/06-verification.md`](docs/06-verification.md) | Acceptance checklist and troubleshooting |
 | [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
 | [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
-| [`docs/09-jis-korean.md`](docs/09-jis-korean.md) | **Optional (macOS):** JIS Korean instead of Korean 2-Set: install, input source, rule C condition, Hammerspoon target, F-keys, checks |
+| [`docs/09-jis-korean.md`](docs/09-jis-korean.md) | **macOS Korean:** JIS Korean, the default: install, input source, rule C condition, Hammerspoon target, F-keys, checks. Korean 2-Set is no longer maintained |
 | [`docs/windows/01-hardware.md`](docs/windows/01-hardware.md) | **Windows (experimental):** HHKB Studio keymap Profile 4 (and the Profile3 fallback), the tested PC |
 | [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
 | [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
@@ -96,10 +96,10 @@ docs. The only other config file is the owner's full-size keyboard export in
 
 | Key / combo | Result | Implemented by |
 | --- | --- | --- |
-| **HHKB** key | Always switches to **Korean 2-Set** (`com.apple.inputmethod.Korean.2SetKorean`), even if Korean is already active | HYBRID Type-S: Karabiner (HHKB → F18). Studio: F18 from its own keymap. Then Hammerspoon (F18 → select source) |
+| **HHKB** key | Always switches to **JIS Korean** (`me.sjun.inputmethod.JISKorean.2Set`), even if Korean is already active | HYBRID Type-S: Karabiner (HHKB → F18). Studio: F18 from its own keymap. Then Hammerspoon (F18 → select source) |
 | **英数 (Romaji)** | Always switches to **English ABC (QWERTY)** | macOS native 英数 handling (Japanese IME has no Romaji/英字 mode enabled) |
 | **かな (Kana)** | Always switches to **Japanese with Kana typing** (not Romaji input) | macOS native かな handling + Japanese IME set to Kana typing |
-| **ろ** key (`international1`, right of `/`) | `\` unshifted, `_` shifted, in every **non-Japanese** input source. Unchanged (ろ) in Japanese | Karabiner complex rule (sends Option+¥) |
+| **ろ** key (`international1`, right of `/`) | `\` unshifted, `_` shifted, in every input source. Unchanged (ろ) in Japanese | ABC: Karabiner complex rule (sends Option+¥). JIS Korean types them itself, so the rule skips it |
 | **Fn+P** (HHKB sends `pause`) | Media **Play/Pause** | Karabiner simple modification on each HHKB |
 | **Fn+I** (HHKB sends `print_screen`) | Cmd+Shift+4 (screenshot selection) | Karabiner complex rule (global, any keyboard) |
 | **Option+Tab** | Move focus to the next window of the same app (macOS default is Cmd+`) | macOS keyboard shortcut (System Settings) |
@@ -107,11 +107,11 @@ docs. The only other config file is the owner's full-size keyboard export in
 Why each piece exists:
 
 - **Hammerspoon is required.** Karabiner's own `select_input_source` is unreliable for Korean
-  2-Set (CJK input methods sometimes don't take on the first select). The Hammerspoon handler
+  input methods (CJK input methods sometimes don't take on the first select). The Hammerspoon handler
   selects, waits 150 ms, checks, and retries once only if the switch didn't take.
-- **Known bug, already fixed:** switching from another language to Korean 2-Set could show the
+- **Known bug, already fixed:** switching from another language to Korean could show the
   input-source switch overlay **twice**. The fix: the retry runs only after checking the
-  current source is *not* already 2-Set. Keep that check. Also, don't add an early return
+  current source is *not* already the Korean target. Keep that check. Also, don't add an early return
   when Korean is already "current". The reported source can be stale, and the early return left
   the key dead. The HHKB key must always select. Details are in `docs/04-hammerspoon.md`.
 - **Known unfixed issue:** about 1 HHKB-key press in 100, macOS reports Korean but the focused
@@ -122,22 +122,27 @@ Why each piece exists:
   for Korean. So "Move focus to next window" moves to **Option+Tab**. This is the repo default;
   users may pick another shortcut.
 - **ろ remap:** On the JIS ABC layout, Option+¥ types `\`. The rule is skipped for input sources
-  whose language is `ja`, because remapping it in Japanese Kana would make ろ impossible to type.
+  whose language is `ja`, because remapping it in Japanese Kana would make ろ impossible to type,
+  and for JIS Korean, which types `\` / `_` on ろ itself (Option+¥ would make it commit mid-syllable).
 
-## 3. Korean 2-Set is plug-and-play; the HHKB key target is replaceable
+## 3. JIS Korean is the Korean input source; the HHKB key target is replaceable
 
-With the steps above, Korean 2-Set works out of the box. The HHKB key isn't tied to Korean. It
-can target **any** input source, including other Latin layouts such as German **QWERTZ**
-(`com.apple.keylayout.German`) or French **AZERTY** (`com.apple.keylayout.French`). Change one
-constant in `~/.hammerspoon/init.lua` (see `docs/05-customization.md`). Don't build a config
-system for this. If the user doesn't say anything, use Korean 2-Set.
-
-**Optional, recommended: JIS Korean.** When asking which source the HHKB key should switch to, also offer
-[JIS Korean](https://github.com/team-mirae/jis-korean), a 2-Set input method built for JIS
-keyboards. Show this note with it, word for word: "Try it out. If you use an HHKB, you'll love
-it!" Present it as recommended, but Korean 2-Set stays the default: use JIS Korean only if the user picks it, and then follow
-`docs/09-jis-korean.md` on top of the default steps. It's macOS only (Windows keeps the Microsoft
+On macOS, the HHKB key selects [JIS Korean](https://github.com/team-mirae/jis-korean), a 2-Set
+input method built for JIS keyboards (`docs/09-jis-korean.md`). When asking which source the
+HHKB key should switch to, present it as the default and show this note with it, word for word:
+"Try it out. If you use an HHKB, you'll love it!" It's macOS only (Windows keeps the Microsoft
 Korean IME), and it's built from source, so ask before installing its build tools.
+
+**Korean 2-Set (Apple's) is no longer maintained**, also not on a MacBook whose built-in keyboard
+isn't JIS. Don't set it up, and don't enable it next to JIS Korean. If the user asks for 2-Set
+anyway, tell them it isn't maintained here, and point them to release `v1.7.1`, the last one that
+set it up; or set the Hammerspoon constant to it (`docs/05-customization.md`) and say it's untested.
+
+The HHKB key isn't tied to Korean. It can target **any** input source, including other Latin
+layouts such as German **QWERTZ** (`com.apple.keylayout.German`) or French **AZERTY**
+(`com.apple.keylayout.French`). Change one constant in `~/.hammerspoon/init.lua` (see
+`docs/05-customization.md`). Don't build a config system for this. If the user doesn't say
+anything, use JIS Korean.
 
 ## 4. Order of operations on a fresh Mac
 
@@ -145,15 +150,15 @@ Korean IME), and it's built from source, so ask before installing its build tool
    apply the bottom-row keymap with the keymap tool, if needed (`docs/01-hardware.md`; Studio:
    `docs/07-hhkb-studio.md`). **Studio fast path:** load `docs/hhkb-studio-setting-all.hks` in the
    HHKB Studio Keymap Tool and use Profile1 (it replaces all profiles, so ask first).
-2. **macOS:** set the keyboard type of each HHKB to JIS. Enable the ABC, Korean 2-Set, and Japanese
-   (Kana typing) input sources and remove Japanese's Romaji mode. With JIS Korean, install it and
-   enable it **instead of** 2-Set (`docs/09-jis-korean.md`), or **next to** 2-Set if the Mac's
-   built-in keyboard isn't JIS (`docs/09-jis-korean.md`, "Non-JIS built-in keyboard"). Set "Move focus to next
-   window" to Option+Tab (`docs/02-macos.md`).
+2. **macOS:** set the keyboard type of each HHKB to JIS. Install JIS Korean
+   (`docs/09-jis-korean.md`), then enable exactly the ABC, JIS Korean, and Japanese (Kana typing)
+   input sources and remove Japanese's Romaji mode. Don't enable Korean 2-Set, also not on a Mac
+   whose built-in keyboard isn't JIS. Turn on standard F1, F2, … keys for JIS Korean's F6–F10.
+   Set "Move focus to next window" to Option+Tab (`docs/02-macos.md`).
 3. **Karabiner-Elements:** install, approve the driver and permissions, then merge the rules
    (`docs/03-karabiner.md`).
 4. **Hammerspoon:** install, grant permissions, set it to launch at login, and write `init.lua`
-   (`docs/04-hammerspoon.md`).
+   (`docs/04-hammerspoon.md`; the HHKB key's target is JIS Korean).
 5. **Verify** every row of the checklist (`docs/06-verification.md`).
 
 ## 5. Rules for agents working on this
@@ -176,8 +181,9 @@ Korean IME), and it's built from source, so ask before installing its build tool
   it type the wrong symbols. Tell the user, and offer to set the built-in keyboard's device entry
   to `ignore: true` (`docs/03-karabiner.md`, "Non-JIS built-in keyboard"). Check first whether any
   *enabled* Karabiner rule targets the built-in keyboard, because ignoring it turns those off.
-  With JIS Korean on such a Mac, keep 2-Set Korean enabled for the built-in keyboard, and don't
-  remove it (`issues/jis-korean-non-jis-built-in.md`).
+  On such a Mac the built-in keyboard types Korean through JIS Korean too, so its number row and
+  symbol keys don't match its keycaps in Korean. Tell the user. Don't add Korean 2-Set for it:
+  it's no longer maintained (`issues/jis-korean-non-jis-built-in.md`).
 - Check with **Karabiner-EventViewer** (key codes) and the input menu or
   `hs -c 'hs.keycodes.currentSourceID()'` (active source). Don't assume.
 

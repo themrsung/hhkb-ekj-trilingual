@@ -60,7 +60,7 @@ This differs from the HYBRID Type-S, where changing DIP switches overwrites the 
 
 The key in the **半/全** position (left of Opt, bottom row) is set to **F18** in the HHKB Studio
 Keymap Tool, on **every layer** (Standard, Fn1, Fn2, Fn3). The Studio sends F18 straight from its
-firmware, and Hammerspoon turns it into Korean 2-Set. Karabiner doesn't remap this key on the
+firmware, and Hammerspoon turns it into JIS Korean. Karabiner doesn't remap this key on the
 Studio.
 
 - Checked on the owner's board (USB): F18 pressed 3× → `f18` 3× reached Hammerspoon with no
@@ -138,8 +138,8 @@ transport: Bluetooth Low Energy
   scroll pads all work.
 - Also checked on a second machine: **MacBook Air (M4), macOS 27.0.1**, Studio paired over
   Bluetooth on **slot 3** (`HHKB-Studio3`), Karabiner-Elements 16.3.0, Hammerspoon 1.1.1. Rows 3–15 of the
-  checklist in `06-verification.md` passed, except that in Korean 2-Set ろ types `¥` instead of
-  `\` (accepted; see the note under the checklist).
+  checklist in `06-verification.md` passed, except that in Korean 2-Set ろ typed `¥` instead of
+  `\` (accepted then; checked before JIS Korean became the default, which types `\` itself).
 
 ## Using the gesture pads
 
@@ -173,7 +173,7 @@ Fn1 | F18 | Opt | ⌘ | 英数 | Space | かな | ⌘ | Opt | Fn1 | ← | ↓ | 
 ```
 
 - **F18** (in the 半/全 position) is the Studio's "HHKB key" (the Studio has no HHKB-logo key on
-  the bottom row). It emits `f18` itself → Korean 2-Set via Hammerspoon.
+  the bottom row). It emits `f18` itself → JIS Korean via Hammerspoon.
 - **Opt / ⌘ / 英数** on the left and **かな / ⌘ / Opt** on the right match the HYBRID Type-S
   layout.
 - The key left of A is **Control**. ↑ sits in the Shift row, left of the right Shift.

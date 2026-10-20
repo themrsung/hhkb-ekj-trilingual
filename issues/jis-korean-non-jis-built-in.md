@@ -1,43 +1,31 @@
 # JIS Korean with a non-JIS built-in keyboard
 
-**Applies to:** macOS, JIS Korean (`../docs/09-jis-korean.md`) on a MacBook whose built-in keyboard
-is US ANSI or ISO, used both with and without the HHKB.
-**Status:** by design. There's a known catch with macOS's own switching keys.
-
-## The setup
-
-Two Korean input sources are enabled on purpose:
-
-| Keyboard | Switches with | Korean source |
-| --- | --- | --- |
-| HHKB (JIS) | HHKB key → F18 → Hammerspoon | **JIS Korean** (`me.sjun.inputmethod.JISKorean.2Set`) |
-| Built-in (US ANSI / ISO, ignored by Karabiner) | Caps Lock, Ctrl+Space, Ctrl+Option+Space | **2-Set Korean** (`com.apple.inputmethod.Korean.2SetKorean`) |
-
-JIS Korean reads physical JIS key codes. On an ANSI board, the number row would type double
-consonants and compound vowels instead of digits, and the symbol keys wouldn't match the keycaps.
-So the built-in keyboard keeps standard 2-Set. Don't remove 2-Set Korean on these Macs, even
-though `docs/09` says to remove it on a JIS-only setup.
+**Applies to:** macOS, on a MacBook whose built-in keyboard is US ANSI or ISO, used both with and
+without the HHKB.
+**Status:** accepted. Since `v1.8.0`, JIS Korean is the only Korean input source, and Korean 2-Set
+is no longer maintained, also not for the built-in keyboard.
 
 ## Symptom
 
-On the built-in keyboard, Caps Lock or Ctrl+Space lands on **JIS Korean** instead of 2-Set Korean.
+In Korean, the **built-in keyboard** doesn't type what its keycaps show: the number row types
+ㅃ ㅉ ㄸ ㄲ ㅆ / ㅟ ㅝ ㅚ ㅢ ㅘ (`1` types ㅃ, and Shift+`1` types `1` instead of `!`), and the
+symbol keys type Korean punctuation (`·` on `/`, `「」` on Shift+`[` / `]`). Letters type standard
+2-Set, and the HHKB is fine.
 
 ## Cause
 
-macOS's Caps Lock switch toggles between ABC and the **last used** non-ABC source, and Ctrl+Space
-selects the **previous** source. After the HHKB key has selected JIS Korean, that's the source
-these keys go back to.
+JIS Korean reads physical **JIS** key codes. Karabiner ignores the built-in keyboard (its JIS
+virtual keyboard would break the built-in's symbols, `../docs/03-karabiner.md`, "Non-JIS built-in
+keyboard"), so macOS reads it as a plain ANSI / ISO board, and JIS Korean maps those keys as if
+they were JIS.
 
 ## What to do
 
-Look at the menu-bar input icon. Press Ctrl+Option+Space (Select next source) to step to 2-Set
-Korean. Once 2-Set has been used on the built-in keyboard, Caps Lock / Ctrl+Space go back to it
-until the HHKB key is pressed again.
+- Type Korean on the HHKB. On the built-in keyboard, Korean letters work. For digits and symbols,
+  switch to ABC (Caps Lock, or 英数 on the HHKB).
+- Don't add Korean 2-Set back to the setup. From `v1.7.0` to `v1.7.1` it was kept next to JIS
+  Korean for the built-in keyboard (with the catch that Caps Lock and Ctrl+Space could land on the
+  wrong Korean source); that's no longer maintained. A user who wants it can follow `v1.7.1`.
 
-Not fixed in the configs. Karabiner can't help, because it ignores the built-in keyboard (see
-`../docs/03-karabiner.md`, "Non-JIS built-in keyboard"), and un-ignoring it breaks the built-in
-keyboard's symbols. A Hammerspoon binding that selects 2-Set explicitly would work, but it would
-need a key the built-in keyboard has spare. Nothing has been measured yet.
-
-Checked on the owner's MacBook (US ANSI built-in) with an HHKB Studio over Bluetooth, macOS
-27.0.1, JIS Korean 0.1.0, Hammerspoon 1.1.1, Karabiner-Elements 16.3.0 (2026-10-19).
+Seen on the owner's MacBook (US ANSI built-in) with an HHKB Studio over Bluetooth, macOS 27.0.1,
+Hammerspoon 1.1.1, Karabiner-Elements 16.3.0 (2026-10-19, JIS Korean 0.1.0).

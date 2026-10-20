@@ -1,7 +1,8 @@
-# 09 — Recommended option: JIS Korean instead of Korean 2-Set (macOS)
+# 09 — JIS Korean: the Korean input source (macOS)
 
-**Korean 2-Set stays the default, but JIS Korean is recommended** for anyone typing Korean on a JIS
-HHKB. This page is for users who pick it.
+**JIS Korean is the default Korean input source** on macOS, and the HHKB key's target. Apple's
+**Korean 2-Set is no longer maintained** in this repo, also not next to JIS Korean on a MacBook
+whose built-in keyboard isn't JIS. The last release that set up 2-Set is `v1.7.1`.
 
 [JIS Korean](https://github.com/team-mirae/jis-korean) is a Korean 2-Set (두벌식) input method
 built for JIS keyboards. Every standard 2-Set key still types what it always did. The JIS keys
@@ -24,18 +25,19 @@ Checked with **JIS Korean at commit `a1a38e4`** (after 0.1.0, not a tagged relea
 the HYBRID Type-S JIS, and the HHKB Studio JIS over Bluetooth. **macOS only**: there's no Windows build yet, so the Windows setup
 (`docs/windows/`) keeps the Microsoft Korean IME.
 
-The default setup carries over unchanged except for four steps:
+Where JIS Korean plugs into the other steps:
 
-| Step | Default (2-Set) | With JIS Korean |
-| --- | --- | --- |
-| Input source (`02-macos.md`) | Korean → 2-Set Korean | **JIS Korean**, installed from source (step 1 below) |
-| Karabiner rule C (`03-karabiner.md`) | skipped for `ja` | skipped for `ja` **and JIS Korean** (step 3) |
-| Hammerspoon (`04-hammerspoon.md`) | `KOREAN = "com.apple.inputmethod.Korean.2SetKorean"` | `KOREAN = "me.sjun.inputmethod.JISKorean.2Set"` (step 4) |
-| Function keys | as you like | **F1, F2, etc. as standard function keys** (step 5) |
+| Step | With JIS Korean |
+| --- | --- |
+| Input source (`02-macos.md`) | **JIS Korean**, installed from source (step 1 below), added by the user (step 2) |
+| Karabiner rule C (`03-karabiner.md`) | skipped for `ja` **and JIS Korean** (step 3) |
+| Hammerspoon (`04-hammerspoon.md`) | `KOREAN = "me.sjun.inputmethod.JISKorean.2Set"` (step 4) |
+| Function keys | **F1, F2, etc. as standard function keys** (step 5) |
 
-Everything else stays as it is: the always-select plus guarded-retry structure, bare F18, 英数 → ABC,
-かな → Kana, and JIS keyboard types for each HHKB and for Karabiner's virtual keyboard. JIS Korean
-reads physical key codes, and ¥ and ろ only arrive correctly with a JIS keyboard type.
+The rest of the setup doesn't depend on it: the always-select plus guarded-retry structure, bare
+F18, 英数 → ABC, かな → Kana, and JIS keyboard types for each HHKB and for Karabiner's virtual
+keyboard. JIS Korean reads physical key codes, and ¥ and ろ only arrive correctly with a JIS
+keyboard type.
 
 ## 1. Install JIS Korean
 
@@ -81,10 +83,11 @@ Ask the user before installing Rust or the Command Line Tools.
 The **user** adds it: System Settings → Keyboard → Text Input → Input Sources → Edit… → **+** →
 Korean → **JIS Korean**. If it isn't in the list, log out and back in once.
 
-Enable exactly ABC, Japanese – Kana and JIS Korean. Don't enable 2-Set Korean next to it. If it's
-already enabled, remove both the 2-Set Korean mode and its parent "Korean" entry (Edit… → select →
-**−**), or an empty "Korean" item can linger. **Exception:** a Mac whose built-in keyboard isn't
-JIS keeps 2-Set Korean (next section).
+Enable exactly ABC, Japanese – Kana and JIS Korean. Don't enable 2-Set Korean next to it, on any
+Mac. If it's already enabled, remove both the 2-Set Korean mode and its parent "Korean" entry
+(Edit… → select → **−**), or an empty "Korean" item can linger. Ask the user first: on a Mac set
+up with an earlier release, 2-Set may be what they type with on the built-in keyboard (next
+section).
 
 Check:
 
@@ -100,29 +103,17 @@ Expect two entries, the input method and its mode (`"Input Mode" =
 
 `hs.keycodes.methods(true)` lists it as `me.sjun.inputmethod.JISKorean.2Set`.
 
-### Non-JIS built-in keyboard: keep 2-Set Korean too
+### Non-JIS built-in keyboard
 
 On a MacBook with a US (ANSI) or ISO built-in keyboard, the usual setup lets Karabiner **ignore**
 the built-in keyboard (`03-karabiner.md`, "Non-JIS built-in keyboard"). macOS then reads it as a
-plain ANSI/ISO board. JIS Korean reads physical JIS key codes, so it doesn't fit that keyboard:
-ㅃ ㅉ ㄸ ㄲ ㅆ / ㅟ ㅝ ㅚ ㅢ ㅘ take over the number row (`1` types ㅃ, and Shift+`1` types `1`
-instead of `!`), the symbol keys get Korean punctuation the keycaps don't show, and ¥ and ろ don't exist.
+plain ANSI/ISO board, and in Korean it types through JIS Korean as well. JIS Korean reads physical
+JIS key codes, so it doesn't fit that keyboard: ㅃ ㅉ ㄸ ㄲ ㅆ / ㅟ ㅝ ㅚ ㅢ ㅘ take over the number
+row (`1` types ㅃ, and Shift+`1` types `1` instead of `!`), and the symbol keys get Korean
+punctuation the keycaps don't show. Letters type standard 2-Set.
 
-So, when the Mac is also used without the HHKB:
-
-- Enable **both** JIS Korean and 2-Set Korean (with its parent "Korean" entry). The input sources
-  are ABC, Japanese – Kana, JIS Korean and 2-Set Korean.
-- The **HHKB key** (F18 → Hammerspoon) always selects **JIS Korean**. Nothing else changes in step 4.
-- The **built-in keyboard** keeps using macOS's own switching (Caps Lock toggles ABC, Ctrl+Space
-  selects the previous source, Ctrl+Option+Space the next one) and types Korean in **2-Set**.
-- The user adds JIS Korean in the same Edit… sheet that lists 2-Set. Removing 2-Set out of habit
-  is easy because of the step above. If 2-Set was removed by accident,
-  `hs.keycodes.currentSourceID("com.apple.inputmethod.Korean.2SetKorean")` returns `false` and the
-  source doesn't change. Add 2-Set Korean back (+ → Korean → 2-Set Korean).
-
-Checked on a MacBook with a US ANSI built-in keyboard (ignored by Karabiner) plus an HHKB Studio
-over Bluetooth, macOS 27.0.1. Known catch: Caps Lock and Ctrl+Space return to the *most recently
-used* source, which can be JIS Korean. See
+This is accepted: 2-Set Korean is no longer kept next to JIS Korean for the built-in keyboard (it
+was, from `v1.7.0` to `v1.7.1`). Tell the user, and don't add 2-Set back. See
 [`../issues/jis-korean-non-jis-built-in.md`](../issues/jis-korean-non-jis-built-in.md).
 
 ## 3. Karabiner: keep rule C away from JIS Korean
@@ -165,7 +156,8 @@ jq '(.profiles[] | select(.selected==true) | .complex_modifications.rules[]
 
 ## 4. Hammerspoon: F18 → JIS Korean
 
-In the `~/.hammerspoon/init.lua` block from `04-hammerspoon.md`, change only the constant:
+The `~/.hammerspoon/init.lua` block in `04-hammerspoon.md` already targets JIS Korean. On a Mac
+set up with an earlier release, change only the constant:
 
 ```lua
 -- to_korean key → JIS Korean. F18 comes from the HHKB Studio's keymap, or from Karabiner
@@ -203,11 +195,10 @@ Karabiner-EventViewer.
 
 ## 6. Verification
 
-Run `06-verification.md` with **JIS Korean** wherever it says Korean 2-Set (rows 5–7), plus:
+`06-verification.md` checks JIS Korean in rows 5–7 and 11. Then run these:
 
 | # | Action (in JIS Korean) | Expected |
 | --- | --- | --- |
-| 11 | 👤 ろ / Shift+ろ | `\` / `_`. No `¥` caveat: JIS Korean types these itself |
 | J1 | 👤 `1`, then `k` | 빠 (dedicated ㅃ); Shift+`1` types `1` |
 | J2 | 👤 `gks`, then F6 | 한 is committed (no underline left) |
 | J3 | 👤 `gkrry` (학교), then F7, then `1` | 學校 |
@@ -225,8 +216,10 @@ TextEdit): Karabiner changes the keys before JIS Korean sees them.
 - Its menu bar badge (한) is a shade lighter than Apple's Korean badges in System Settings.
 - Behavior can change between JIS Korean versions. This page is checked against commit `a1a38e4`.
 
-## Switching back to 2-Set
+## Korean 2-Set (no longer maintained)
 
-Change `KOREAN` back to `com.apple.inputmethod.Korean.2SetKorean`, add 2-Set Korean in Input Sources
-and remove JIS Korean. You can leave rule C's extra condition in place; it does nothing without JIS
-Korean. To remove the app too: `make -C jis-korean/mac uninstall`.
+This repo no longer sets up or tests Apple's Korean 2-Set. A user who wants it anyway can use
+release `v1.7.1`, the last one that did, or on this release: set `KOREAN` back to
+`com.apple.inputmethod.Korean.2SetKorean`, add 2-Set Korean in Input Sources and remove JIS Korean.
+You can leave rule C's extra condition in place; it does nothing without JIS Korean. To remove
+the app too: `make -C jis-korean/mac uninstall`. Tell them it's untested here.

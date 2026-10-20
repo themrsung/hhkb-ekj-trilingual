@@ -18,7 +18,7 @@ Studio** under **macOS**, with one key per language:
 
 | Key | Goes to |
 | --- | --- |
-| **HHKB** (logo key) | Korean 2-Set (always, even if already Korean). Recommended option: [JIS Korean](docs/09-jis-korean.md) |
+| **HHKB** (logo key) | Korean, with [JIS Korean](docs/09-jis-korean.md) (always, even if already Korean) |
 | **英数** (Romaji) | English ABC (QWERTY) |
 | **かな** (Kana) | Japanese, Kana typing |
 
@@ -81,18 +81,18 @@ PC) you want to set up (Claude Code, Codex, etc.). It asks you a few questions, 
 on its own. It stops only for steps that need your hands: DIP switches, the keymap tool,
 permission prompts, settings that change the system, and key-press checks.
 
-The prompt is **pinned to the release tag `v1.7.1`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.8.0`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.7.1.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.8.0.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.7.1/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.7.1 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.8.0/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.8.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.7.1/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.8.0/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
@@ -137,11 +137,12 @@ Before changing anything:
    a. Which JIS keyboard model(s) I have. The repo is built for the HHKB Professional HYBRID
       Type-S and the HHKB Studio, both JIS layout (one or both). Other JIS HHKBs may need
       different USB IDs.
-   b. Which input source the HHKB key should switch to (default: Korean 2-Set). Also offer,
-      as the recommended option, JIS Korean, a 2-Set input method made for JIS keyboards (number-row double consonants and
-      compound vowels, Korean punctuation, F6–F10, predictions; macOS only, built from source), and show
-      this note with it, word for word: "Try it out. If you use an HHKB, you'll love it!"
-      If I pick it, follow docs/09-jis-korean.md on top of the default steps.
+   b. Which input source the HHKB key should switch to (default: JIS Korean, a 2-Set input
+      method made for JIS keyboards: number-row double consonants and compound vowels, Korean
+      punctuation, F6–F10, predictions; macOS only, built from source, so ask me before
+      installing its build tools). Show this note with it, word for word: "Try it out. If you
+      use an HHKB, you'll love it!" Apple's Korean 2-Set is no longer maintained by this repo
+      (the last release that set it up is v1.7.1); tell me that if I ask for it.
    c. Where 英数 and かな should go (default: English ABC / Japanese with Kana typing).
    d. The "Move focus to next window" shortcut (default: Option+Tab).
    e. Whether to keep the extras: ろ → \ outside Japanese, Fn+P → Play/Pause,
@@ -162,7 +163,7 @@ backups are.
 
 To set it up by hand instead, follow [`AGENTS.md`](AGENTS.md), then `docs/01` → `docs/06` in
 order (plus `docs/07` for a Studio, `docs/08` to migrate an older Studio setup to F18, and
-`docs/09` for the optional JIS Korean instead of 2-Set). On
+`docs/09` for JIS Korean, the Korean input source). On
 Windows, follow `docs/windows/01` → `03` instead. The exact Karabiner JSON, Hammerspoon Lua and
 AutoHotkey script are in the docs.
 
