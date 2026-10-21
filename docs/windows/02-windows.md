@@ -18,11 +18,13 @@ Two languages, two IMEs, nothing else:
 
 | Language | Keyboard | Input method tip | Used by |
 | --- | --- | --- | --- |
-| Korean (`ko`) | Microsoft IME (Korean) | `0412:{A028AE76-01B1-46C2-99C4-ACD9858AE02F}{B5FE1F02-D5F2-4445-9C03-C568F23C99A1}` | F18 |
+| Korean (`ko`) | **JIS Korean** (`04-jis-korean.md`), the only Korean keyboard | `0412:{D10651AD-51EA-4DBA-8BFF-1905261B26A1}{669E0E87-FA58-46F6-96E1-0890A0224404}` | F18 |
 | Japanese (`ja`) | Microsoft IME (Japanese) | `0411:{03B5835F-F03C-411B-9CE2-AA23E1171E36}{A76C93D9-5523-4E90-AAFA-4DB112F9AC76}` | F19 (IME off), F20 (IME on) |
 
 Add Japanese without removing Korean (back up the list first). Or use Settings → Time &
-language → Language & region → Add a language → 日本語.
+language → Language & region → Add a language → 日本語. JIS Korean's installer adds it to Korean;
+then remove the Microsoft Korean IME (`0412:{A028AE76-01B1-46C2-99C4-ACD9858AE02F}{B5FE1F02-D5F2-4445-9C03-C568F23C99A1}`)
+from Korean, as `04-jis-korean.md` step 2 does.
 
 ```powershell
 $backup = Get-WinUserLanguageList
@@ -49,30 +51,20 @@ Check after the restart: `LayerDriver JPN = kbd106.dll`, `OverrideKeyboardType =
 | Value | Set to | Effect |
 | --- | --- | --- |
 | `LayerDriver JPN` | `kbd106.dll` | Japanese (F19 English, F20 kana) types the JIS keycap symbols |
-| `LayerDriver KOR` | `kbd101a.dll` (Windows' default for Korean) | Korean (F18) types **US ANSI symbols** (for example, Shift+2 gives `@` instead of the keycap's `"`) |
+| `LayerDriver KOR` | `kbd101a.dll` (Windows' default for Korean) | Keys that reach Windows' Korean layout type **US ANSI symbols** (for example, Shift+2 gives `@` instead of the keycap's `"`) |
 
-The good part: Profile 4's English is "Japanese with the IME off", so English typing gets JIS
-symbols. The bad part: while Korean is active, the HHKB's symbol keys don't match their keycaps.
-The opposite applies to a US built-in keyboard: right in Korean, wrong in Japanese and English.
-Hangul itself is unaffected, because the letter keys sit in the same places on both layouts.
+Profile 4's English is "Japanese with the IME off", so English typing gets JIS symbols. Korean is
+**JIS Korean**, which reads scan codes and types its Mode A (JIS) legends itself, so the Korean
+layout's US ANSI symbols don't apply to it. They still show in two places:
 
-Options for Korean (option 1 is the repo default; options 2 and 3 are untested):
+- **JIS Korean's ABC state** (한/영 off): keys go to Windows' Korean layout untouched. The setup
+  never uses ABC (`04-jis-korean.md`, "한/영"), and F18 switches it back to 한글.
+- **The Microsoft Korean IME**, if it's still enabled next to JIS Korean. Remove it
+  (`04-jis-korean.md`, step 2).
 
-1. **Leave it as is (default).** Type Hangul in Korean and switch to F19 for symbols. No changes,
-   no risk. This is the owner's compromise, explained in `03-autohotkey.md` ("The compromise").
-2. **Point Korean at the JIS layout too:** set `LayerDriver KOR` to `kbd106.dll` (admin, restart;
-   back up the value first). Korean would then use JIS symbols as well, so the HHKB is consistent
-   everywhere. Costs: the built-in US keyboard becomes JIS in every language. The Korean IME on a
-   JIS layout isn't a configuration Microsoft documents, so check 한/영, 한자 and Hangul input
-   after the change.
-3. **Per-keyboard remapping** with a driver that tells keyboards apart: AutoHotInterception, on the
-   Interception kernel driver. AutoHotkey would rewrite the HHKB's symbol keys only while Korean is
-   active, leaving the built-in keyboard alone. Costs: a third-party kernel driver, and it may
-   conflict with keyboard-security software (common on Korean PCs for online banking).
-
-Not possible: plain AutoHotkey can't tell which keyboard a key came from, so it can't remap only
-the HHKB. The HHKB keymap tool maps keys, not Shift+key pairs, so it can't fix the shifted
-symbols either.
+Leave `LayerDriver KOR` at `kbd101a.dll`. Through `v1.8.0` this section offered pointing Korean at
+the JIS layout, or a per-keyboard driver, to work around the Microsoft Korean IME's US symbols;
+with JIS Korean neither is needed, and neither was tested.
 
 **Don't pick "Detect connected keyboard"** (offered next to the 106/109 and 101/102 choices). It
 does not detect the HHKB as JIS. Tested on 25H2 build 26200 (2026-10-17), HHKB Studio on USB,
@@ -91,9 +83,10 @@ Settings → Time & language → Language & region → 日本語 → Language op
 The IME's own key settings (無変換 / 変換 / 半角/全角) don't matter: the HHKB sends none of those
 keys on Profile 4.
 
-## 5. Microsoft Korean IME
+## 5. Korean: JIS Korean
 
-Defaults. F18 forces 한 mode, so the 한/영 toggle is never needed. F17 sends 한자 (`VK_HANJA`) in Korean.
+Install and set it up with `04-jis-korean.md`: build, install, make it the only Korean keyboard,
+Mode A. F18 selects it in 한글, so the 한/영 toggle is never needed; F17 sends F7 (hanja) in Korean.
 
 ## 6. Input-language hotkeys
 

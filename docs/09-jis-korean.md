@@ -21,9 +21,10 @@ built for JIS keyboards. Every standard 2-Set key still types what it always did
 
 Try it out. If you use an HHKB, you'll love it!
 
-Checked with **JIS Korean at commit `a1a38e4`** (after 0.1.0, not a tagged release yet) on macOS 27.0.1, Hammerspoon 1.1.1, Karabiner-Elements 16.3.0,
-the HYBRID Type-S JIS, and the HHKB Studio JIS over Bluetooth. **macOS only**: there's no Windows build yet, so the Windows setup
-(`docs/windows/`) keeps the Microsoft Korean IME.
+Checked with **JIS Korean at commit `90cc765`** (after `v0.2.0-preview`, not a tagged release) on macOS 27.0.1, Hammerspoon 1.1.1,
+Karabiner-Elements 16.3.0, upgrading in place from 0.1.0 on a MacBook with a JIS built-in keyboard. The HHKB checks below were
+first done at `a1a38e4` with the HYBRID Type-S JIS and the HHKB Studio JIS over Bluetooth. **Windows** uses JIS Korean too,
+since `v1.9.0`: [`windows/04-jis-korean.md`](windows/04-jis-korean.md).
 
 Where JIS Korean plugs into the other steps:
 
@@ -41,7 +42,7 @@ keyboard type.
 
 ## 1. Install JIS Korean
 
-Pinned to commit **`a1a38e4`**. It's built from source (it's only ad-hoc signed, so a downloaded
+Pinned to commit **`90cc765`**. It's built from source (it's only ad-hoc signed, so a downloaded
 build would be blocked by Gatekeeper). It needs the Xcode Command Line Tools and Rust with both Mac
 targets:
 
@@ -53,7 +54,7 @@ rustup default stable
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
 
 git clone https://github.com/team-mirae/jis-korean.git
-git -C jis-korean checkout a1a38e4
+git -C jis-korean checkout 90cc765
 make -C jis-korean/mac install             # builds JISKorean.app, copies it to ~/Library/Input Methods, registers it
 ```
 
@@ -72,7 +73,7 @@ Ask the user before installing Rust or the Command Line Tools.
   missing for a while (an uninstall followed by a rebuild), apps that were already running can't
   start JIS Korean again until they're restarted: the menu shows JIS Korean but Latin letters come
   out. Quit and reopen the app, or log out and back in. Details:
-  [`docs/troubleshooting/macos-input-method-not-launching.md`](https://github.com/team-mirae/jis-korean/blob/a1a38e4/docs/troubleshooting/macos-input-method-not-launching.md)
+  [`docs/troubleshooting/macos-input-method-not-launching.md`](https://github.com/team-mirae/jis-korean/blob/90cc765/docs/troubleshooting/macos-input-method-not-launching.md)
   in the JIS Korean repo.
 - **Upgrading from 0.1.0:** the input source is now an input mode, `me.sjun.inputmethod.JISKorean.2Set`.
   Update the Hammerspoon constant (step 4) and rule C's condition (step 3). If JIS Korean isn't in
@@ -83,7 +84,8 @@ Ask the user before installing Rust or the Command Line Tools.
 The **user** adds it: System Settings → Keyboard → Text Input → Input Sources → Edit… → **+** →
 Korean → **JIS Korean**. If it isn't in the list, log out and back in once.
 
-Enable exactly ABC, Japanese – Kana and JIS Korean. Don't enable 2-Set Korean next to it, on any
+Enable exactly ABC, Japanese – Kana and JIS Korean (its JIS mode, `….JISKorean.2Set`; leave its US ANSI
+and UK ISO modes off). Don't enable 2-Set Korean next to it, on any
 Mac. If it's already enabled, remove both the 2-Set Korean mode and its parent "Korean" entry
 (Edit… → select → **−**), or an empty "Korean" item can linger. Ask the user first: on a Mac set
 up with an earlier release, 2-Set may be what they type with on the built-in keyboard (next
@@ -214,7 +216,7 @@ TextEdit): Karabiner changes the keys before JIS Korean sees them.
 
 - It's built from source and ad-hoc signed.
 - Its menu bar badge (한) is a shade lighter than Apple's Korean badges in System Settings.
-- Behavior can change between JIS Korean versions. This page is checked against commit `a1a38e4`.
+- Behavior can change between JIS Korean versions. This page is checked against commit `90cc765`.
 
 ## Korean 2-Set (no longer maintained)
 

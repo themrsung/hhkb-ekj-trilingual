@@ -4,7 +4,7 @@ The Windows setup uses the same HHKB Studio JIS as the Mac (`docs/07-hhkb-studio
 **different keymap profile**: the Mac keeps **Profile1** (native 英数 / かな), Windows uses
 **Profile 4**. Both profiles live on the keyboard, so neither OS needs the other's keymap.
 **Profile3** is a fallback for Windows PCs without AutoHotkey: Win/Alt swapped, stock 変換 key
-changed to the international key `LANG1`, native Korean IME ([below](#profile3-fallback-without-autohotkey)).
+changed to the international key `LANG1` for 한/영 ([below](#profile3-fallback-without-autohotkey)).
 
 ![The owner's HHKB Studio JIS, with the bottom row of each keymap profile](../images/hhkb-studio-profiles.png)
 
@@ -39,19 +39,20 @@ Fn1 | F18 | Alt | Win | F19 | Space | F20 | F17 | RAlt | Fn1 | ← | ↓ | →
 | # | Position (Mac Profile1 role) | Profile 4 | Windows meaning |
 | --- | --- | --- | --- |
 | 1 | Fn1 | Fn1 | HHKB Fn layer |
-| 2 | 半/全 (F18 / HHKB key) | **F18** | → Korean, 한 (`03-autohotkey.md`) |
+| 2 | 半/全 (F18 / HHKB key) | **F18** | → Korean: JIS Korean, 한글 (`03-autohotkey.md`, `04-jis-korean.md`) |
 | 3 | Option | Alt | Left Alt |
 | 4 | Command | Win | Left Windows |
 | 5 | 英数 | **F19** | → English (Japanese IME off) |
 | 6 | Space | Space | |
 | 7 | かな | **F20** | → Japanese hiragana, kana typing |
-| 8 | Command | **F17** | Context action: 한자 in Korean, nothing elsewhere yet |
+| 8 | Command | **F17** | Context action: hanja (F7) in Korean, nothing elsewhere yet |
 | 9 | Option | Right Alt | |
 | 10 | Fn1 | Fn1 | HHKB Fn layer |
 | 11–13 | ← ↓ → | ← ↓ → | |
 
 Fn-layer keys used (stock Fn1 layer): **Fn1+P → Pause** (→ Media Play/Pause in AutoHotkey),
-**Fn1+I → Print Screen** (behavior on Windows: not decided yet).
+**Fn1+I → Print Screen** (behavior on Windows: not decided yet). JIS Korean's F6–F10 are Fn1 + the
+number row (`04-jis-korean.md`, step 5).
 
 ## Tested on
 
@@ -98,7 +99,8 @@ pairing slot (the owner's is on slot 3). It has the same vendor and product IDs 
 with five collections: keyboard, mouse (pointing stick), system control, consumer control, and
 vendor-defined.
 
-Tested by the owner on 2026-10-17 over Bluetooth, Profile 4:
+Tested by the owner on 2026-10-17 over Bluetooth, Profile 4, **with the Microsoft Korean IME**
+(before `v1.9.0`; the Korean rows are to be redone with JIS Korean, `04-jis-korean.md`, Checks):
 
 | Test | Result |
 | --- | --- |
@@ -110,7 +112,7 @@ Tested by the owner on 2026-10-17 over Bluetooth, Profile 4:
 | Fn1+P → Play/Pause | ✅ |
 | Fast switching between all three languages while typing | ✅ |
 | English symbols: ろ → `\` / `_`, ¥ → `\` / `\|`, ``"'@`[{]};+:*`` | ✅ match the JIS keycaps |
-| Korean symbols: ``@&[{]}\|;:'"`` | ✅ US ANSI, as the compromise expects (`03-autohotkey.md`) |
+| Korean symbols: ``@&[{]}\|;:'"`` | ✅ US ANSI, as the Microsoft Korean IME's compromise expected. With JIS Korean: JIS, to be checked |
 | Pointing stick, buttons, gesture-pad scrolling, Fn2 pad toggles | ✅ |
 | Plugging and unplugging USB while connected over Bluetooth | ✅ typing in all three languages keeps working |
 | Profile3 over Bluetooth with Korean active | ✅ US ANSI symbols, as expected |
@@ -148,8 +150,8 @@ Measured on the owner's board (2026-10-17, with a separate key-test tool): all f
 
 ## Profile3: fallback without AutoHotkey
 
-**Win/Alt swap, and the stock 変換 (Henkan) key changed to the international key (HID `LANG1`).
-Supports the native Korean IME on Windows.**
+**Win/Alt swap, and the stock 変換 (Henkan) key changed to the international key (HID `LANG1`),
+which is 한/영 in Korean.**
 
 For a Windows PC where AutoHotkey isn't installed or isn't allowed: select **Profile3** on the
 keyboard. It's PFU's stock Windows JIS keymap with two changes. The bottom row is the same on
@@ -171,8 +173,12 @@ How it behaves (**only 한/영 is tested**):
 
 - Switch languages with Windows' own shortcut, **Win+Space**. Nothing on Profile3 selects a
   language directly, so the one-way keys of Profile 4 aren't available here.
-- 한/영 works (tested by the owner): the `LANG1` key toggles 한↔영 while Korean is active. While
-  Japanese is active, the same key does nothing visible.
+- 한/영 works (tested by the owner, with the Microsoft Korean IME): the `LANG1` key toggles 한↔영
+  while Korean is active. While Japanese is active, the same key does nothing visible. With JIS
+  Korean it should toggle 한글 / ABC the same way (same `VK_HANGUL`; not tested). Without F19,
+  this is how you get English here, with JIS Korean's limits: one state for every app, US ANSI
+  symbols in ABC, and no predictions (`04-jis-korean.md`, "한/영"). For mixed text, stay in 한글
+  and let the predictions read the English words.
 - Japanese IME keys (半/全, 無変換, かな) are stock JIS codes. They need the JIS hardware layout
   (`02-windows.md`, step 3) to mean anything: without it they type `` ` ``, nothing, or an
   unmapped code (measured in `03-autohotkey.md`). Not tested with JIS active.

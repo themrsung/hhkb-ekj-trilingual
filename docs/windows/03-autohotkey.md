@@ -3,46 +3,49 @@
 The Windows counterpart of `docs/04-hammerspoon.md`. The HHKB Studio (keymap **Profile 4**) sends
 **F18 / F19 / F20 / F17** from its own firmware (`01-hardware.md`). AutoHotkey catches those keys
 and does all the switching. Windows itself never sees an IME key from the bottom row, so the IMEs'
-own toggle behavior (半角/全角, 無変換, 한/영) can't fight the script.
+own toggle behavior (半角/全角, 無変換, 한/영) can't fight the script. Korean is
+[JIS Korean](04-jis-korean.md), the only keyboard under the Korean language.
 
 | Key | Goes to | How |
 | --- | --- | --- |
-| **F18** | Korean, **한** mode | switch language to Korean (`0x0412`), IME open, conversion mode `HANGUL` |
+| **F18** | Korean: **JIS Korean**, **한글** | switch language to Korean (`0x0412`); if JIS Korean reads ABC, press 한/영 (`VK_HANGUL`) once |
 | **F19** | English alphanumeric | switch language to Japanese (`0x0411`), **IME closed** |
 | **F20** | Japanese hiragana, **kana typing** | switch language to Japanese, IME open, conversion mode `NATIVE \| FULLSHAPE` (no `ROMAN` bit) |
-| **F17** | Context action | Korean: 한자 (sends `VK_HANJA`). Other languages: nothing yet |
+| **F17** | Context action | Korean: hanja (sends **F7**, JIS Korean's hanja key). Other languages: nothing yet |
 | **Pause** (Fn1+P) | Media Play/Pause | |
 
 English is "Japanese IME with the IME off", not a separate English layout. That keeps every
 symbol key matching the JIS legends (the Windows US layout would type US symbols on JIS keys) and
 keeps ろ native (`\` / `_`). The cost: the taskbar shows **JA** (or **A**) while you type English.
 
-### The compromise (owner's default)
+### Symbols per language (owner's default)
 
 | Language | Key | Handled by | Symbol keys |
 | --- | --- | --- | --- |
-| Korean | F18 | Hand off to the **Microsoft Korean IME** (한 mode) | **US ANSI**: they don't match the JIS keycaps |
+| Korean | F18 | **JIS Korean**, Mode A, 한글 | **JIS** (JIS Korean's legends): it reads scan codes, not Windows' Korean layout |
 | English | F19 | **Japanese with the IME off** | **JIS**: they match the keycaps |
 | Japanese | F20 | **Microsoft Japanese IME**, kana typing | **JIS** |
 
-Why: the Microsoft Korean IME always uses US ANSI symbol mappings. Windows picks the hardware
-layout per language, and Korean's is `kbd101a.dll` (`02-windows.md`, step 3). English and
-Japanese both run on the Japanese language, so they get the JIS layout and every symbol matches
-its keycap. The repo owner types English by default and uses Korean only when needed, mostly for
-Hangul, so the US symbols in Korean cost little. For symbols, switch to English with F19.
-
-**Results may vary with typing habits.** Someone who types many symbols in Korean may prefer one
-of the other options in `02-windows.md`, step 3. Adjust it for the end user as they prefer.
+Through `v1.8.0`, Korean was the Microsoft Korean IME, which types the US ANSI symbols of Windows'
+Korean layout (`kbd101a.dll`, `02-windows.md`, step 3). JIS Korean doesn't use that layout for the
+keys it handles. The one place it still shows is JIS Korean's **ABC** state (한/영 off), where keys
+go to Windows' Korean layout untouched. That's why nothing here puts JIS Korean in ABC: English
+goes through F19 (`04-jis-korean.md`, "한/영").
 
 ## Two levels of switching
 
 1. **Language** (Korean vs Japanese): `WM_INPUTLANGCHANGEREQUEST` posted to the focused window with
    the target layout. Documented: the message asks the window to change its input language, and
    `DefWindowProc` normally accepts it.
-2. **IME state inside the language** (Japanese on/off and hiragana; Korean 한/영):
+2. **IME state inside the language** (Japanese on/off and hiragana):
    `ImmGetDefaultIMEWnd` + `WM_IME_CONTROL` with `IMC_SETOPENSTATUS` / `IMC_SETCONVERSIONMODE`.
    Widely used (it's what most "IME status" AHK snippets do), but **not formally documented for
    cross-process use**. It's the part to measure.
+3. **JIS Korean's 한글 / ABC** is different: JIS Korean ignores outside open/close requests and
+   puts its state back, and the state is one for the whole session (`04-jis-korean.md`, "한/영").
+   The script only **reads** the open status (JIS Korean mirrors 한글 / ABC into it) and, if it
+   reads ABC, sends one 한/영 (`VK_HANGUL`, `0x15`), the way a user would press it. It never sends
+   한/영 when the state reads 한글, so F18 never toggles out of Korean.
 
 The language change is asynchronous, so the script waits (up to 150 ms) until the focused thread
 reports the new language before touching the IME state. Otherwise the IME command would go to the
@@ -51,7 +54,8 @@ old IME.
 ## Rules carried over from the Mac (don't "simplify" these away)
 
 1. **Always apply.** No early return when the target already looks active. Pressing F18 in Korean
-   still forces 한 mode, so the key is never dead and never toggles out (`04-hammerspoon.md`, rule 1).
+   still selects Korean and checks 한글, so the key is never dead and never toggles out
+   (`04-hammerspoon.md`, rule 1).
 2. **Retry is guarded by a check.** 150 ms later the script reads language, open status and
    conversion mode back, and re-applies **once**, only if something is wrong.
 3. **Bare keys only.** `F18::` etc. have no modifiers; Shift+F18 does nothing.
@@ -97,8 +101,8 @@ green **H** tray icon is there after a restart.
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 ; hhkb-ekj-trilingual (Windows): one-way language keys sent by the HHKB Studio, keymap Profile 4.
-;   F18 -> Korean (한)   F19 -> English (Japanese IME off)   F20 -> Japanese hiragana, kana typing
-;   F17 -> 한자 in Korean, nothing elsewhere   Pause (Fn1+P) -> Media Play/Pause
+;   F18 -> Korean: JIS Korean, 한글   F19 -> English (Japanese IME off)   F20 -> Japanese hiragana, kana typing
+;   F17 -> hanja (F7) in Korean, nothing elsewhere   Pause (Fn1+P) -> Media Play/Pause
 
 HKL_KO := 0x04120412, LANG_KO := 0x0412
 HKL_JA := 0x04110411, LANG_JA := 0x0411
@@ -107,7 +111,9 @@ HKL_JA := 0x04110411, LANG_JA := 0x0411
 CM_NATIVE := 0x01, CM_KATAKANA := 0x02, CM_FULLSHAPE := 0x08, CM_ROMAN := 0x10
 
 ; Targets: language, IME open status, conversion mode to set, and the bits that must match.
-KOREAN   := {hkl: HKL_KO, lang: LANG_KO, open: 1, cmode: CM_NATIVE, mask: CM_NATIVE}
+; Korean is JIS Korean: it ignores IMC_SETOPENSTATUS, so its 한글 / ABC is only read, and fixed
+; with 한/영 (hangulKey).
+KOREAN   := {hkl: HKL_KO, lang: LANG_KO, open: 1, hangulKey: true}
 ENGLISH  := {hkl: HKL_JA, lang: LANG_JA, open: 0}
 JAPANESE := {hkl: HKL_JA, lang: LANG_JA, open: 1, cmode: CM_NATIVE | CM_FULLSHAPE
            , mask: CM_NATIVE | CM_KATAKANA | CM_FULLSHAPE | CM_ROMAN}
@@ -133,6 +139,12 @@ Apply(hwnd, t) {
     deadline := A_TickCount + 150
     while LangOf(hwnd) != t.lang && A_TickCount < deadline
         Sleep(10)
+    if t.HasOwnProp("hangulKey") {
+        ; JIS Korean: press 한/영 only if it reads ABC. Its state is the whole session's.
+        if LangOf(hwnd) = t.lang && ImeCtl(hwnd, 0x005) = 0   ; IMC_GETOPENSTATUS
+            Send("{vk15}")                                    ; VK_HANGUL
+        return
+    }
     ImeCtl(hwnd, 0x006, t.open)                 ; IMC_SETOPENSTATUS
     if t.open
         ImeCtl(hwnd, 0x002, t.cmode)            ; IMC_SETCONVERSIONMODE
@@ -141,13 +153,13 @@ Apply(hwnd, t) {
 IsAt(hwnd, t) {
     if LangOf(hwnd) != t.lang || ImeCtl(hwnd, 0x005) != t.open   ; IMC_GETOPENSTATUS
         return false
-    return !t.open || (ImeCtl(hwnd, 0x001) & t.mask) = t.cmode    ; IMC_GETCONVERSIONMODE
+    return !t.HasOwnProp("cmode") || (ImeCtl(hwnd, 0x001) & t.mask) = t.cmode   ; IMC_GETCONVERSIONMODE
 }
 
 ContextAction() {
     hwnd := FocusHwnd()
     if hwnd && LangOf(hwnd) = LANG_KO
-        Send("{vk19}")                          ; VK_HANJA: Korean IME's 한자 conversion
+        Send("{F7}")                            ; JIS Korean's hanja key
     ; Other languages: nothing yet.
 }
 
@@ -197,13 +209,13 @@ was changed to `LANG1` (`01-hardware.md`), not on Profile 4.
 
 Takeaways:
 
-- **What the Korean IME acts on for 한/영 is `VK_HANGUL` (`0x15`).** To toggle it from a script,
-  `Send("{vk15sc138}")` should work (**not tested yet**). The script doesn't need this: F18 sets 한 directly and never toggles.
+- **What the Korean IME acts on for 한/영 is `VK_HANGUL` (`0x15`).** JIS Korean acts on the same VK.
+  The script sends `{vk15}` only when JIS Korean reads ABC (**not measured yet**).
 - Without the JIS layout active, the HHKB's own IME keys are dead or wrong on Windows. That's why
   Profile 4 replaces them with F17–F20.
 - `0x15` is also `VK_KANA`, the same number under another name. So in Japanese, the same key
-  would toggle Kana lock instead. Send it only while Korean is active, the same rule as
-  `VK_HANJA` / `VK_KANJI` below.
+  would toggle Kana lock instead. Send it only while Korean is active: the script checks the
+  language before it sends `{vk15}`.
 
 ### Native 한/영 without AutoHotkey: map a key to Mac かな (`LANG1`)
 
@@ -221,7 +233,7 @@ Checked by the owner (2026-10-17): a key set to **Mac かな** in the HHKB Studi
 - Expected codes for Mac かな: `VK 15 / SC 0F2`, and `VK 19 / SC 0F1` for Mac 英数. **Not
   measured yet.** Check them with KeyHistory.
 
-Profile 4 doesn't use this. F18 sets 한 directly and never toggles, and F17 sends 한자. The
+Profile 4 doesn't use this: F18 selects JIS Korean in 한글 and F17 sends F7 (hanja). The
 fallback profile without AutoHotkey, **Profile3** (`01-hardware.md`), replaces the stock 変換 key, right of
 Space, with `LANG1`.
 
@@ -235,8 +247,9 @@ and press F5 in the window to refresh.
 | `WM_INPUTLANGCHANGEREQUEST` changes the focused window's input language | Documented (Win32) |
 | `WM_IME_CONTROL` + `IMC_*` on the default IME window, from another process | Common practice, not formally documented for this use. **Measure** |
 | Clearing `IME_CMODE_ROMAN` gives kana typing in the current Microsoft Japanese IME | **Inferred.** The IME's "かな入力" setting (`02-windows.md`) is the primary control; the script only avoids turning Romaji on |
-| Korean 한 = conversion mode `HANGUL` (0x01) with the IME open | Inferred from imm.h. **Measure** |
-| `VK_HANJA` (0x19) opens 한자 conversion in the Korean IME | Documented VK; behavior **to check**. Only sent while Korean is active, because on Japanese the same VK is `VK_KANJI` (IME toggle) |
+| `IMC_GETOPENSTATUS` reads JIS Korean's 한글 (1) / ABC (0) | Inferred from JIS Korean's source (it mirrors the state into `GUID_COMPARTMENT_KEYBOARD_OPENCLOSE`). **Measure** (`04-jis-korean.md`, W6–W7). Right after Korean activates, Windows closes that compartment and JIS Korean reopens it: a read in between sees ABC, sends 한/영, and the 150 ms check sends it back. If F18 ever leaves JIS Korean in ABC, this is the part to look at |
+| `{vk15}` from AutoHotkey reaches JIS Korean as 한/영 | JIS Korean handles VK `0x15` as 한/영. **Measure** |
+| F7 opens JIS Korean's hanja list | JIS Korean's key (spec §7). F17 sends it only while Korean is active |
 | The Studio sends F17–F20 from the bottom row | **Checked** on the owner's board with a separate key-test tool (`01-hardware.md`) |
 | Elevated (admin) windows | A non-elevated AutoHotkey can't post messages to them (UIPI), so the keys won't switch there. Known limitation |
 

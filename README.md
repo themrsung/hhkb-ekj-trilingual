@@ -41,25 +41,25 @@ Built with [Karabiner-Elements](https://karabiner-elements.pqrs.org/) and
 [Hammerspoon](https://www.hammerspoon.org/).
 
 > [!NOTE]
-> **Windows 11: experimental, HHKB Studio only, with a compromise.** The Studio uses keymap
-> Profile 4 (F18 / F19 / F20 / F17), and [AutoHotkey v2](https://www.autohotkey.com/) does the
-> switching:
+> **Windows 11: experimental, HHKB Studio only.** The Studio uses keymap Profile 4
+> (F18 / F19 / F20 / F17), and [AutoHotkey v2](https://www.autohotkey.com/) does the switching:
 >
 > | Key | Goes to | Symbol keys |
 > | --- | --- | --- |
-> | F18 | Korean: handed off to the Microsoft Korean IME | **US ANSI** (the Korean IME enforces them) |
+> | F18 | Korean: [JIS Korean](docs/windows/04-jis-korean.md), 한글 | JIS (JIS Korean's own) |
 > | F19 | English: Japanese with the IME off | JIS |
 > | F20 | Japanese: Microsoft Japanese IME, kana typing | JIS |
 >
-> The author types English by default and Korean only when needed, so the US symbols in Korean
-> cost little. Results may vary with typing habits. Tested on one PC, over USB and Bluetooth. See [`docs/windows/`](docs/windows/01-hardware.md).
+> 한/영 isn't used: mixed Korean and English stays in JIS Korean, and English-only typing goes to
+> F19. The rest was tested on one PC, over USB and Bluetooth; JIS Korean on Windows isn't checked
+> by this repo yet. See [`docs/windows/`](docs/windows/01-hardware.md).
 
 ## Scope
 
 - **macOS first.** This repo was designed for macOS.
-- **Windows 11 is experimental:** HHKB Studio JIS only, with the compromise above (Korean types
-  US ANSI symbols). The agent tells you about the compromise and asks before going on. The HYBRID
-  Type-S has no Windows setup.
+- **Windows 11 is experimental:** HHKB Studio JIS only, as above (Korean with JIS Korean, not yet
+  checked on Windows). The agent explains it and asks before going on. The HYBRID Type-S has no
+  Windows setup.
 - **Other operating systems are not supported.** The agent warns you and asks before going on, but
   it won't refuse if you confirm.
 - **JIS only.** Built and tested on the HHKB Professional HYBRID Type-S **JIS** and the HHKB
@@ -81,18 +81,18 @@ PC) you want to set up (Claude Code, Codex, etc.). It asks you a few questions, 
 on its own. It stops only for steps that need your hands: DIP switches, the keymap tool,
 permission prompts, settings that change the system, and key-press checks.
 
-The prompt is **pinned to the release tag `v1.8.0`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.9.0`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.8.0.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.9.0.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.8.0/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.8.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.9.0/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.9.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.8.0/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.9.0/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
@@ -124,10 +124,11 @@ Then, depending on my answer:
 Before changing anything:
 1. Check the OS.
    - macOS: continue below.
-   - Windows 11: Windows is supported experimentally, for the HHKB Studio JIS only, with a
-     compromise. Korean is handed off to the Microsoft Korean IME, which types US ANSI symbols.
+   - Windows 11: Windows is supported experimentally, for the HHKB Studio JIS only. Korean is
+     JIS Korean (built from source; not yet checked on Windows by this repo), with JIS symbols.
      English is Japanese with the IME off, so its symbols match the JIS keycaps. Japanese is the
-     Microsoft Japanese IME with kana typing. Explain this to me, and ask whether to continue. If
+     Microsoft Japanese IME with kana typing. 한/영 isn't used: mixed Korean and English stays in
+     JIS Korean, English-only typing goes to F19. Explain this to me, and ask whether to continue. If
      I do, follow the Windows section of AGENTS.md and docs/windows/ instead of the macOS steps
      below. Ask before installing anything or changing any system setting.
    - Anything else: tell me the interactive setup isn't supported here and ask whether to continue
@@ -139,10 +140,11 @@ Before changing anything:
       different USB IDs.
    b. Which input source the HHKB key should switch to (default: JIS Korean, a 2-Set input
       method made for JIS keyboards: number-row double consonants and compound vowels, Korean
-      punctuation, F6–F10, predictions; macOS only, built from source, so ask me before
+      punctuation, F6–F10, predictions; macOS and Windows, built from source, so ask me before
       installing its build tools). Show this note with it, word for word: "Try it out. If you
       use an HHKB, you'll love it!" Apple's Korean 2-Set is no longer maintained by this repo
-      (the last release that set it up is v1.7.1); tell me that if I ask for it.
+      (the last release that set it up is v1.7.1), nor is the Microsoft Korean IME on Windows
+      (last set up by v1.8.0); tell me that if I ask for them.
    c. Where 英数 and かな should go (default: English ABC / Japanese with Kana typing).
    d. The "Move focus to next window" shortcut (default: Option+Tab).
    e. Whether to keep the extras: ろ → \ outside Japanese, Fn+P → Play/Pause,
@@ -164,7 +166,7 @@ backups are.
 To set it up by hand instead, follow [`AGENTS.md`](AGENTS.md), then `docs/01` → `docs/06` in
 order (plus `docs/07` for a Studio, `docs/08` to migrate an older Studio setup to F18, and
 `docs/09` for JIS Korean, the Korean input source). On
-Windows, follow `docs/windows/01` → `03` instead. The exact Karabiner JSON, Hammerspoon Lua and
+Windows, follow `docs/windows/01` → `04` instead. The exact Karabiner JSON, Hammerspoon Lua and
 AutoHotkey script are in the docs.
 
 **Quick Studio setup (macOS or Windows):** the only config file is the HHKB Studio settings export,

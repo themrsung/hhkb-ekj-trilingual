@@ -85,19 +85,20 @@ The language keys send the same codes as the HHKB setups, so the existing switch
 
 | Key | macOS (`../docs/04-hammerspoon.md`) | Windows (`../docs/windows/03-autohotkey.md`) |
 | --- | --- | --- |
-| F18 | Korean (Hammerspoon, any keyboard): JIS Korean, see the limits below | Korean (AutoHotkey) |
+| F18 | Korean (Hammerspoon, any keyboard): JIS Korean, see the limits below | Korean (AutoHotkey): JIS Korean, the same limits |
 | F19 | **No handler by default.** Bind it to ABC (`../docs/05-customization.md`) | English (AutoHotkey) |
 | F20 | **No handler by default.** Bind it to Japanese Kana (`../docs/05-customization.md`) | Japanese, kana typing (AutoHotkey) |
-| F17 | Nothing | 한자 in Korean (AutoHotkey) |
+| F17 | Nothing | Hanja (F7) in Korean (AutoHotkey) |
 | F16 | Nothing (no handler in this repo) | Nothing (no handler in this repo) |
 | 한/영 (layer 1) | Not used | Native Korean IME toggle, no AutoHotkey needed (like the Studio's Profile3 fallback) |
 
 ## Limits (tell the user)
 
-- **Korean on macOS:** F18 selects JIS Korean, which reads JIS key codes. On ANSI keycaps its
-  number row types ㅃ ㅉ ㄸ ㄲ ㅆ / ㅟ ㅝ ㅚ ㅢ ㅘ and its symbol keys don't match the keys
-  (`../issues/jis-korean-non-jis-built-in.md` has the same effect on a US MacBook). Korean 2-Set
-  would fit this keyboard, but it's no longer maintained here. Tell the user before going on.
+- **Korean on macOS and Windows:** F18 selects JIS Korean, which reads JIS key codes in its Mode A.
+  On ANSI keycaps its number row types ㅃ ㅉ ㄸ ㄲ ㅆ / ㅟ ㅝ ㅚ ㅢ ㅘ and its symbol keys don't match
+  the keys (`../issues/jis-korean-non-jis-built-in.md` has the same effect on a US MacBook). Korean
+  2-Set (or the Microsoft Korean IME) would fit this keyboard, but it's no longer maintained here.
+  Tell the user before going on.
 - **No ろ key.** The ろ → `\` rule (`../docs/03-karabiner.md`) does nothing here. `\` is on its
   normal ANSI key.
 - **macOS keyboard type:** pick **ANSI**, not JIS, when macOS asks (`../docs/02-macos.md` assumes

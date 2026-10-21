@@ -15,9 +15,10 @@ The detailed steps are in `docs/`:
 | [`docs/07-hhkb-studio.md`](docs/07-hhkb-studio.md) | HHKB Studio only: full keymap (all layers, with screenshots), pointing stick, gesture pads |
 | [`docs/08-migrate-studio-f18.md`](docs/08-migrate-studio-f18.md) | Migrating a Studio from the old `` ` `` → F18 Karabiner remap to F18 set in the keymap tool |
 | [`docs/09-jis-korean.md`](docs/09-jis-korean.md) | **macOS Korean:** JIS Korean, the default: install, input source, rule C condition, Hammerspoon target, F-keys, checks. Korean 2-Set is no longer maintained |
+| [`docs/windows/04-jis-korean.md`](docs/windows/04-jis-korean.md) | **Windows Korean:** JIS Korean, the default: build, install, the only Korean keyboard, Mode A, why 한/영 isn't used, checks. The Microsoft Korean IME is no longer maintained |
 | [`docs/windows/01-hardware.md`](docs/windows/01-hardware.md) | **Windows (experimental):** HHKB Studio keymap Profile 4 (and the Profile3 fallback), the tested PC |
-| [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft IME settings |
-| [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** the compromise, AutoHotkey v2 script, logon task, measured key codes |
+| [`docs/windows/02-windows.md`](docs/windows/02-windows.md) | **Windows:** languages, JIS hardware layout (per language), Microsoft Japanese IME settings |
+| [`docs/windows/03-autohotkey.md`](docs/windows/03-autohotkey.md) | **Windows:** symbols per language, AutoHotkey v2 script, logon task, measured key codes |
 | [`docs/hhkb-studio-setting-all.hks`](docs/hhkb-studio-setting-all.hks) | HHKB Studio settings export, all profiles: the quick way to set up a Studio for either OS |
 | [`issues/`](issues/README.md) | Known issues and workarounds: inter-OS muscle memory, DIP SW6 power saving, inconsistent symbols on Windows, JIS Korean with a non-JIS built-in keyboard. Check here before "fixing" something |
 | [`layout-104-or-108-key/`](layout-104-or-108-key/README.md) | **Not an HHKB, support limited:** a full-size 104 / 108-key US ANSI keyboard (TFG Magnetox) sending F18 / F19 / F20 / F17. Only if the user insists |
@@ -41,8 +42,9 @@ docs. The only other config file is the owner's full-size keyboard export in
 
 **Scope:**
 - **macOS first.** Sections 1–5 below are the macOS setup.
-- **Windows 11: experimental, HHKB Studio JIS only, with a compromise** (section 6). Explain the
-  compromise and ask before continuing. The HYBRID Type-S has no Windows setup.
+- **Windows 11: experimental, HHKB Studio JIS only** (section 6). Explain how Korean, English and
+  Japanese are handled there, and that JIS Korean on Windows isn't checked by this repo yet, and ask
+  before continuing. The HYBRID Type-S has no Windows setup.
 - **Any other OS:** tell the user this setup isn't supported there and ask whether to continue.
   Don't refuse if they confirm. Adapt what you can and say what doesn't carry over.
 - **JIS HHKB only.** US ANSI support is not built in: the ろ, ¥, 英数 and かな keys don't exist on
@@ -127,11 +129,15 @@ Why each piece exists:
 
 ## 3. JIS Korean is the Korean input source; the HHKB key target is replaceable
 
-On macOS, the HHKB key selects [JIS Korean](https://github.com/team-mirae/jis-korean), a 2-Set
-input method built for JIS keyboards (`docs/09-jis-korean.md`). When asking which source the
-HHKB key should switch to, present it as the default and show this note with it, word for word:
-"Try it out. If you use an HHKB, you'll love it!" It's macOS only (Windows keeps the Microsoft
-Korean IME), and it's built from source, so ask before installing its build tools.
+The HHKB key selects [JIS Korean](https://github.com/team-mirae/jis-korean), a 2-Set input method
+built for JIS keyboards, on macOS (`docs/09-jis-korean.md`) and, since `v1.9.0`, on Windows too
+(F18, `docs/windows/04-jis-korean.md`). When asking which source the HHKB key should switch to,
+present it as the default and show this note with it, word for word: "Try it out. If you use an
+HHKB, you'll love it!" It's built from source on both, so ask before installing its build tools.
+
+**The Microsoft Korean IME is no longer maintained** for Windows either. Make JIS Korean the only
+Korean keyboard. If the user asks for the Microsoft IME, point them to release `v1.8.0`, the last
+one that set it up.
 
 **Korean 2-Set (Apple's) is no longer maintained**, also not on a MacBook whose built-in keyboard
 isn't JIS. Don't set it up, and don't enable it next to JIS Korean. If the user asks for 2-Set
@@ -191,18 +197,25 @@ anything, use JIS Korean.
 
 Tested on one PC, over USB and Bluetooth (no Bluetooth-specific setup needed). The details are in `docs/windows/`.
 
-**The compromise** (the owner's default; adjust for the end user as they prefer):
+**Languages** (the owner's default; adjust for the end user as they prefer):
 
 | Language | Key (Profile 4) | Handled by | Symbol keys |
 | --- | --- | --- | --- |
-| Korean | F18 | Hand off to the **Microsoft Korean IME** (한 mode) | **US ANSI**: the Korean IME enforces them |
+| Korean | F18 | **JIS Korean**, Mode A, 한글 | JIS (JIS Korean's legends) |
 | English | F19 | **Japanese with the IME off** | JIS, matching the keycaps |
 | Japanese | F20 | **Microsoft Japanese IME**, kana typing | JIS |
 
-F17 sends 한자 in Korean. Windows picks the hardware layout **per language** (Korean `kbd101a.dll`,
-Japanese `kbd106.dll`), so Korean can't have JIS symbols without the trade-offs listed in
-`docs/windows/02-windows.md`, step 3. The owner types English by default and Korean only when
-needed, so this costs little. Results may vary with typing habits, so tell the user before you
+F17 sends F7 (JIS Korean's hanja) in Korean. Windows picks the hardware layout **per language**
+(Korean `kbd101a.dll`, Japanese `kbd106.dll`), but JIS Korean reads scan codes, so Korean gets JIS
+symbols without changing it. Through `v1.8.0`, Korean was the Microsoft Korean IME with US ANSI
+symbols (the old compromise).
+
+**한/영 isn't part of the setup** (`docs/windows/04-jis-korean.md`, "한/영"). JIS Korean's 한/영 is
+a plain on/off switch with one state for the whole session; English typed in its ABC state gets
+no predictions and types US ANSI symbols; and JIS Korean ignores outside open/close requests. So:
+mixed Korean and English stays in JIS Korean (its predictions read English words); English-only
+text, code, commands and passwords use F19; F18 only presses 한/영 when JIS Korean reads ABC, to
+get back to 한글, and never toggles out. Profile 4 has no 한/영 key. Tell the user this before you
 start.
 
 Order of operations:
@@ -210,14 +223,16 @@ Order of operations:
 1. **Hardware:** DIP switches all OFF, then keymap **Profile 4**: load
    `docs/hhkb-studio-setting-all.hks` in the HHKB Studio Keymap Tool (it replaces all
    profiles, so ask first), or set the keys by hand (`docs/windows/01-hardware.md`). Without
-   AutoHotkey, **Profile3** is the fallback: Win+Space plus native 한/영 via `LANG1`.
+   AutoHotkey, **Profile3** is the fallback: Win+Space plus 한/영 via `LANG1`.
 2. **Windows:** Korean + Japanese, Japanese keyboard (106/109 key) as the hardware layout, not
    "Detect connected keyboard", then restart. Turn **kana input** on in the Microsoft Japanese IME
    (`docs/windows/02-windows.md`).
-3. **AutoHotkey v2:** install it, write the script, and start it with a **Task Scheduler logon
+3. **JIS Korean:** build and install it, make it the only Korean keyboard (remove the Microsoft
+   Korean IME, after asking), and check Mode A (`docs/windows/04-jis-korean.md`).
+4. **AutoHotkey v2:** install it, write the script, and start it with a **Task Scheduler logon
    task**, not `shell:startup` or a Run key (`docs/windows/03-autohotkey.md`).
-4. **Verify:** after a restart, AutoHotkey is running and F18 / F19 / F20 / F17 / Fn1+P behave as
-   in the table above.
+5. **Verify:** after a restart, AutoHotkey is running and F18 / F19 / F20 / F17 / Fn1+P behave as
+   in the table above, then run checks W1–W9 in `docs/windows/04-jis-korean.md`.
 
 Every install and every system-setting change needs the user's OK first. Measure; don't assume.
 Use AutoHotkey's KeyHistory for key codes, and read back registry values after each change.
