@@ -1,5 +1,11 @@
 # AGENTS.md — HHKB JIS trilingual (English / Korean / Japanese) setup for macOS (Windows 11 experimental)
 
+> **Archived (v1.10.0-archived).** On macOS, [JIS Korean](https://github.com/team-mirae/jis-korean)
+> (pinned at commit `0357ffa`) now switches languages itself and replaces this repo's Karabiner +
+> Hammerspoon method: カタカナ or F18 → Korean (hardware level, system-wide), 英数 → JIS English,
+> かな → Japanese, switching the open field in place. Tell the user first, as the README prompt
+> says, and follow this repo's method only if they choose it. Windows still uses this repo.
+
 Read this file first. It is the entry point for any agent asked to rebuild this keyboard setup on a
 brand-new Mac. It covers the physical setup, the order of operations, and what "done" looks like.
 The detailed steps are in `docs/`:

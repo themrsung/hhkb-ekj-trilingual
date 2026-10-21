@@ -1,5 +1,12 @@
 # hhkb-ekj-trilingual
 
+> [!IMPORTANT]
+> **Archived (v1.10.0-archived).** On macOS, [JIS Korean](https://github.com/team-mirae/jis-korean)
+> now switches languages itself and replaces this repo's Karabiner + Hammerspoon setup: カタカナ
+> (or F18) → Korean, 英数 → its own English mode, かな → Japanese, caught system-wide and switching
+> the open field in place. The interactive prompt below tells you about it first and uses the old
+> method only if you ask for it. Windows still uses the setup here.
+
 > [!WARNING]
 > **This entire repo was AI-generated**: the docs, the Karabiner rules, the Hammerspoon Lua, and
 > this README. If you don't want AI-written code on your machine, **skip the interactive setup**
@@ -81,22 +88,56 @@ PC) you want to set up (Claude Code, Codex, etc.). It asks you a few questions, 
 on its own. It stops only for steps that need your hands: DIP switches, the keymap tool,
 permission prompts, settings that change the system, and key-press checks.
 
-The prompt is **pinned to the release tag `v1.9.0`**. The agent reads the docs exactly as they
+The prompt is **pinned to the release tag `v1.10.0-archived`**. The agent reads the docs exactly as they
 were at that release, even if `main` changes later.
 
 ```text
 Set up my HHKB JIS trilingual (English / Korean / Japanese) keyboard configuration on this
-machine, following the hhkb-ekj-trilingual repo pinned at tag v1.9.0.
+machine, following the hhkb-ekj-trilingual repo pinned at tag v1.10.0-archived.
 
 Source of truth (use this tag only — not main, not any other ref):
-  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.9.0/AGENTS.md
-  Get the repo:  git clone --depth 1 --branch v1.9.0 https://github.com/themrsung/hhkb-ekj-trilingual.git
+  Entry point: https://github.com/themrsung/hhkb-ekj-trilingual/blob/v1.10.0-archived/AGENTS.md
+  Get the repo:  git clone --depth 1 --branch v1.10.0-archived https://github.com/themrsung/hhkb-ekj-trilingual.git
   (If you can't clone, fetch each file from
-   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.9.0/<path>, starting with
+   https://raw.githubusercontent.com/themrsung/hhkb-ekj-trilingual/v1.10.0-archived/<path>, starting with
    AGENTS.md and then every file under docs/ that it links to.)
 Clone into a temporary/scratch directory, read AGENTS.md and all of docs/ in full, and follow them.
 
-Before anything else, ask me this one question on its own, word for word, and wait for my answer:
+Before anything else, tell me this (in your own words is fine, but keep every point):
+
+  This repo is archived. On macOS, JIS Korean
+  (https://github.com/team-mirae/jis-korean, pinned at commit 0357ffa) now does the language
+  switching itself, and it fixes every issue this repo's Karabiner + Hammerspoon method has run
+  into. It's much cleaner: no Karabiner rules and no Hammerspoon.
+  - Korean (LANG_KO): the カタカナ key (or F18), read at the hardware level and caught system-wide,
+    so it works in every app (iTerm keeps F-keys to itself, but this still works there) and from
+    any input source, Japanese and ABC included.
+  - English (LANG_EN): 英数 goes to JIS English, an English input mode inside JIS Korean (JIS
+    symbols, press-and-hold accents), so switching between Korean and English never leaves the
+    input method.
+  - Japanese (LANG_JA): かな, as before. Each key works while another is held.
+  - The text field you're typing in switches at once, in place: no Hammerspoon select-and-retry
+    delay, no doubled switch overlay, and no "1 press in 100, macOS reports Korean but the field
+    keeps the old source" bug.
+  - ろ types \ and _ in JIS Korean and JIS English by itself: no Karabiner rule.
+  Setup: set the HHKB key to カタカナ in the keymap tool (or keep F18; DIP switches first, as
+  docs/01-hardware.md says), build and install JIS Korean with `make ENGLISH=1 install` in its
+  mac/ folder (mac/README.md, "JIS English"), add JIS Korean and JIS English as input sources,
+  and grant Input Monitoring and Accessibility. Karabiner is optional (don't remap
+  japanese_pc_katakana). Windows is unchanged: this repo's method still applies there.
+
+Then ask me, word for word, and wait for my answer:
+
+  Set up with JIS Korean's own switching (recommended), or continue with this repo's old method
+  (Karabiner + Hammerspoon)?
+
+  - If JIS Korean: follow JIS Korean's mac/README.md at commit 0357ffa instead of this repo
+    (still use docs/01-hardware.md and docs/07-hhkb-studio.md for the keyboard's DIP switches and
+    keymap, with カタカナ on the HHKB key). Ask before installing its build tools (Rust, Xcode
+    command line tools), and stop following the rest of this prompt.
+  - If the old method: continue below, unchanged.
+
+Then ask me this one question on its own, word for word, and wait for my answer:
 
   Which layout is your HHKB, or whatever keyboard you are setting up?
   - US ANSI (no arrow keys, the classic "HHKB" look)
